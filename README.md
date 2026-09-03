@@ -20,6 +20,18 @@ ROM イメージは [Releases](../../releases) から入手してください。
 電源投入時に表に出るのは MSX-MUSIC Basic Extension で、`CALL MINIT` /
 `CALL MUSIC` / `CALL AUDIO` / `CALL SFG` で切り替わります。
 
+### ソースコードについて
+
+リリースページに並ぶ「Source code (zip)」「Source code (tar.gz)」は GitHub が
+すべてのリリースに自動で付けるもので、中身はこのリポジトリのドキュメントと
+ビルド用スクリプトだけです。**拡張BASIC 本体のソースコードは含まれません。**
+
+MSX-MUSIC / MSX-AUDIO / SFG の各 Basic Extension は日本楽器製造株式会社
+（YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されて
+いるのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、この
+リポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空の
+ディレクトリになります。
+
 ## 収録内容
 
 ### MSX-MUSIC Basic Extension
