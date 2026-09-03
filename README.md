@@ -18,7 +18,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を4つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC Basic Extension で、`CALL MINIT` /
-`CALL MUSIC` / `CALL AUDIO` などで切り替わります。
+`CALL MUSIC` / `CALL AUDIO` / `CALL SFG` で切り替わります。
 
 ## 収録内容
 
