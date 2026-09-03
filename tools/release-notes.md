@@ -17,5 +17,5 @@
 zip にはドキュメントと、各 ROM のビルド元コミットおよび SHA256 を記録した
 `MANIFEST.txt` が入っています。
 
-ステートメントと MML の仕様は [`docs/`](../../tree/master/docs) を参照して
+ステートメントと MML の仕様は [`docs/`](https://github.com/madscient/MsxSoundSuiteExtension/tree/master/docs) を参照して
 ください。

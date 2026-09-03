@@ -64,6 +64,10 @@ def index():
         for _, dst_rel, label in entry["docs"]:
             lines.append(f"- [{label}]({dst_rel})")
         lines.append("")
+    lines += ["## 開発", ""]
+    for dst_rel, label in manifest.LOCAL_DOCS:
+        lines.append(f"- [{label}]({dst_rel})")
+    lines.append("")
     return "\n".join(lines)
 
 
