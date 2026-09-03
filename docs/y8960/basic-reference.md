@@ -20,7 +20,7 @@ Y8960 拡張BASIC が MSX BASIC に追加するステートメントと MML の�
 
 ## ページ1 の切り替え
 
-カートリッジには3つの拡張BASIC が載っており、ページ1 に一度に1つだけが
+カートリッジには4つの拡張BASIC が載っており、ページ1 に一度に1つだけが
 出る。電源投入時とリセット直後は MSX-MUSIC BASIC Extension。
 
 | ステートメント | 行き先 |
@@ -28,10 +28,17 @@ Y8960 拡張BASIC が MSX BASIC に追加するステートメントと MML の�
 | `CALL MINIT` | Y8960 BASIC Extension |
 | `CALL MUSIC` | MSX-MUSIC BASIC Extension |
 | `CALL AUDIO` | MSX-AUDIO BASIC Extension Lite |
+| `CALL SFG` | SFG BASIC Extension |
 
-どの拡張BASIC が出ていても、この3つはいずれも受け付ける。切り替えの際、
-それまで出ていた拡張BASIC のフックとワークエリアは自動的に解放される。
-演奏中であれば止まる。
+切り替えの際、それまで出ていた拡張BASIC のフックとワークエリアは自動的に
+解放される。演奏中であれば止まる。
+
+`CALL SFG` を受け付けるのは Y8960 BASIC Extension と SFG BASIC Extension
+だけで、MSX-MUSIC と MSX-AUDIO Lite が出ているときは `Syntax error` に
+なる。残る3つはどの拡張BASIC が出ていても受け付ける。
+
+SFG BASIC Extension が鳴らすのは別スロットに挿さった SFG-01/05 で、Y8960 の
+音源ではない。SFG が無ければ `CALL SFG` は `Illegal function call` を返す。
 
 ## ステートメント
 
@@ -186,11 +193,11 @@ MML トラックに対するアサインは維持される。
 
 マスターチューニングを設定する。周波数 430.0-450.0。
 
-### CALL MUSIC / CALL AUDIO
+### CALL MUSIC / CALL AUDIO / CALL SFG
 
-ページ1 を MSX-MUSIC BASIC Extension / MSX-AUDIO BASIC Extension Lite に
-切り替える。引数はそれぞれの拡張BASIC が解釈するので、`CALL MUSIC(-1)` の
-ように行き先の書式で書ける。
+ページ1 を MSX-MUSIC BASIC Extension / MSX-AUDIO BASIC Extension Lite /
+SFG BASIC Extension に切り替える。引数はそれぞれの拡張BASIC が解釈するので、
+`CALL MUSIC(-1)` のように行き先の書式で書ける。
 
 ### CALL VOICE COPY *パラメータ1*, *パラメータ2*
 

@@ -15,8 +15,12 @@ ROM を載せ、ページ1（`4000h`-`7FFFh`）に一度に1つだけを出す�
 | 0 | MSX-MUSIC BASIC Extension | #0, #1 | [MsxMusicBasicExtension](https://github.com/madscient/MsxMusicBasicExtension) |
 | 1 | MSX-AUDIO BASIC Extension Lite | #2, #3 | [MsxAudioBasicExtensionLite](https://github.com/madscient/MsxAudioBasicExtensionLite) |
 | 2 | Y8960 BASIC Extension | #4, #5, #10-#13 | このリポジトリ |
-| 3 | （未使用） | #6, #7 | |
+| 3 | SFG BASIC Extension | #6, #7 | [SFGBasicExtension](https://github.com/madscient/SFGBasicExtension) |
 | 4 | （未使用） | #8, #9 | |
+
+SFG BASIC Extension が鳴らすのは別スロットに挿さった SFG-01/05 の YM2151 で、
+Y8960 の音源ではない。カートリッジ側の I/O ポートを一切使わないので、
+[I/O Enabler](#io-enabler) を書く義務も負わない。
 
 参加する ROM は拡張BASIC でなくてもよい。拡張BASIC であるものだけが
 「[拡張BASIC が追加で守ること](#拡張basic-が追加で守ること)」の節に従う。
@@ -210,6 +214,7 @@ PSG、`7Ch`/`7Dh` は MSX-MUSIC、`C0h`-`C3h` は MSX-AUDIO ―― なので、�
 | `CALL MUSIC` | MSX-MUSIC BASIC Extension |
 | `CALL AUDIO` | MSX-AUDIO BASIC Extension Lite |
 | `CALL MINIT` | Y8960 BASIC Extension |
+| `CALL SFG` | SFG BASIC Extension |
 
 参加している拡張BASIC は、自分以外の全員の名前をステートメント名テーブルに
 持ち、そのハンドラでは**引数を一切読まずに**ページ1 を渡す。引数は行き先の
@@ -268,7 +273,7 @@ BASIC 以外（MSX-DOS、ROM カートリッジ等）から使う場合の手順
 
 ## 相手が答えないとき
 
-3つ以上の ROM がそろっていないイメージが作られることはあり得る。バンクに
+参加 ROM がそろっていないイメージが作られることはあり得る。バンクに
 何が入っているかは切り替えた後にしか訊けないので、戻れるようにしておく。
 
 後半のコードは `4FFCh` に自分の ID×2 を書いて BANK0 を自分に戻し、CY を立てて

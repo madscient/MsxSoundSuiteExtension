@@ -9,7 +9,7 @@
 [submodule "vendor/SFGBasicExtension"]
 	path = vendor/SFGBasicExtension
 	url = https://github.com/madscient/SFGBasicExtension.git
-	branch = fork-issues
+	branch = master
 [submodule "vendor/Y8960BasicExtension"]
 	path = vendor/Y8960BasicExtension
 	url = https://github.com/madscient/Y8960BasicExtension.git
