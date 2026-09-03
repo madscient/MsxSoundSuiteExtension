@@ -1,0 +1,16 @@
+[submodule "vendor/MsxMusicBasicExtension"]
+	path = vendor/MsxMusicBasicExtension
+	url = https://github.com/madscient/MsxMusicBasicExtension.git
+	branch = master
+[submodule "vendor/MsxAudioBasicExtensionLite"]
+	path = vendor/MsxAudioBasicExtensionLite
+	url = https://github.com/madscient/MsxAudioBasicExtensionLite.git
+	branch = master
+[submodule "vendor/SFGBasicExtension"]
+	path = vendor/SFGBasicExtension
+	url = https://github.com/madscient/SFGBasicExtension.git
+	branch = fork-issues
+[submodule "vendor/Y8960BasicExtension"]
+	path = vendor/Y8960BasicExtension
+	url = https://github.com/madscient/Y8960BasicExtension.git
+	branch = master

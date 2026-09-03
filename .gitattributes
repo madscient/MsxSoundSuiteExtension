@@ -1,0 +1,4 @@
+# 生成物・複製物は LF のまま保持する。tools/sync_docs.py は LF で書き出し、
+# --check はその出力とバイト単位で比較するため、Git 側の自動変換を無効に
+# しないと core.autocrlf=true の環境で常に「古い」と判定される。
+* -text
