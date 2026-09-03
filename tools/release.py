@@ -3,8 +3,8 @@
 Cut a GitHub release from the current submodule pins.
 
 Usage:
-    python tools/release.py <tag> [--notes-file <file>] [--draft]
-                            [--no-build] [--dry-run]
+    python tools/release.py <tag> [--notes-file <file>] [--generate-notes]
+                            [--draft] [--no-build] [--dry-run]
 
 Runs build.py, packages, tags this repository and uploads the package with
 the GitHub CLI (`gh auth login` first). The zip and the loose ROM images are
@@ -24,6 +24,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import manifest
 import package as packager
+
+# The release page has to carry the licence terms on its own: someone who
+# downloads a single .rom asset never opens the zip's NOTICE.md.
+DEFAULT_NOTES = "tools/release-notes.md"
 
 
 def run(cmd, cwd=None, dry_run=False):
@@ -68,7 +72,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("tag", help="release tag, e.g. v0.1.0")
     parser.add_argument("--notes-file", default=None,
-                        help="markdown file used as the release notes")
+                        help=f"release notes; defaults to {DEFAULT_NOTES}")
+    parser.add_argument("--generate-notes", action="store_true",
+                        help="let GitHub build the notes from the commits "
+                             "instead")
     parser.add_argument("--draft", action="store_true")
     parser.add_argument("--no-build", action="store_true",
                         help="reuse the ROMs already in the submodules")
@@ -108,10 +115,11 @@ def main():
 
     cmd = ["gh", "release", "create", args.tag,
            "--title", f"{packager.NAME} {args.tag}"]
-    if args.notes_file:
-        cmd += ["--notes-file", args.notes_file]
-    else:
+    if args.generate_notes:
         cmd += ["--generate-notes"]
+    else:
+        cmd += ["--notes-file",
+                args.notes_file or manifest.abspath(DEFAULT_NOTES)]
     if args.draft:
         cmd.append("--draft")
     cmd += assets

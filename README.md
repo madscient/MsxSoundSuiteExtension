@@ -7,6 +7,8 @@ MSX Sound Suite Extension（MSSE）は、[Y8960 カートリッジ](https://gith
 ## 入手
 
 ROM イメージは [Releases](../../releases) から入手してください。
+**個人利用に限り許諾されています。**再配布には MSX ライセンシング
+コーポレーションの許諾が別途必要です（[`NOTICE.md`](NOTICE.md)）。
 
 | ファイル | サイズ | 用途 |
 |---|--:|---|
@@ -84,7 +86,9 @@ python tools/release.py v0.1.0         # ビルドからタグ付け・アップ
 ```
 
 `tools/release.py --dry-run` はビルドとパッケージ化だけを行い、タグ付けと
-アップロードを行いません。
+アップロードを行いません。リリースノートの定型文は
+[`tools/release-notes.md`](tools/release-notes.md) で、`--notes-file` で
+差し替えられます。
 
 `docs/` はコミットして GitHub 上で参照できるようにします。`tools/package.py`
 は `docs/` がソースより古いとパッケージ化を拒否するので、`sync_docs.py` の
@@ -100,5 +104,7 @@ python tools/release.py v0.1.0         # ビルドからタグ付け・アップ
 
 ## 権利
 
-[`NOTICE.md`](NOTICE.md) を参照してください。ROM を再配布するときは、そこに
-挙げた出典を明記してください。
+配布している ROM イメージは個人利用に限り許諾されています。再配布には
+MSX ライセンシングコーポレーションの許諾が別途必要です。著作権表示と、
+再配布の許諾を得た場合に明記すべき出典は [`NOTICE.md`](NOTICE.md) に
+あります。
