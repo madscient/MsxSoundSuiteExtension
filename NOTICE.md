@@ -1,5 +1,14 @@
 # 権利表示
 
+## 利用条件
+
+このリポジトリで配布している ROM イメージは、**個人利用に限り**許諾されて
+います。
+
+**ROM イメージの再配布には、MSX ライセンシングコーポレーションの許諾が別途
+必要です。** 再配布に当たる行為には、ROM イメージを含むファイルの公開・
+頒布、他のソフトウェアへの同梱、ROM を書き込んだ媒体の配布が含まれます。
+
 ## 拡張BASIC / BIOS 本体
 
 MSX-MUSIC Basic Extension、MSX-AUDIO Basic Extension Lite、SFG Basic
@@ -12,13 +21,14 @@ Y8960 Basic Extension および Y8960 シーケンサーBIOS は新規に書き�
 ## リズム音色データ
 
 MSX-AUDIO Basic Extension Lite が持つリズム音色3本（`TB_RTM`）は、OPLL の
-ROM リズム音色を Y8950 のレジスタへ変換したものです。これを含む ROM
-（`standalone/mabel.rom`、`y8960bas.rom`）を再配布するときは、下記の出典を
-明記してください。
+ROM リズム音色を Y8950 のレジスタへ変換したものです。出典は下記です。
 
 > "Copyright free OPLL(x) ROM patches"
 > https://github.com/plgDavid/misc/wiki/Copyright-free-OPLL(x)-ROM-patches
 > David Viens, Hubert Lamontagne 作, CC BY-SA
+
+これを含む ROM（`standalone/mabel.rom`、`y8960bas.rom`）について許諾を得て
+再配布する場合は、この出典を明記してください。
 
 ## ハードウェア
 
