@@ -1,8 +1,7 @@
 # MSX Sound Suite Extension
 
 MSX Sound Suite Extension（MSSE）は、[Y8960 カートリッジ](https://github.com/hra1129/Y8960_Cartridge)
-向けの拡張BASICと BIOS の総称です。このリポジトリは、その成果物 ROM と
-ドキュメントを配布するためのものです。
+向けの拡張BASICと BIOS の総称です。
 
 ## 入手
 
@@ -54,53 +53,6 @@ ROM カートリッジから使用するための BIOS です。（開発中）
 
 ステートメントと MML の仕様、および ROM／アプリケーション開発者向けの
 取り決めは [`docs/`](docs/) にあります。目次は [`docs/README.md`](docs/README.md)。
-
-## リポジトリ構成
-
-| | |
-|---|---|
-| [`docs/`](docs/) | 各リポジトリから複製した公開ドキュメント |
-| [`tools/`](tools/) | ビルド・パッケージ化・リリースのスクリプト |
-| `vendor/` | 各拡張BASICのソースリポジトリ（サブモジュール、非公開） |
-| `dist/` | 生成されたパッケージ（コミットしない） |
-
-`vendor/` の4リポジトリは、ライセンスの都合でソースコードを公開できないため
-非公開です。サブモジュールの取得には各リポジトリへのアクセス権が要ります。
-
-## ビルドとリリース
-
-前提:
-
-| | |
-|---|---|
-| Python | 3.x |
-| zmac | [48k.ca/zmac.html](https://48k.ca/zmac.html)。環境変数 `ZMAC_EXE` で場所を指定 |
-| GitHub CLI | [cli.github.com](https://cli.github.com/)。`gh auth login` 済みであること |
-
-```sh
-git submodule update --init            # 4リポジトリを取得（--recursive は不要）
-python tools/build.py                  # 全ROMをビルド
-python tools/sync_docs.py              # docs/ を最新のソースから更新
-python tools/package.py                # dist/ にパッケージと zip を生成
-python tools/release.py v0.1.0         # ビルドからタグ付け・アップロードまで
-```
-
-`tools/release.py --dry-run` はビルドとパッケージ化だけを行い、タグ付けと
-アップロードを行いません。リリースノートの定型文は
-[`tools/release-notes.md`](tools/release-notes.md) で、`--notes-file` で
-差し替えられます。
-
-`docs/` はコミットして GitHub 上で参照できるようにします。`tools/package.py`
-は `docs/` がソースより古いとパッケージ化を拒否するので、`sync_docs.py` の
-結果を先にコミットしてください。
-
-各リリースが4つのソースのどの状態を指すかはサブモジュールのコミットで決まり
-ます。`tools/release.py` は、このリポジトリに未コミットの変更があるとき、
-またはサブモジュールが記録されたコミットからずれているときは実行を拒否します。
-
-`vendor/Y8960BasicExtension` は自身も他の3リポジトリをサブモジュール参照して
-いますが、ここでは初期化しません。同じ階層に置いた `vendor/` 配下の3つを
-フォールバックとして拾うため、各リポジトリのチェックアウトは1つで済みます。
 
 ## 権利
 

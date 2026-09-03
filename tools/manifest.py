@@ -111,6 +111,12 @@ LINK_REWRITE = {
     "../../MsxMusicBasicExtension": "../msx-music/basic-reference.md",
 }
 
+# docs/ にあるが、ソースリポジトリから複製したものではない文書。
+# 索引に載せるだけで、sync_docs.py は内容に触れない。
+LOCAL_DOCS = [
+    ("build-and-release.md", "ビルドとリリース（このリポジトリの保守）"),
+]
+
 DOC_SECTIONS = [
     ("msx-music", "MSX-MUSIC Basic Extension"),
     ("msx-audio", "MSX-AUDIO Basic Extension Lite"),
