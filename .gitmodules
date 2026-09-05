@@ -14,3 +14,7 @@
 	path = vendor/Y8960BasicExtension
 	url = https://github.com/madscient/Y8960BasicExtension.git
 	branch = master
+[submodule "vendor/MidiPlayBasicExtension"]
+	path = vendor/MidiPlayBasicExtension
+	url = https://github.com/madscient/MidiPlayBasicExtension.git
+	branch = master

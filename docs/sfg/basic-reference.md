@@ -20,7 +20,7 @@ SFG/OPM の実装に合わせて書き換えてあります。
   - [CALL PITCH](#call-pitch) ・ [PLAY](#play) ・ [CALL PLAY](#call-play)
   - [CALL STOPM](#call-stopm) ・ [CALL TEMPER](#call-temper) ・ [CALL TRANSPOSE](#call-transpose)
   - [CALL VOICE](#call-voice) ・ [CALL VOICE COPY](#call-voice-copy)
-  - [CALL MUSIC / CALL AUDIO / CALL MINIT](#call-music--call-audio--call-minit拡張)
+  - [CALL MUSIC / CALL AUDIO / CALL MINIT / CALL MIDI](#call-music--call-audio--call-minit--call-midi拡張)
 - [ミュージックマクロランゲージ](#ミュージックマクロランゲージ)
 - [音色ライブラリ一覧](#音色ライブラリ一覧)
 - [音色パラメータのフォーマット](#音色パラメータのフォーマット)
@@ -339,7 +339,7 @@ SFG ではユーザー音色領域が `@48`〜`@63` に固定される。
 または少なくとも 40 バイト以上の配列を指定できる。
 配列に対する転送は 40 バイトの SFG 音色本体をそのままコピーする。
 
-### CALL MUSIC / CALL AUDIO / CALL MINIT　［拡張］
+### CALL MUSIC / CALL AUDIO / CALL MINIT / CALL MIDI　［拡張］
 
 Y8960 カートリッジ版だけにあるステートメント。単体カートリッジ版
 （`sfg.rom`）では `Syntax error` になる。
@@ -348,16 +348,18 @@ Y8960 カートリッジ版だけにあるステートメント。単体カー�
 CALL MUSIC
 CALL AUDIO
 CALL MINIT
+CALL MIDI
 ```
 
 Y8960 カートリッジは複数の音源拡張 ROM を載せ、一度に1つだけを使えるように
-なっている。この3つは、カートリッジの中の別の ROM へ切り替えるためのもの。
+なっている。この4つは、カートリッジの中の別の ROM へ切り替えるためのもの。
 
 | ステートメント | 切り替え先 |
 |---|---|
 | `CALL MUSIC` | MSX-MUSIC 拡張BASIC |
 | `CALL AUDIO` | MSX-AUDIO 拡張BASIC |
 | `CALL MINIT` | Y8960 拡張BASIC |
+| `CALL MIDI` | MidiPlay 拡張BASIC |
 
 引数はここでは読まない。切り替えたあと、行き先の ROM が同じステートメントを
 自分で解釈し直す。`CALL MINIT(2)` の `(2)` を読むのは Y8960 拡張BASIC である。

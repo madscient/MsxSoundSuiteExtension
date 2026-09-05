@@ -10,7 +10,7 @@ MSX-AUDIO（Y8950）および Y8960 の拡張OPL2部が提供するステート�
 
 - [ステートメント](#ステートメント)
   - [CALL AUDIO](#call-audio) ・ [CALL AUDREG](#call-audreg) ・ [CALL BGM](#call-bgm)
-  - [CALL MUSIC / CALL MINIT / CALL SFG](#call-music--call-minit--call-sfg) ・ [CALL PITCH](#call-pitch)
+  - [CALL MUSIC / CALL MINIT / CALL SFG / CALL MIDI](#call-music--call-minit--call-sfg--call-midi) ・ [CALL PITCH](#call-pitch)
   - [PLAY](#play) ・ [CALL PLAY](#call-play)
   - [CALL STOPM](#call-stopm) ・ [CALL TEMPER](#call-temper) ・ [CALL TRANSPOSE](#call-transpose)
   - [CALL VOICE](#call-voice) ・ [CALL VOICE COPY](#call-voice-copy)
@@ -154,7 +154,7 @@ CALL BGM(<変数>)
 
 ---
 
-### CALL MUSIC / CALL MINIT / CALL SFG
+### CALL MUSIC / CALL MINIT / CALL SFG / CALL MIDI
 
 **Y8960 カートリッジ版（`mabel_y8960.rom`）にだけある。**
 
@@ -165,6 +165,7 @@ CALL BGM(<変数>)
 CALL MUSIC [(<引数> ...)]
 CALL MINIT [(<引数> ...)]
 CALL SFG [(<引数> ...)]
+CALL MIDI [(<引数> ...)]
 ```
 
 | ステートメント | 行き先 |
@@ -172,6 +173,7 @@ CALL SFG [(<引数> ...)]
 | `CALL MUSIC` | MSX-MUSIC BASIC Extension |
 | `CALL MINIT` | Y8960 BASIC Extension |
 | `CALL SFG` | SFG BASIC Extension |
+| `CALL MIDI` | MidiPlay BASIC Extension |
 
 引数はこの拡張BASIC では一切読まない。ページ1 を渡したあと、行き先の ROM が
 同じステートメントを自分の仕様で解釈する。`CALL MUSIC(-1)` の `(-1)` を
@@ -182,7 +184,7 @@ CALL SFG [(<引数> ...)]
 ボイスファイル定義も失われる。何も初期化していない状態でも実行できる。
 
 `CALL AUDIO` を実行していなくても実行できる。ページ1 を渡された直後に
-そのまま別へ渡せる必要があるためで、この3つだけが初期化前に通る。
+そのまま別へ渡せる必要があるためで、この4つだけが初期化前に通る。
 
 この拡張BASICより後に `H.TIMI` をフックしたものがある場合は
 `Illegal function call` になり、ページ1 は渡らない。行き先が応答しない

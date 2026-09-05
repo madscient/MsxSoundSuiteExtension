@@ -76,6 +76,27 @@ REPOS = [
         ],
     },
     {
+        "key": "midi",
+        "title": "MIDI Play Basic Extension",
+        "path": f"{VENDOR}/MidiPlayBasicExtension",
+        "steps": [
+            ["tools/zbuild/build.py", "--all"],
+            ["tools/zbuild/rom.py", "--all"],
+        ],
+        "artifacts": [("build/rom/midi.rom", "standalone/midi.rom", 16384)],
+        "inputs": ["build/rom/midi_y8960.rom"],
+        "docs": [
+            ("doc/basic-reference.md", "midi/basic-reference.md",
+             "MIDI 拡張BASIC リファレンス"),
+            ("doc/midi-mml.md", "midi/midi-mml.md",
+             "MIDI 固有 MML コマンドとMIDIメッセージの対応"),
+            ("doc/midi-interfaces.md", "midi/midi-interfaces.md",
+             "対応MIDIインターフェースと判別方式"),
+            ("doc/msse-integration.md", "midi/msse-integration.md",
+             "MSSE 統合の本ROM固有情報（開発者向け）"),
+        ],
+    },
+    {
         "key": "y8960",
         "title": "Y8960 Basic Extension / MSSE cartridge",
         "path": f"{VENDOR}/Y8960BasicExtension",
@@ -108,7 +129,15 @@ REPOS = [
 LINK_REWRITE = {
     "../src/inc/msse.inc": None,
     "../src/inc/y8960hw.inc": None,
+    "../tools/zbuild/targets.py": None,
     "../../MsxMusicBasicExtension": "../msx-music/basic-reference.md",
+    "../../SFGBasicExtension/src/BASIC/sfgdet.mac": None,
+    "../../MSX_SOUND_BIOS/doc/build-variants.md": None,
+    "../../MSX_SOUND_BIOS/doc/variant-differences.md": None,
+    "../../MSX_SOUND_BIOS/music_midi": None,
+    "../../Y8960BasicExtension/doc/msse-abi.md": "../y8960/msse-abi.md",
+    # 各リポジトリの plan.md は内部文書で複製しない。
+    "plan.md": None,
 }
 
 # docs/ にあるが、ソースリポジトリから複製したものではない文書。
@@ -121,6 +150,7 @@ DOC_SECTIONS = [
     ("msx-music", "MSX-MUSIC Basic Extension"),
     ("msx-audio", "MSX-AUDIO Basic Extension Lite"),
     ("sfg", "SFG Basic Extension"),
+    ("midi", "MIDI Play Basic Extension"),
     ("y8960", "Y8960 Basic Extension / MSSE"),
 ]
 
