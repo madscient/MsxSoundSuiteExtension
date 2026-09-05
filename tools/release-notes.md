@@ -9,10 +9,11 @@
 
 | ファイル | サイズ | 用途 |
 |---|--:|---|
-| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。4つの拡張BASICをすべて収めたイメージ |
+| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。5つの拡張BASICをすべて収めたイメージ |
 | `mmbe.rom` | 16KB | MSX-MUSIC 単体用。本体内蔵 MSX-MUSIC の差し替え、または ROM カートリッジ |
 | `mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
+| `midi.rom` | 16KB | MIDI インターフェースを鳴らす単体カートリッジ用 |
 
 下の「Source code (zip / tar.gz)」は GitHub が自動で付けるもので、中身は
 ドキュメントとビルド用スクリプトだけです。拡張BASIC 本体のソースコードは

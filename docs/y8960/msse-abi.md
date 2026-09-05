@@ -16,10 +16,12 @@ ROM を載せ、ページ1（`4000h`-`7FFFh`）に一度に1つだけを出す�
 | 1 | MSX-AUDIO BASIC Extension Lite | #2, #3 | [MsxAudioBasicExtensionLite](https://github.com/madscient/MsxAudioBasicExtensionLite) |
 | 2 | Y8960 BASIC Extension | #4, #5, #10-#13 | このリポジトリ |
 | 3 | SFG BASIC Extension | #6, #7 | [SFGBasicExtension](https://github.com/madscient/SFGBasicExtension) |
-| 4 | （未使用） | #8, #9 | |
+| 4 | MidiPlay BASIC Extension | #8, #9 | [MidiPlayBasicExtension](https://github.com/madscient/MidiPlayBasicExtension) |
 
 SFG BASIC Extension が鳴らすのは別スロットに挿さった SFG-01/05 の YM2151 で、
-Y8960 の音源ではない。カートリッジ側の I/O ポートを一切使わないので、
+Y8960 の音源ではない。MidiPlay BASIC Extension が鳴らすのも別スロットの
+MIDI インターフェースにつながった外部音源で、同じく Y8960 の音源ではない。
+どちらもカートリッジ側の I/O ポートを一切使わないので、
 [I/O Enabler](#io-enabler) を書く義務も負わない。
 
 参加する ROM は拡張BASIC でなくてもよい。拡張BASIC であるものだけが
@@ -215,6 +217,7 @@ PSG、`7Ch`/`7Dh` は MSX-MUSIC、`C0h`-`C3h` は MSX-AUDIO ―― なので、�
 | `CALL AUDIO` | MSX-AUDIO BASIC Extension Lite |
 | `CALL MINIT` | Y8960 BASIC Extension |
 | `CALL SFG` | SFG BASIC Extension |
+| `CALL MIDI` | MidiPlay BASIC Extension |
 
 参加している拡張BASIC は、自分以外の全員の名前をステートメント名テーブルに
 持ち、そのハンドラでは**引数を一切読まずに**ページ1 を渡す。引数は行き先の

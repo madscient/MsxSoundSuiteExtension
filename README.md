@@ -11,14 +11,15 @@ ROM イメージは [Releases](../../releases) から入手してください。
 
 | ファイル | サイズ | 用途 |
 |---|--:|---|
-| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。下記4つをすべて収めたイメージ |
+| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。下記5つをすべて収めたイメージ |
 | `standalone/mmbe.rom` | 16KB | MSX-MUSIC 単体用。本体内蔵 MSX-MUSIC の差し替え、または ROM カートリッジ |
 | `standalone/mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `standalone/sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
+| `standalone/midi.rom` | 16KB | MIDI インターフェースを鳴らす単体カートリッジ用 |
 
-`y8960bas.rom` はページ1（`4000H`-`7FFFH`）を4つの拡張BASICで分け合います。
+`y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC Basic Extension で、`CALL MINIT` /
-`CALL MUSIC` / `CALL AUDIO` / `CALL SFG` で切り替わります。
+`CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
 
 ### ソースコードについて
 
@@ -26,7 +27,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 すべてのリリースに自動で付けるもので、中身はこのリポジトリのドキュメントと
 ビルド用スクリプトだけです。**拡張BASIC 本体のソースコードは含まれません。**
 
-MSX-MUSIC / MSX-AUDIO / SFG の各 Basic Extension は日本楽器製造株式会社
+MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play の各 Basic Extension は日本楽器製造株式会社
 （YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されて
 いるのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、この
 リポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空の
@@ -49,6 +50,13 @@ MSX-AUDIO 拡張BASICとほぼ互換性があります。ADPCM 再生は MML の
 
 MSX-MUSIC Basic Extension を SFG-01/05 向けに移植したものです。
 MSX-MUSIC 互換 MML で OPM/OPP を演奏できます。
+
+### MIDI Play Basic Extension
+
+MIDI インターフェースを鳴らす拡張BASICです。MSX-MUSIC 互換 MML に MSX-MIDI
+互換の拡張コマンドを加えたもので、MIDI チャンネル 1〜16 を同時に演奏します。
+MSX-MIDI（FS-A1GT 内蔵）と YAMAHA SFG-01/05 のインターフェースに実行時分岐で
+対応します。（開発中）
 
 ### Y8960 Basic Extension
 

@@ -15,6 +15,13 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 
 - [SFG 拡張BASIC リファレンス](sfg/basic-reference.md)
 
+## MIDI Play Basic Extension
+
+- [MIDI 拡張BASIC リファレンス](midi/basic-reference.md)
+- [MIDI 固有 MML コマンドとMIDIメッセージの対応](midi/midi-mml.md)
+- [対応MIDIインターフェースと判別方式](midi/midi-interfaces.md)
+- [MSSE 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
+
 ## Y8960 Basic Extension / MSSE
 
 - [Y8960 拡張BASIC リファレンス](y8960/basic-reference.md)
