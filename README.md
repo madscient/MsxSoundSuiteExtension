@@ -53,10 +53,15 @@ MSX-MUSIC 互換 MML で OPM/OPP を演奏できます。
 
 ### MIDI Play Basic Extension
 
-MIDI インターフェースを鳴らす拡張BASICです。MSX-MUSIC 互換 MML に MSX-MIDI
-互換の拡張コマンドを加えたもので、MIDI チャンネル 1〜16 を同時に演奏します。
-MSX-MIDI（FS-A1GT 内蔵）と YAMAHA SFG-01/05 のインターフェースに実行時分岐で
-対応します。（開発中）
+MIDI インターフェースを制御して MIDI 音源モジュールを演奏するための
+拡張BASICです。MSX-MUSIC Basic Extension 互換 MML に MSX-MIDI 互換の
+一部拡張コマンドを加えたもので、MIDI チャンネル 1〜16 を同時に演奏します。
+以下の対応インターフェースを自動検出します。
+- MSX-MIDI (FS-A1GT内蔵)
+- MSX-MIDI (μPACK)
+- YAMAHA SFG-01 (FMシンセサイザユニット)
+- YAMAHA SFG-06 (FMシンセサイザユニットII)
+- Phillips NMS1205
 
 ### Y8960 Basic Extension
 
