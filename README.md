@@ -6,7 +6,7 @@ MSX Sound Suite Extension（MSSE）は、[Y8960 カートリッジ](https://gith
 ## 入手
 
 ROM イメージは [Releases](../../releases) から入手してください。
-**個人利用に限り許諾されています。**再配布には MSX ライセンシング
+**個人利用に限り許諾されています。** 再配布には MSX ライセンシング
 コーポレーションの許諾が別途必要です（[`NOTICE.md`](NOTICE.md)）。
 
 | ファイル | サイズ | 用途 |
@@ -15,7 +15,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 | `standalone/mmbe.rom` | 16KB | MSX-MUSIC 単体用。本体内蔵 MSX-MUSIC の差し替え、または ROM カートリッジ |
 | `standalone/mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `standalone/sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
-| `standalone/midi.rom` | 16KB | MIDI インターフェースを鳴らす単体カートリッジ用 |
+| `standalone/midi.rom` | 16KB | MIDI インターフェースを制御する単体カートリッジ用 |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC Basic Extension で、`CALL MINIT` /
@@ -60,7 +60,7 @@ MIDI インターフェースを制御して MIDI 音源モジュールを演奏
 - MSX-MIDI (FS-A1GT内蔵)
 - MSX-MIDI (μPACK)
 - YAMAHA SFG-01 (FMシンセサイザユニット)
-- YAMAHA SFG-06 (FMシンセサイザユニットII)
+- YAMAHA SFG-05 (FMシンセサイザユニットII)
 - Phillips NMS1205
 
 ### Y8960 Basic Extension
