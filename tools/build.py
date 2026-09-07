@@ -5,9 +5,10 @@ Build every source repository's ROM images.
 Usage:
     python tools/build.py [<key> ...] [--dirty]
 
-With no key, all four are built in manifest order. Requires zmac
+With no key, all five are built in manifest order. Requires zmac
 (https://48k.ca/zmac.html); each repository picks it up from the ZMAC_EXE
-environment variable, which is passed through unchanged.
+environment variable, which is passed through unchanged, as is the rest of
+the environment plus whatever the manifest entry declares in "env".
 
 A submodule with local modifications is refused: the version string burned
 into every image comes from the last commit, so a dirty tree produces a ROM
@@ -35,11 +36,12 @@ def submodule_state(path):
     return head, bool(status)
 
 
-def run_step(path, step):
-    cwd = manifest.abspath(path)
+def run_step(entry, step):
+    cwd = manifest.abspath(entry["path"])
     cmd = [sys.executable] + step
-    print("+", " ".join(cmd), f"({path})")
-    result = subprocess.run(cmd, cwd=cwd)
+    print("+", " ".join(cmd), f"({entry['path']})")
+    env = dict(os.environ, **entry.get("env", {}))
+    result = subprocess.run(cmd, cwd=cwd, env=env)
     return result.returncode == 0
 
 
@@ -57,7 +59,7 @@ def build_repo(entry, allow_dirty):
         return False
 
     for step in entry["steps"]:
-        if not run_step(entry["path"], step):
+        if not run_step(entry, step):
             print(f"ERROR: step failed: {' '.join(step)}")
             return False
 
