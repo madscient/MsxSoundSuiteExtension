@@ -54,12 +54,6 @@ def relpath(path):
     return os.path.relpath(path, manifest.REPO_ROOT).replace(os.sep, "/")
 
 
-def under(path, root):
-    path = os.path.normcase(os.path.realpath(path))
-    root = os.path.normcase(os.path.realpath(root)) + os.sep
-    return path.startswith(root)
-
-
 def load_y8960_targets():
     """Import Y8960's bank layout from its own build configuration.
 
@@ -86,20 +80,17 @@ def check_cartridge_identity():
     date and no more, so two builds made on one day compare equal. The
     bank images are compared byte for byte instead.
 
-    The way the two drift apart is Y8960's own nested submodules being
-    checked out: its rom.py takes `vendor/<repo>` over the `../<repo>`
-    fallback that lands on our submodules. rom.py refuses only when the
-    two candidates differ, and two gitlinks agreeing today says nothing
-    about the next time either moves. So where each image was taken from
-    is checked here as well, in the same path order rom.py uses, and the
-    nested tree is refused whether or not it agrees.
+    Where each image came from needs no checking: rom.py embeds what sits
+    under the directory build.py hands it, which is our own vendor/. What
+    the comparison still catches is a cartridge that was linked before the
+    image it holds was last written - an older build left in place, or a
+    ROM reassembled from stale intermediate output afterwards.
     """
     targets = load_y8960_targets()
     if targets is None:
         return False
 
     entry = manifest.repo("y8960")
-    y8960_root = manifest.abspath(entry["path"])
     our_vendor = manifest.abspath(manifest.VENDOR)
 
     src_rel = entry["artifacts"][0][0]
@@ -123,27 +114,16 @@ def check_cartridge_identity():
         bank = prebuilt["bank"]
         at = bank * bank_size
         span = 2 * bank_size
-        candidates = [os.path.join(y8960_root, rel)
-                      for rel in prebuilt["paths"]]
-        ours = [p for p in candidates
-                if under(p, our_vendor) and not under(p, y8960_root)]
-
-        chosen = next((p for p in candidates if os.path.isfile(p)), None)
-        if chosen is None:
-            print(f"ERROR: {key}: none of {prebuilt['paths']} exist under "
-                  f"{entry['path']} (run tools/build.py)")
+        if "rel" not in prebuilt:
+            print(f"ERROR: {key}: Y8960's targets.py names no 'rel'; that "
+                  f"checkout predates Y8960_PREBUILT_DIR "
+                  f"(git submodule update --remote {entry['path']})")
             ok = False
             continue
-
-        if chosen not in ours:
-            print(f"ERROR: {name} bank #{bank} ({key}) was linked from a "
-                  f"checkout that is not ours")
-            print(f"    linked from  {relpath(chosen)}")
-            print(f"    ours         "
-                  f"{relpath(ours[0]) if ours else '(no candidate under vendor/)'}")
-            print(f"    Y8960's nested submodules are populated and its "
-                  f"rom.py prefers them. Remove them and rebuild:")
-            print(f"    git -C {entry['path']} submodule deinit --all -f")
+        chosen = os.path.join(our_vendor, prebuilt["rel"])
+        if not os.path.isfile(chosen):
+            print(f"ERROR: {key}: missing {relpath(chosen)} "
+                  f"(run tools/build.py)")
             ok = False
             continue
 
@@ -162,9 +142,10 @@ def check_cartridge_identity():
                 diff = [i for i in range(span) if slice_[i] != image[i]]
                 print(f"    differs in {len(diff)} of {span} bytes, "
                       f"{diff[0]:#06x}..{diff[-1]:#06x} within the bank")
-            print(f"    Both came from our own tree, so no stray checkout is "
-                  f"involved: either the cartridge predates that ROM, or "
-                  f"something rewrote the image after it was linked.")
+            print(f"    rom.py was pointed at this very file, so nothing "
+                  f"else was linked in its place: either the cartridge "
+                  f"predates that ROM, or something rewrote the image after "
+                  f"it was linked. Rebuild both.")
             ok = False
             continue
 
