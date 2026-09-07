@@ -18,13 +18,11 @@ DIST = "dist"
 DOCS = "docs"
 
 # Y8960 links the other four repositories' Y8960 builds into its cartridge
-# image and takes the directory to look for them in from Y8960_PREBUILT_DIR,
-# set on its entry below. Until its rom.py reads that variable it searches
-# its own vendor/ and then `../<repo>` relative to its own root, and because
-# all five sit side by side here the latter lands on these same submodules.
-# Either way Y8960's nested submodules are deliberately left uninitialised -
-# one checkout of each repository, and the images that go into the cartridge
-# are the ones we just built.
+# image and looks for them under the directory named by Y8960_PREBUILT_DIR,
+# set on its entry below. That directory is our own vendor/, so the images
+# that go into the cartridge are the ones we just built. Y8960's nested
+# submodules are left uninitialised to keep one checkout of each repository,
+# and populating them would change nothing: rom.py looks nowhere else.
 REPOS = [
     {
         "key": "msx-music",
