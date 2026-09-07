@@ -12,8 +12,8 @@ Y8960 の `rom.py` は統合する4本を自身の `vendor/` と `../<repo>` の
 かった。探し場所を呼ぶ側が環境変数で渡すことで候補が常に1つになり、この検査
 そのものが要らなくなった。
 
-依頼元は Y8960BasicExtension（`doc/prompt-msse-prebuilt-dir.md`、4段すべてが
-済んだら向こうで削除される）。
+依頼元は Y8960BasicExtension。依頼文書 `doc/prompt-msse-prebuilt-dir.md` は
+4段が済んだので向こうで削除された（`e8f4471`）。
 
 **外に出る値**：環境変数 `Y8960_PREBUILT_DIR`。4本のリポジトリが並んでいる
 ディレクトリの絶対パス。読むのは Y8960 の `rom.py` と MSSE の `package.py`
@@ -24,11 +24,10 @@ Y8960 の `rom.py` は統合する4本を自身の `vendor/` と `../<repo>` の
 | 1 | MSSE | y8960 のステップに `Y8960_PREBUILT_DIR` を渡す | 済 `0319dcc` |
 | 2 | Y8960 | `PREBUILT` に `rel` を足し、`rom.py` は渡された根＋`rel` だけを見る | 済 `d785baf` |
 | 3 | MSSE | `package.py` の `check_cartridge_identity` を `rel` に切り替える | 済 |
-| 4 | Y8960 | `paths` を消す | 未 |
+| 4 | Y8960 | `paths` を消す | 済 `e8f4471` |
 
-段4 が入っても MSSE 側ですることは無い。`paths` を読む者はもう居ない。
-`package.py` は `rel` を持たない `targets.py`（段2 より前の gitlink）を
-名指しで拒否するので、ピンを戻した場合も黙っては通らない。
+4段とも完了。`package.py` は `rel` を持たない `targets.py`（段2 より前の
+gitlink）を名指しで拒否するので、ピンを戻した場合も黙っては通らない。
 
 ### 確度
 
@@ -43,3 +42,5 @@ Y8960 の `rom.py` は統合する4本を自身の `vendor/` と `../<repo>` の
   （`0x0100`）まで出た。検査後に元へ戻し、sha256 の一致を確認済み
 - **確認済み** ―― 二つの誤り経路。`rel` を持たない `targets.py` を渡した場合と、
   `rel` の指す像が無い場合に、それぞれの文面で `False` を返す
+- **確認済み** ―― 段4（`e8f4471`）を取り込んでも出力が変わらないこと。組み直した
+  `y8960bas.rom` が段3 の像と sha256 で一致し、パッケージ化も通る
