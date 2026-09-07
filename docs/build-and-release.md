@@ -12,7 +12,7 @@
 | `vendor/` | 各拡張BASICのソースリポジトリ（サブモジュール、非公開） |
 | `dist/` | 生成されたパッケージ（コミットしない） |
 
-`vendor/` の4リポジトリはライセンスの都合で非公開のため、サブモジュールの
+`vendor/` の5リポジトリはライセンスの都合で非公開のため、サブモジュールの
 取得には各リポジトリへのアクセス権が要る。
 
 ## 前提
@@ -29,7 +29,7 @@ Linux では zmac をソースからビルドし（C 単体、依存なし）、
 ## 手順
 
 ```sh
-git submodule update --init            # 4リポジトリを取得（--recursive は不要）
+git submodule update --init            # 5リポジトリを取得（--recursive は不要）
 python tools/build.py                  # 全ROMをビルド
 python tools/sync_docs.py              # docs/ を最新のソースから更新
 python tools/package.py                # dist/ にパッケージと zip を生成
@@ -54,9 +54,9 @@ python tools/release.py v0.1.0         # ビルドからタグ付け・アップ
 
 ## サブモジュールの配置
 
-`vendor/Y8960BasicExtension` は自身も他の3リポジトリをサブモジュール参照して
+`vendor/Y8960BasicExtension` は自身も他の4リポジトリをサブモジュール参照して
 いるが、ここでは初期化しない。Y8960 の `rom.py` は取り込む ROM を自身の
-`vendor/` → `../<リポジトリ名>` の順に探すので、4つを `vendor/` に並べて置くと
+`vendor/` → `../<リポジトリ名>` の順に探すので、5つを `vendor/` に並べて置くと
 後者がこちらのサブモジュールに解決される。結果、各リポジトリのチェックアウトは
 1つで済み、カートリッジに入るのはいま自分がビルドしたイメージになる。
 

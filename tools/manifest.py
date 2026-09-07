@@ -2,12 +2,12 @@
 """
 What each source repository produces and where it lands.
 
-This is the single place that names build commands, ROM images and
-documents; build.py, sync_docs.py and package.py all read it, so a new
-target is added here and nowhere else.
+This is the single place that names build commands, the environment they
+need, ROM images and documents; build.py, sync_docs.py, package.py and
+release.py all read it, so a new target is added here and nowhere else.
 
 The order of REPOS is a build order, not a listing order: Y8960 links
-the Y8960 build of the other three into its 128KB cartridge image, so it
+the Y8960 build of the other four into its 128KB cartridge image, so it
 has to come last.
 """
 import os
@@ -17,12 +17,14 @@ VENDOR = "vendor"
 DIST = "dist"
 DOCS = "docs"
 
-# Y8960's rom.py looks for the other three under its own vendor/ first and
-# falls back to `../<repo>` relative to its own root. Because all four are
-# siblings here, that fallback resolves to our own submodules, so Y8960's
-# nested submodules are deliberately left uninitialised - one checkout of
-# each repository, and the images that go into the cartridge are the ones
-# we just built.
+# Y8960 links the other four repositories' Y8960 builds into its cartridge
+# image and takes the directory to look for them in from Y8960_PREBUILT_DIR,
+# set on its entry below. Until its rom.py reads that variable it searches
+# its own vendor/ and then `../<repo>` relative to its own root, and because
+# all five sit side by side here the latter lands on these same submodules.
+# Either way Y8960's nested submodules are deliberately left uninitialised -
+# one checkout of each repository, and the images that go into the cartridge
+# are the ones we just built.
 REPOS = [
     {
         "key": "msx-music",
@@ -100,6 +102,7 @@ REPOS = [
         "key": "y8960",
         "title": "Y8960 Basic Extension / MSSE cartridge",
         "path": f"{VENDOR}/Y8960BasicExtension",
+        "env": {"Y8960_PREBUILT_DIR": os.path.join(REPO_ROOT, VENDOR)},
         "steps": [
             ["tools/zbuild/build.py", "--all"],
             ["tools/zbuild/rom.py"],
