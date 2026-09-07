@@ -8,11 +8,15 @@ Usage:
 Produces dist/MsxSoundSuiteExtension-<version>/ and the zip beside it.
 Nothing is built here: run tools/build.py first.
 
+The ROMs embedded in the cartridge image are checked against the ones we
+built before anything is copied; see check_cartridge_identity.
+
 The version defaults to `git describe` of this repository, so a package cut
 from a tagged commit is named after the tag.
 """
 import argparse
 import hashlib
+import importlib.util
 import os
 import shutil
 import subprocess
@@ -44,6 +48,128 @@ def sha256(path):
         for chunk in iter(lambda: f.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def relpath(path):
+    return os.path.relpath(path, manifest.REPO_ROOT).replace(os.sep, "/")
+
+
+def under(path, root):
+    path = os.path.normcase(os.path.realpath(path))
+    root = os.path.normcase(os.path.realpath(root)) + os.sep
+    return path.startswith(root)
+
+
+def load_y8960_targets():
+    """Import Y8960's bank layout from its own build configuration.
+
+    Transcribing the bank numbers into this file would let the layout move
+    on one side only, which is the drift this check exists to catch.
+    targets.py is a constant module with no imports of its own, so loading
+    it runs nothing.
+    """
+    path = manifest.abspath(manifest.repo("y8960")["path"],
+                            "tools", "zbuild", "targets.py")
+    if not os.path.isfile(path):
+        print(f"ERROR: missing {relpath(path)} (check out the submodules)")
+        return None
+    spec = importlib.util.spec_from_file_location("y8960_targets", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def check_cartridge_identity():
+    """Refuse to package a cartridge holding ROMs we did not build.
+
+    Comparing the stamped version strings would not do it: they carry a
+    date and no more, so two builds made on one day compare equal. The
+    bank images are compared byte for byte instead.
+
+    The way the two drift apart is Y8960's own nested submodules being
+    checked out: its rom.py takes `vendor/<repo>` over the `../<repo>`
+    fallback that lands on our submodules. rom.py refuses only when the
+    two candidates differ, and two gitlinks agreeing today says nothing
+    about the next time either moves. So where each image was taken from
+    is checked here as well, in the same path order rom.py uses, and the
+    nested tree is refused whether or not it agrees.
+    """
+    targets = load_y8960_targets()
+    if targets is None:
+        return False
+
+    entry = manifest.repo("y8960")
+    y8960_root = manifest.abspath(entry["path"])
+    our_vendor = manifest.abspath(manifest.VENDOR)
+
+    src_rel = entry["artifacts"][0][0]
+    name = os.path.splitext(os.path.basename(src_rel))[0]
+    if name not in targets.ROM:
+        print(f"ERROR: {src_rel} is not one of Y8960's ROM images "
+              f"({list(targets.ROM)}); manifest.py and targets.py disagree")
+        return False
+    cart_path = manifest.abspath(entry["path"], src_rel)
+    if not os.path.isfile(cart_path):
+        print(f"ERROR: missing {entry['path']}/{src_rel} (run tools/build.py)")
+        return False
+
+    cfg = targets.ROM[name]
+    bank_size = cfg["bank_size"]
+    cart = open(cart_path, "rb").read()
+
+    ok = True
+    for key in cfg["prebuilt"]:
+        prebuilt = targets.PREBUILT[key]
+        bank = prebuilt["bank"]
+        at = bank * bank_size
+        span = 2 * bank_size
+        candidates = [os.path.join(y8960_root, rel)
+                      for rel in prebuilt["paths"]]
+        ours = [p for p in candidates
+                if under(p, our_vendor) and not under(p, y8960_root)]
+
+        chosen = next((p for p in candidates if os.path.isfile(p)), None)
+        if chosen is None:
+            print(f"ERROR: {key}: none of {prebuilt['paths']} exist under "
+                  f"{entry['path']} (run tools/build.py)")
+            ok = False
+            continue
+
+        if chosen not in ours:
+            print(f"ERROR: {name} bank #{bank} ({key}) was linked from a "
+                  f"checkout that is not ours")
+            print(f"    linked from  {relpath(chosen)}")
+            print(f"    ours         "
+                  f"{relpath(ours[0]) if ours else '(no candidate under vendor/)'}")
+            print(f"    Y8960's nested submodules are populated and its "
+                  f"rom.py prefers them. Remove them and rebuild:")
+            print(f"    git -C {entry['path']} submodule deinit --all -f")
+            ok = False
+            continue
+
+        slice_ = cart[at:at + span]
+        image = open(chosen, "rb").read()
+        if hashlib.sha256(slice_).hexdigest() != hashlib.sha256(image).hexdigest():
+            print(f"ERROR: {name} bank #{bank} ({key}) is not the ROM we built")
+            print(f"    in {src_rel} at bank #{bank} "
+                  f"(offset {at:#07x}, {span} bytes)")
+            print(f"        {hashlib.sha256(slice_).hexdigest()}")
+            print(f"    {relpath(chosen)}")
+            print(f"        {hashlib.sha256(image).hexdigest()}")
+            if len(image) != span:
+                print(f"    sizes differ: {span} vs {len(image)} bytes")
+            else:
+                diff = [i for i in range(span) if slice_[i] != image[i]]
+                print(f"    differs in {len(diff)} of {span} bytes, "
+                      f"{diff[0]:#06x}..{diff[-1]:#06x} within the bank")
+            print(f"    Both came from our own tree, so no stray checkout is "
+                  f"involved: either the cartridge predates that ROM, or "
+                  f"something rewrote the image after it was linked.")
+            ok = False
+            continue
+
+        print(f"    {name} bank #{bank:<2d} == {relpath(chosen)}")
+    return ok
 
 
 def collect_roms(out_dir):
@@ -118,12 +244,15 @@ def main():
             print("ERROR: docs/ is stale; run tools/sync_docs.py and commit")
             return 1
 
+    print(f"=== {NAME} {version} ===")
+    if not check_cartridge_identity():
+        return 1
+
     out_dir = manifest.abspath(manifest.DIST, f"{NAME}-{version}")
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)
     os.makedirs(out_dir)
 
-    print(f"=== {NAME} {version} ===")
     if collect_roms(out_dir) is None:
         return 1
 
