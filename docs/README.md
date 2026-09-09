@@ -2,32 +2,32 @@
 
 MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 
-## MSX-MUSIC Basic Extension
+## MSX-MUSIC BASIC Extension V2
 
-- [MSX-MUSIC 拡張BASIC リファレンス](msx-music/basic-reference.md)
-- [MSX-MUSIC 拡張BASIC 新機能ガイド（従来版との差分）](msx-music/new-feature.md)
+- [MSX-MUSIC BASIC Extension V2 リファレンス](msx-music/basic-reference.md)
+- [MSX-MUSIC BASIC Extension V2 新機能ガイド（従来版との差分）](msx-music/new-feature.md)
 
-## MSX-AUDIO Basic Extension Lite
+## MSX-AUDIO BASIC Extension Lite
 
-- [MSX-AUDIO 拡張BASIC リファレンス](msx-audio/basic-reference.md)
+- [MSX-AUDIO BASIC Extension Lite リファレンス](msx-audio/basic-reference.md)
 
-## SFG Basic Extension
+## SFG BASIC Extension
 
-- [SFG 拡張BASIC リファレンス](sfg/basic-reference.md)
+- [SFG BASIC Extension リファレンス](sfg/basic-reference.md)
 
-## MIDI Play Basic Extension
+## MIDI Play BASIC Extension
 
-- [MIDI 拡張BASIC リファレンス](midi/basic-reference.md)
+- [MIDI Play BASIC Extension リファレンス](midi/basic-reference.md)
 - [MIDI 固有 MML コマンドとMIDIメッセージの対応](midi/midi-mml.md)
 - [対応MIDIインターフェースと判別方式](midi/midi-interfaces.md)
-- [MSSE 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
+- [MSX Sound Suite 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
 
-## Y8960 Basic Extension / MSSE
+## Y8960 BASIC Extension / Y8960 Sequencer BIOS
 
-- [Y8960 拡張BASIC リファレンス](y8960/basic-reference.md)
-- [MSSE 統合インターフェース（ROM/アプリケーション開発者向け）](y8960/msse-abi.md)
+- [Y8960 BASIC Extension リファレンス](y8960/basic-reference.md)
+- [MSX Sound Suite 統合インターフェース（ROM/アプリケーション開発者向け）](y8960/msse-abi.md)
 - [Y8960 ハードウェア（本ファームウェアが依存する範囲）](y8960/hardware.md)
-- [Y8960 シーケンサーBIOS（アプリケーション開発者向け）](y8960/sequencer-bios.md)
+- [Y8960 Sequencer BIOS（アプリケーション開発者向け）](y8960/sequencer-bios.md)
 
 ## 開発
 

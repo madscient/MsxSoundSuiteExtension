@@ -11,17 +11,17 @@
 
 ## 拡張BASIC / BIOS 本体
 
-MSX-MUSIC Basic Extension、MSX-AUDIO Basic Extension Lite、SFG Basic
-Extension、MIDI Play Basic Extension は、日本楽器製造株式会社（YAMAHA）
-および株式会社アスキーの著作物をフォークして改造したものです。ソース
-コードは公開しません。
+MSX-MUSIC BASIC Extension V2、MSX-AUDIO BASIC Extension Lite、
+SFG BASIC Extension、MIDI Play BASIC Extension は、日本楽器製造株式会社
+（YAMAHA）および株式会社アスキーの著作物をフォークして改造したものです。
+ソースコードは公開しません。
 
-Y8960 Basic Extension および Y8960 シーケンサーBIOS は新規に書き起こした
+Y8960 BASIC Extension および Y8960 Sequencer BIOS は新規に書き起こした
 ものです。
 
 ## リズム音色データ
 
-MSX-AUDIO Basic Extension Lite が持つリズム音色3本（`TB_RTM`）は、OPLL の
+MSX-AUDIO BASIC Extension Lite が持つリズム音色3本（`TB_RTM`）は、OPLL の
 ROM リズム音色を Y8950 のレジスタへ変換したものです。出典は下記です。
 
 > "Copyright free OPLL(x) ROM patches"
