@@ -34,7 +34,8 @@ python tools/build.py                  # 全ROMをビルド
 python tools/sync_docs.py              # docs/ を最新のソースから更新
 python tools/package.py                # dist/ にパッケージと zip を生成
 python tools/changelog.py              # リリースノートの材料を dist/ に出す
-python tools/release.py v0.1.0         # ビルドからタグ付け・アップロードまで
+                                       # 材料から dist/notes.md を書く（下記）
+python tools/release.py v0.1.0 --notes-file dist/notes.md
 ```
 
 `tools/release.py --dry-run` はビルドとパッケージ化だけを行い、タグ付けと
@@ -49,7 +50,7 @@ python tools/release.py v0.1.0         # ビルドからタグ付け・アップ
 | `tools/sync_docs.py` | `docs/` を更新する。`--check` で陳腐化を検査 |
 | `tools/package.py` | `dist/` にパッケージと zip を生成する。生成前に下記の検査を行う |
 | `tools/changelog.py` | リリースノートに書く材料を集める。下記。`release.py` からは呼ばれない |
-| `tools/release.py` | ビルドとパッケージ化を通しで実行し、タグ付けとアップロードまで行う |
+| `tools/release.py` | ビルドとパッケージ化を通しで実行し、タグ付けとアップロードまで行う。下記の検査を行う |
 | `tools/release-notes.md` | リリースノートの定型文。`--notes-file` で差し替え可 |
 
 成果物やドキュメントを増やすときは `manifest.py` だけを変更する。
@@ -57,8 +58,18 @@ python tools/release.py v0.1.0         # ビルドからタグ付け・アップ
 ## リリースノートを書く
 
 `tools/release-notes.md` は毎回同じ定型文（利用条件と収録物）で、前回からの
-変更は入っていない。変更を載せるときは、定型文の写しに変更点の節を足したものを
-`dist/notes.md` に作り、`--notes-file` で渡す。
+変更は入っていない。定型文の写しに変更点の節を足したものを `dist/notes.md` に
+作り、`--notes-file` で渡す。
+
+**リリースのたびに書く。** 前回からの変更が無かった回も、無かったことを確かめて
+から飛ばす。ノートは「どの変更をすでに載せたか」の記録でもあるので、回を飛ばすと
+次の回で前回ぶんと今回ぶんの区別が付かなくなる。文書の節が書き直されていると、
+前の回に告知済みの変更も差分の上では新しい行として現れる。
+
+`release.py` は、前回のタグから `docs/` かサブモジュールのピンが動いているのに
+`--notes-file` も `--generate-notes` も無いとき、定型文のままリリースすることを
+拒否する。定型文だけで足りる回は `--notes-file tools/release-notes.md` と名指しで
+渡す。止めているのは選ぶことではなく、忘れることである。
 
 材料は `tools/changelog.py` が集める。前回のタグが記録するサブモジュールの
 コミットから現在のチェックアウトまでの範囲で、次の2つを出す。

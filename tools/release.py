@@ -14,6 +14,9 @@ The release describes one state of the four sources, so it refuses to run
 unless this repository is clean and every submodule sits exactly on its
 recorded commit - otherwise the tag would point at a package nobody can
 rebuild.
+
+It also refuses the boilerplate notes when anything a user can see has
+moved since the previous tag; see notes_gate.
 """
 import argparse
 import os
@@ -68,6 +71,48 @@ def check_clean():
     return ok
 
 
+def notes_gate(tag):
+    """Refuse the boilerplate when there is something to tell.
+
+    The notes are the only place a user learns what changed, and every
+    release that skips them makes the next one harder: with no record of
+    what was already announced, the next writer cannot tell an old change
+    from a new one. So the omission is stopped here rather than noticed
+    later. Naming --notes-file, even the boilerplate itself, gets through:
+    the gate is against forgetting, not against choosing.
+    """
+    tags = [t for t in packager.git(["tag", "--list", "v*",
+                                     "--sort=-v:refname"],
+                                    manifest.REPO_ROOT).splitlines()
+            if t != tag]
+    if not tags:
+        return True
+    prev = tags[0]
+    changed = []
+    if packager.git(["diff", "--name-only", prev, "HEAD", "--", manifest.DOCS],
+                    manifest.REPO_ROOT):
+        changed.append(manifest.DOCS + "/")
+    for entry in manifest.REPOS:
+        here = packager.git(["rev-parse", f"HEAD:{entry['path']}"],
+                            manifest.REPO_ROOT)
+        there = packager.git(["rev-parse", f"{prev}:{entry['path']}"],
+                             manifest.REPO_ROOT)
+        if here != there:
+            changed.append(entry["path"])
+    if not changed:
+        return True
+    print(f"ERROR: these have changed since {prev}:")
+    for name in changed:
+        print(f"    {name}")
+    print(f"but the notes would be the boilerplate in {DEFAULT_NOTES}, "
+          f"which says nothing about them.")
+    print("Run `python tools/changelog.py`, write the notes from what "
+          "it collects, and pass --notes-file.")
+    print("To publish the boilerplate anyway, name it: "
+          f"--notes-file {DEFAULT_NOTES}")
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("tag", help="release tag, e.g. v0.1.0")
@@ -89,6 +134,9 @@ def main():
         return 1
     if not check_clean():
         return 1
+    if not args.notes_file and not args.generate_notes:
+        if not notes_gate(args.tag):
+            return 1
 
     if not args.no_build:
         if not run([sys.executable, manifest.abspath("tools", "build.py")]):
