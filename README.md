@@ -1,6 +1,6 @@
 # MSX Sound Suite Extension
 
-MSX Sound Suite Extension（MSSE）は、[Y8960 カートリッジ](https://github.com/hra1129/Y8960_Cartridge)
+MSX Sound Suite Extension（MSSX）は、[Y8960 カートリッジ](https://github.com/hra1129/Y8960_Cartridge)
 向けの拡張BASICと BIOS の総称です。
 
 ## 入手
@@ -18,7 +18,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 | `standalone/midi.rom` | 16KB | MIDI インターフェースを制御する単体カートリッジ用 |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
-電源投入時に表に出るのは MSX-MUSIC Basic Extension で、`CALL MINIT` /
+電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /
 `CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
 
 ### ソースコードについて
@@ -27,7 +27,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 すべてのリリースに自動で付けるもので、中身はこのリポジトリのドキュメントと
 ビルド用スクリプトだけです。**拡張BASIC 本体のソースコードは含まれません。**
 
-MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play の各 Basic Extension は日本楽器製造株式会社
+MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play の各 BASIC Extension は日本楽器製造株式会社
 （YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されて
 いるのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、この
 リポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空の
@@ -35,26 +35,26 @@ MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play の各 Basic Extension は日本楽器�
 
 ## 収録内容
 
-### MSX-MUSIC Basic Extension
+### MSX-MUSIC BASIC Extension V2
 
 従来の MSX-MUSIC 拡張BIOSとの完全互換性を持ち、MML が強化されています。
 従来互換の FMBIOS を搭載しているため、既存のアプリケーションにも対応します。
 
-### MSX-AUDIO Basic Extension Lite
+### MSX-AUDIO BASIC Extension Lite
 
-MSX-MUSIC Basic Extension を MSX-AUDIO 向けに改修したもので、従来の
+MSX-MUSIC BASIC Extension V2 を MSX-AUDIO 向けに改修したもので、従来の
 MSX-AUDIO 拡張BASICとほぼ互換性があります。ADPCM 再生は MML のみのサポート
 です。拡張BIOS、MBIOS は搭載していません。
 
-### SFG Basic Extension
+### SFG BASIC Extension
 
-MSX-MUSIC Basic Extension を SFG-01/05 向けに移植したものです。
+MSX-MUSIC BASIC Extension V2 を SFG-01/05 向けに移植したものです。
 MSX-MUSIC 互換 MML で OPM/OPP を演奏できます。
 
-### MIDI Play Basic Extension
+### MIDI Play BASIC Extension
 
 MIDI インターフェースを制御して MIDI 音源モジュールを演奏するための
-拡張BASICです。MSX-MUSIC Basic Extension 互換 MML に MSX-MIDI 互換の
+拡張BASICです。MSX-MUSIC BASIC Extension V2 互換 MML に MSX-MIDI 互換の
 一部拡張コマンドを加えたもので、MIDI チャンネル 1〜16 を同時に演奏します。
 以下の対応インターフェースを自動検出します。
 - MSX-MIDI (FS-A1GT内蔵)
@@ -63,15 +63,15 @@ MIDI インターフェースを制御して MIDI 音源モジュールを演奏
 - YAMAHA SFG-05 (FMシンセサイザユニットII)
 - Phillips NMS1205
 
-### Y8960 Basic Extension
+### Y8960 BASIC Extension
 
 Y8960 にネイティブ対応した拡張BASICです。従来の `PLAY` 文のような逐次演奏
 方式ではなく、MML コンパイラ方式を取っています。MML コンパイラが生成した
 シーケンスデータを最大4つまで同時に保持・演奏できます。（開発中）
 
-### Y8960 シーケンサーBIOS
+### Y8960 Sequencer BIOS
 
-Y8960 Basic Extension が作成したシーケンスデータを、DOS アプリケーションや
+Y8960 BASIC Extension が作成したシーケンスデータを、DOS アプリケーションや
 ROM カートリッジから使用するための BIOS です。（開発中）
 
 ## ドキュメント

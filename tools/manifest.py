@@ -26,7 +26,7 @@ DOCS = "docs"
 REPOS = [
     {
         "key": "msx-music",
-        "title": "MSX-MUSIC Basic Extension",
+        "title": "MSX-MUSIC BASIC Extension V2",
         "path": f"{VENDOR}/MsxMusicBasicExtension",
         "steps": [
             ["tools/zbuild/build.py", "gbios", "basic"],
@@ -40,14 +40,14 @@ REPOS = [
         "inputs": ["build/rom/mmbe_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "msx-music/basic-reference.md",
-             "MSX-MUSIC 拡張BASIC リファレンス"),
+             "MSX-MUSIC BASIC Extension V2 リファレンス"),
             ("doc/new-feature.md", "msx-music/new-feature.md",
-             "MSX-MUSIC 拡張BASIC 新機能ガイド（従来版との差分）"),
+             "MSX-MUSIC BASIC Extension V2 新機能ガイド（従来版との差分）"),
         ],
     },
     {
         "key": "msx-audio",
-        "title": "MSX-AUDIO Basic Extension Lite",
+        "title": "MSX-AUDIO BASIC Extension Lite",
         "path": f"{VENDOR}/MsxAudioBasicExtensionLite",
         "steps": [
             ["tools/zbuild/build.py", "audio", "y8960"],
@@ -57,12 +57,12 @@ REPOS = [
         "inputs": ["build/rom/mabel_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "msx-audio/basic-reference.md",
-             "MSX-AUDIO 拡張BASIC リファレンス"),
+             "MSX-AUDIO BASIC Extension Lite リファレンス"),
         ],
     },
     {
         "key": "sfg",
-        "title": "SFG Basic Extension",
+        "title": "SFG BASIC Extension",
         "path": f"{VENDOR}/SFGBasicExtension",
         "steps": [
             ["tools/zbuild/build.py", "sfg", "sfg_y8960"],
@@ -72,12 +72,12 @@ REPOS = [
         "inputs": ["build/rom/sfg_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "sfg/basic-reference.md",
-             "SFG 拡張BASIC リファレンス"),
+             "SFG BASIC Extension リファレンス"),
         ],
     },
     {
         "key": "midi",
-        "title": "MIDI Play Basic Extension",
+        "title": "MIDI Play BASIC Extension",
         "path": f"{VENDOR}/MidiPlayBasicExtension",
         "steps": [
             ["tools/zbuild/build.py", "--all"],
@@ -87,18 +87,18 @@ REPOS = [
         "inputs": ["build/rom/midi_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "midi/basic-reference.md",
-             "MIDI 拡張BASIC リファレンス"),
+             "MIDI Play BASIC Extension リファレンス"),
             ("doc/midi-mml.md", "midi/midi-mml.md",
              "MIDI 固有 MML コマンドとMIDIメッセージの対応"),
             ("doc/midi-interfaces.md", "midi/midi-interfaces.md",
              "対応MIDIインターフェースと判別方式"),
             ("doc/msse-integration.md", "midi/msse-integration.md",
-             "MSSE 統合の本ROM固有情報（開発者向け）"),
+             "MSX Sound Suite 統合の本ROM固有情報（開発者向け）"),
         ],
     },
     {
         "key": "y8960",
-        "title": "Y8960 Basic Extension / MSSE cartridge",
+        "title": "Y8960 BASIC Extension / MSX Sound Suite cartridge",
         "path": f"{VENDOR}/Y8960BasicExtension",
         "env": {"Y8960_PREBUILT_DIR": os.path.join(REPO_ROOT, VENDOR)},
         "steps": [
@@ -112,13 +112,13 @@ REPOS = [
         "inputs": [],
         "docs": [
             ("doc/basic-reference.md", "y8960/basic-reference.md",
-             "Y8960 拡張BASIC リファレンス"),
+             "Y8960 BASIC Extension リファレンス"),
             ("doc/msse-abi.md", "y8960/msse-abi.md",
-             "MSSE 統合インターフェース（ROM/アプリケーション開発者向け）"),
+             "MSX Sound Suite 統合インターフェース（ROM/アプリケーション開発者向け）"),
             ("doc/hardware.md", "y8960/hardware.md",
              "Y8960 ハードウェア（本ファームウェアが依存する範囲）"),
             ("doc/sequencer-bios.md", "y8960/sequencer-bios.md",
-             "Y8960 シーケンサーBIOS（アプリケーション開発者向け）"),
+             "Y8960 Sequencer BIOS（アプリケーション開発者向け）"),
         ],
     },
 ]
@@ -148,11 +148,11 @@ LOCAL_DOCS = [
 ]
 
 DOC_SECTIONS = [
-    ("msx-music", "MSX-MUSIC Basic Extension"),
-    ("msx-audio", "MSX-AUDIO Basic Extension Lite"),
-    ("sfg", "SFG Basic Extension"),
-    ("midi", "MIDI Play Basic Extension"),
-    ("y8960", "Y8960 Basic Extension / MSSE"),
+    ("msx-music", "MSX-MUSIC BASIC Extension V2"),
+    ("msx-audio", "MSX-AUDIO BASIC Extension Lite"),
+    ("sfg", "SFG BASIC Extension"),
+    ("midi", "MIDI Play BASIC Extension"),
+    ("y8960", "Y8960 BASIC Extension / Y8960 Sequencer BIOS"),
 ]
 
 
