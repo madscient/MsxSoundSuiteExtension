@@ -58,6 +58,10 @@ REPOS = [
         "docs": [
             ("doc/basic-reference.md", "msx-audio/basic-reference.md",
              "MSX-AUDIO BASIC Extension Lite リファレンス"),
+            ("doc/diff-from-mmbe.md", "msx-audio/diff-from-mmbe.md",
+             "MSX-MUSIC BASIC Extension V2 との差分"),
+            ("doc/diff-from-msxaudio.md", "msx-audio/diff-from-msxaudio.md",
+             "当時の MSX-AUDIO 拡張BASIC との差分"),
         ],
     },
     {
@@ -73,6 +77,8 @@ REPOS = [
         "docs": [
             ("doc/basic-reference.md", "sfg/basic-reference.md",
              "SFG BASIC Extension リファレンス"),
+            ("doc/diff-from-mmbe.md", "sfg/diff-from-mmbe.md",
+             "MSX-MUSIC BASIC Extension V2 との差分ガイド"),
         ],
     },
     {
@@ -88,6 +94,8 @@ REPOS = [
         "docs": [
             ("doc/basic-reference.md", "midi/basic-reference.md",
              "MIDI Play BASIC Extension リファレンス"),
+            ("doc/diff-from-msxmidi.md", "midi/diff-from-msxmidi.md",
+             "MSX-MIDI 拡張BASIC との差分ガイド"),
             ("doc/midi-mml.md", "midi/midi-mml.md",
              "MIDI 固有 MML コマンドとMIDIメッセージの対応"),
             ("doc/midi-interfaces.md", "midi/midi-interfaces.md",

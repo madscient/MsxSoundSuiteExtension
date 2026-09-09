@@ -59,7 +59,7 @@ MSX-MIDIを先に見るのは、I/Oポート直叩きとインタースロット
 | YAMAHA SMD-01 | 不明 | **TBD** | `prompt.txt` 原文が「識別方法不明」と明記。ハードウェア資料の収集が要る |
 | Phillips NMS1205 | 全スロットの`4010H`にID文字列 `MUSICBOX` を走査 | **実装済み** | ACIA 6850（下記）。openMSXの`Philips_NMS_1205`拡張で送出まで確認済み |
 | BIT2 MIDIサウルス | **自動判別できない**（下記） | ポートAの送出は実装済み・実機未検証 | `CALL MIDI`の第2引数で明示指定する |
-| BIT2 MSXμPACK | 全スロットの`4018H`にID文字列 `BIT2MIDI` を走査 | **実装済み** | 実体はMSX-MIDI（下記）。製品はturboR専用だが、UARTを叩くだけなのでMSX2+以前でも動かす。openMSXの`mu-PACK`拡張で送出まで確認済み |
+| BIT2 MSXμPACK | 全スロットの`4018H`にID文字列 `BIT2MIDI` を走査 | **実装済み** | 実体はMSX-MIDI（下記）。製品はturboR専用だが、UARTを叩くだけなのでMSX2+以前でも動かす。openMSXの`mu-PACK`拡張で送出まで確認済み——MSX2+の3機種（`Panasonic_FS-A1FX`・`Panasonic_FS-A1WX`・`Sony_HB-F1XDJ`）で検出とワイヤのバイト列まで一致 |
 | Panasonic FS-A1GT（内蔵） | i8254（`ECh`/`EFh`）へ書いて読み返す | **実装済み** | MSX-MIDI（下記）。openMSXの`Panasonic_FS-A1GT`で送出まで確認済み |
 | Y8960ネイティブMIDI | 不明 | **TBD** | `prompt.txt` 原文どおりTBD。Y8960カートリッジ側のMIDI DINポート仕様が前提になるため、[Y8960_Cartridge](https://github.com/hra1129/Y8960_Cartridge) 側の情報を待つ |
 

@@ -10,14 +10,18 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 ## MSX-AUDIO BASIC Extension Lite
 
 - [MSX-AUDIO BASIC Extension Lite リファレンス](msx-audio/basic-reference.md)
+- [MSX-MUSIC BASIC Extension V2 との差分](msx-audio/diff-from-mmbe.md)
+- [当時の MSX-AUDIO 拡張BASIC との差分](msx-audio/diff-from-msxaudio.md)
 
 ## SFG BASIC Extension
 
 - [SFG BASIC Extension リファレンス](sfg/basic-reference.md)
+- [MSX-MUSIC BASIC Extension V2 との差分ガイド](sfg/diff-from-mmbe.md)
 
 ## MIDI Play BASIC Extension
 
 - [MIDI Play BASIC Extension リファレンス](midi/basic-reference.md)
+- [MSX-MIDI 拡張BASIC との差分ガイド](midi/diff-from-msxmidi.md)
 - [MIDI 固有 MML コマンドとMIDIメッセージの対応](midi/midi-mml.md)
 - [対応MIDIインターフェースと判別方式](midi/midi-interfaces.md)
 - [MSX Sound Suite 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
