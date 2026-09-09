@@ -90,6 +90,34 @@ def write(path, text, check):
     return True
 
 
+def dangling_links():
+    """Relative links in docs/ that do not resolve.
+
+    rewrite_links only warns about targets that leave the copy. A bare
+    co-located name resolves inside the source tree and looks fine there,
+    so a document that is linked but absent from manifest.REPOS reaches
+    docs/ as a dead link with nothing said.
+    """
+    root = manifest.abspath(manifest.DOCS)
+    bad = []
+    for dirpath, _, names in os.walk(root):
+        for name in sorted(names):
+            if not name.endswith(".md"):
+                continue
+            path = os.path.join(dirpath, name)
+            with open(path, "r", encoding="utf-8") as f:
+                text = f.read()
+            for _, target in LINK_RE.findall(text):
+                target = target.split("#", 1)[0]
+                if not target or target.startswith(
+                        ("http://", "https://", "mailto:")):
+                    continue
+                if not os.path.exists(os.path.join(dirpath, target)):
+                    rel = os.path.relpath(path, root).replace(os.sep, "/")
+                    bad.append((rel, target))
+    return bad
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true",
@@ -112,6 +140,17 @@ def main():
     if args.check and stale:
         print("\ndocs/ is out of date; run tools/sync_docs.py")
         return 1
+
+    print("=== links ===")
+    bad = dangling_links()
+    for src, target in bad:
+        print(f"ERROR: {src}: link to {target} has no copy in docs/")
+    if bad:
+        print("\nlist the target in the repository's \"docs\" entry in "
+              "manifest.py, or drop the link at the source")
+        return 1
+    print("    all relative links resolve")
+
     print("\nOK")
     return 0
 
