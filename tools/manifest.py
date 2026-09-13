@@ -127,6 +127,8 @@ REPOS = [
              "Y8960 ハードウェア（本ファームウェアが依存する範囲）"),
             ("doc/sequencer-bios.md", "y8960/sequencer-bios.md",
              "Y8960 Sequencer BIOS（アプリケーション開発者向け）"),
+            ("doc/bytecode.md", "y8960/bytecode.md",
+             "Y8960 シーケンスのバイトコード（クロスコンパイラ作者向け）"),
         ],
     },
 ]
@@ -145,6 +147,8 @@ LINK_REWRITE = {
     "../../MSX_SOUND_BIOS/doc/variant-differences.md": None,
     "../../MSX_SOUND_BIOS/music_midi": None,
     "../../Y8960BasicExtension/doc/msse-abi.md": "../y8960/msse-abi.md",
+    # 兄弟リポジトリへ計画を渡すための一時文書で、公開しない。
+    "../../MsxAudioBasicExtensionLite/doc/plan-tick-source.md": None,
     # 各リポジトリの plan.md は内部文書で複製しない。
     "plan.md": None,
 }
