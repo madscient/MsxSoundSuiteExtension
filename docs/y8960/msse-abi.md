@@ -12,9 +12,9 @@ ROM を載せ、ページ1（`4000h`-`7FFFh`）に一度に1つだけを出す�
 
 | ID | ROM | バンク | リポジトリ |
 |--:|---|---|---|
-| 0 | MSX-MUSIC BASIC Extension V2 | #0, #1 | [MsxMusicBasicExtension](https://github.com/madscient/MsxMusicBasicExtension) |
+| 0 | MSX-MUSIC BASIC Extension V2 | #0, #1、#5 の一部（[下記](#id-0-の-fmbios-本体は-5-に置く)） | [MsxMusicBasicExtension](https://github.com/madscient/MsxMusicBasicExtension) |
 | 1 | MSX-AUDIO BASIC Extension Lite | #2, #3 | [MsxAudioBasicExtensionLite](https://github.com/madscient/MsxAudioBasicExtensionLite) |
-| 2 | Y8960 BASIC Extension | #4, #5, #10-#13 | このリポジトリ |
+| 2 | Y8960 BASIC Extension | #4, #5, #10-#15 | このリポジトリ |
 | 3 | SFG BASIC Extension | #6, #7 | [SFGBasicExtension](https://github.com/madscient/SFGBasicExtension) |
 | 4 | MIDI Play BASIC Extension | #8, #9 | [MidiPlayBasicExtension](https://github.com/madscient/MidiPlayBasicExtension) |
 
@@ -68,6 +68,51 @@ MSX からはページ1 に2つの窓が見える。
 必要はない。16KB を超える ROM が追加で使うバンクも同じで、**#10 以降の
 プールから取る**。プールの割り当ては、カートリッジのイメージを組み立てる
 ビルドが決める。
+
+### ID 0 の FMBIOS 本体は #5 に置く
+
+MSX-MUSIC BASIC Extension V2 は、#0 と #1 に入りきらない FMBIOS の本体を
+**Y8960 BASIC Extension の後半であるバンク #5 の上端**に置く。
+
+| #5 の番地 | 持ち主 |
+|---|---|
+| `6000h`-`77FFh` | Y8960 BASIC Extension の後半 |
+| `7800h`-`7FDFh` | MSX-MUSIC BASIC Extension V2 の FMBIOS 本体（2016 バイト） |
+| `7FE0h`-`7FFFh` | どちらも置かない。`FFh` |
+
+BANK1 に ROM バンクが出ている間は `7FEAh` から上に Memory Mapped I/O が
+現れる（[`hardware.md`](hardware.md)）ので、境界はその手前の `7FE0h` に置く。
+
+- **Y8960 BASIC Extension の後半は #5 から動かせない。** FMBIOS 本体に
+  入るとき BANK1 に書く 5 は、MSX-MUSIC BASIC Extension V2 が定数として持って
+  いる。「後半と追加バンク」で後半のバンク番号を自由にしたことの、ID 2 に
+  限った例外
+- **本体は MSX-MUSIC BASIC Extension V2 のリポジトリが
+  `build/rom/mmbe_y8960_fmbios.bin` として出す。** `7800h`-`7FFFh` に当たる
+  2048 バイトの生のイメージで、`7FE0h` から後ろは `FFh`
+- **カートリッジのイメージを組み立てるビルドが、これを #5 のオフセット
+  `1800h` に置く。** 大きさ、`7FE0h` から後ろが `FFh` であること、#5 の側が
+  `7800h` から後ろに何も置いていないことを検証する
+
+### 起動時のページ2 には #5 を出す
+
+電源投入時とリセット時の BANK2 の初期値は #2 で、そこには ID 1 の前半の
+カートリッジヘッダがある。`'AB'` で始まり、STATEMENT が 0 でない。
+カートリッジはページ2（`8000h`-`BFFFh`）にも応答するので、そのままでは
+BIOS のスロットスキャンがこのヘッダを見つけ、同じスロットのページ2 にもう
+1つ拡張ステートメントがあると記録する。するとページ1 のどの ROM も引き受けない
+`CALL` 文がページ2 の記録へ回り、ヘッダの STATEMENT 番地が呼ばれる。その番地は
+ページ1 にあり、その時ページ1 に出ている ROM のコードの途中を指す。
+
+- **ID 0 のカートリッジ INIT は、RAM モードを 1 にし、`4FFEh`（BANK2）に 5 を
+  書く。** スキャンはページ1 の INIT を呼んでからページ2 を読むので、INIT の
+  中で書けば間に合う。スキャンが済んだあとはページ2 のヘッダを読む者がいないので、
+  元に戻さない
+- **#5 の先頭 2 バイトを `'AB'` にしない。** #5 は Y8960 BASIC Extension の
+  後半で、先頭はジャンプテーブルになっている。カートリッジのイメージを組み立てる
+  ビルドがこれを検証する
+- #5 を使う理由は2つ。後半のバンクは先頭にヘッダを置く必要が無い。そして #5 は、
+  上の節で ID 2 の後半として番号が動かなくなっている
 
 ## 各 ROM が用意するもの
 
@@ -135,8 +180,11 @@ BANK0 は元のままだが、後始末は済んでしまっている**（後始
 |---|---|---|
 | BANK0 | `5000h`-`57FFh` | `4FFCh` |
 | BANK1 | `7000h`-`77FFh` | `4FFDh` |
+| BANK2 | `9000h`-`97FFh` | `4FFEh` |
 
-以降 MSX Sound Suite が使うのは `4FFCh` / `4FFDh` の側だけ。
+以降 MSX Sound Suite が使うのは RAM モード 1 の側だけ。ページ1 の受け渡しで
+書くのは `4FFCh` / `4FFDh` で、`4FFEh` を書くのは
+[起動時の ID 0](#起動時のページ2-には-5-を出す) だけ。
 **RAM モードは戻さない。**
 
 バンクレジスタは書き込み専用で読めない。切り替えた側が元に戻せるのは、
