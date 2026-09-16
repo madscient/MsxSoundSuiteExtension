@@ -33,6 +33,7 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 - [Y8960 ハードウェア（本ファームウェアが依存する範囲）](y8960/hardware.md)
 - [Y8960 Sequencer BIOS（アプリケーション開発者向け）](y8960/sequencer-bios.md)
 - [Y8960 シーケンスのバイトコード（クロスコンパイラ作者向け）](y8960/bytecode.md)
+- [Y8960 PCM ファイル形式（EXPORT PCM / IMPORT PCM、ツール作者向け）](y8960/pcmfile.md)
 
 ## 開発
 
