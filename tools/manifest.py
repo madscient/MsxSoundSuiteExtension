@@ -129,6 +129,8 @@ REPOS = [
              "Y8960 Sequencer BIOS（アプリケーション開発者向け）"),
             ("doc/bytecode.md", "y8960/bytecode.md",
              "Y8960 シーケンスのバイトコード（クロスコンパイラ作者向け）"),
+            ("doc/pcmfile.md", "y8960/pcmfile.md",
+             "Y8960 PCM ファイル形式（EXPORT PCM / IMPORT PCM、ツール作者向け）"),
         ],
     },
 ]
