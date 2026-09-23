@@ -51,7 +51,10 @@ ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決ま�
 - **確認済み** ―― `package.py` が 6 本の ROM と `docs/` を集めて zip を作る。
   同一性検査は従来どおり4バンクを照合して通り、`MANIFEST.txt` に Makoto の
   リビジョンが入る。確認に使った試験パッケージは削除した
-- **未検証** ―― `release.py` を通した実行。`--dry-run` も含めて走らせていない
+- **確認済み** ―― `release.py --dry-run`。定型文のままでは
+  `vendor/MakotoBasicExtension` と `docs/` の動きを挙げて拒否し、`--notes-file`
+  を名指しすると `check_clean` を抜けて `makoto.rom` を資産の一覧に載せる。
+  タグは作られていない（`git tag --list` で確認）
 
 ## 統合する ROM の探し場所を呼ぶ側から渡す
 
