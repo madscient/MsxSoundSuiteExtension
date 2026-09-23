@@ -32,11 +32,14 @@
 ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決まっているので、
 ここでは振らない。
 
-**名前の書き方**（持ち主の指示、2026-09-23）：製品名は `Makoto BASIC Extension`、
-短縮形は `Makoto BASIC`、略称は `Makoto`。ハードウェアの音源カートリッジも
-`Makoto` なので、ROM とハードウェアが同じ文に出るときはハードウェアを
-`Makoto カートリッジ` と書いて分ける（`Y8960 カートリッジ` と同じ形。この区別は
-こちらで決めたもので、持ち主の指示ではない）。
+**名前の表記**：正は `vendor/Y8960BasicExtension/doc/naming.md`（兄弟に共通する
+製品名の表）。**MSSE 側に写しは持たない。** 持ち主の指示（2026-09-23）は製品名
+`Makoto BASIC Extension`、短縮形 `Makoto BASIC`、略称 `Makoto`。naming.md への
+行の追加は未了で、あちらのリポジトリなので文面を渡した。
+
+ハードウェアの音源カートリッジも `Makoto` なので、`README.md` で ROM と紛れる
+箇所は `Makoto カートリッジ` と書いて分けた（`Y8960 カートリッジ` と同じ形）。
+この区別はこちらで決めたもので、持ち主の指示ではない。naming.md にも載せたい。
 
 **ピンは `7b33e80`**（`origin/master`）。`4650edc` から動いたのは `CLAUDE.md`・
 `README.md`・`doc/plan.md` の3本で、`src/` と複製する2本の文書には届かない。版の
