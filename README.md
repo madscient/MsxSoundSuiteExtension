@@ -1,7 +1,8 @@
 # MSX Sound Suite Extension
 
 MSX Sound Suite Extension（MSSX）は、[Y8960 カートリッジ](https://github.com/hra1129/Y8960_Cartridge)
-向けの拡張BASICと BIOS の総称です。
+向けの拡張BASICと BIOS、および同じコードベースから作った他の音源向けの単体
+ROM の総称です。
 
 ## 入手
 
@@ -11,15 +12,18 @@ ROM イメージは [Releases](../../releases) から入手してください。
 
 | ファイル | サイズ | 用途 |
 |---|--:|---|
-| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。下記5つをすべて収めたイメージ |
+| `y8960bas.rom` | 128KB | Y8960 カートリッジ用。5つの拡張BASICをすべて収めたイメージ |
 | `standalone/mmbe.rom` | 16KB | MSX-MUSIC 単体用。本体内蔵 MSX-MUSIC の差し替え、または ROM カートリッジ |
 | `standalone/mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `standalone/sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
 | `standalone/midi.rom` | 16KB | MIDI インターフェースを制御する単体カートリッジ用 |
+| `standalone/makoto.rom` | 16KB | Makoto（YM2608）単体カートリッジ用 |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /
 `CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
+
+`standalone/makoto.rom` は Makoto 専用で、`y8960bas.rom` には含まれません。
 
 ### ソースコードについて
 
@@ -27,11 +31,11 @@ ROM イメージは [Releases](../../releases) から入手してください。
 すべてのリリースに自動で付けるもので、中身はこのリポジトリのドキュメントと
 ビルド用スクリプトだけです。**拡張BASIC 本体のソースコードは含まれません。**
 
-MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play の各 BASIC Extension は日本楽器製造株式会社
-（YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されて
-いるのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、この
-リポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空の
-ディレクトリになります。
+MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play / Makoto の各 BASIC Extension は
+日本楽器製造株式会社（YAMAHA）および株式会社アスキーの著作物をフォークした
+もので、許諾されているのはバイナリの配布に限られます。ソースは非公開の
+リポジトリにあり、このリポジトリはその参照（`vendor/`）を持つだけなので、
+アーカイブ内では空のディレクトリになります。
 
 ## 収録内容
 
@@ -62,6 +66,13 @@ MIDI インターフェースを制御して MIDI 音源モジュールを演奏
 - YAMAHA SFG-01 (FMシンセサイザユニット)
 - YAMAHA SFG-05 (FMシンセサイザユニットII)
 - Phillips NMS1205
+
+### Makoto BASIC Extension
+
+MSX-AUDIO BASIC Extension Lite を、YM2608（OPNA）を載せた音源カートリッジ
+Makoto 向けに移植したものです。ステートメントと MML をそのまま引き継ぎ、
+FM 6声・リズム 6音・ADPCM 1声を `PLAY` 文から鳴らします。Y8960 カートリッジ用の
+イメージには含まれません。
 
 ### Y8960 BASIC Extension
 

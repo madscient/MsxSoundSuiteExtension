@@ -7,8 +7,9 @@ need, ROM images and documents; build.py, sync_docs.py, package.py and
 release.py all read it, so a new target is added here and nowhere else.
 
 The order of REPOS is a build order, not a listing order: Y8960 links
-the Y8960 build of the other four into its 128KB cartridge image, so it
-has to come last.
+the Y8960 build of four of the others into its 128KB cartridge image, so
+it has to come last. Makoto is not one of them - it ships as a standalone
+image only - so its place in the order is free.
 """
 import os
 
@@ -17,8 +18,8 @@ VENDOR = "vendor"
 DIST = "dist"
 DOCS = "docs"
 
-# Y8960 links the other four repositories' Y8960 builds into its cartridge
-# image and looks for them under the directory named by Y8960_PREBUILT_DIR,
+# Y8960 links four of the other repositories' Y8960 builds into its
+# cartridge image and looks for them under Y8960_PREBUILT_DIR,
 # set on its entry below. That directory is our own vendor/, so the images
 # that go into the cartridge are the ones we just built. Y8960's nested
 # submodules are left uninitialised to keep one checkout of each repository,
@@ -105,6 +106,25 @@ REPOS = [
         ],
     },
     {
+        "key": "makoto",
+        "title": "Makoto BASIC Extension",
+        "path": f"{VENDOR}/MakotoBasicExtension",
+        "steps": [
+            ["tools/zbuild/build.py", "makoto"],
+            ["tools/zbuild/rom.py", "makoto"],
+        ],
+        "artifacts": [("build/rom/makoto.rom", "standalone/makoto.rom", 16384)],
+        # Nothing to build for the cartridge: Makoto is for its own hardware
+        # and has no place in the Y8960 image.
+        "inputs": [],
+        "docs": [
+            ("doc/basic-reference.md", "makoto/basic-reference.md",
+             "Makoto BASIC Extension リファレンス"),
+            ("doc/diff-from-lite.md", "makoto/diff-from-lite.md",
+             "MSX-AUDIO BASIC Extension Lite との差分"),
+        ],
+    },
+    {
         "key": "y8960",
         "title": "Y8960 BASIC Extension / MSX Sound Suite cartridge",
         "path": f"{VENDOR}/Y8960BasicExtension",
@@ -166,6 +186,7 @@ DOC_SECTIONS = [
     ("msx-audio", "MSX-AUDIO BASIC Extension Lite"),
     ("sfg", "SFG BASIC Extension"),
     ("midi", "MIDI Play BASIC Extension"),
+    ("makoto", "Makoto BASIC Extension"),
     ("y8960", "Y8960 BASIC Extension / Y8960 Sequencer BIOS"),
 ]
 

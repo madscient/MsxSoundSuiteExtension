@@ -26,6 +26,11 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 - [対応MIDIインターフェースと判別方式](midi/midi-interfaces.md)
 - [MSX Sound Suite 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
 
+## Makoto BASIC Extension
+
+- [Makoto BASIC Extension リファレンス](makoto/basic-reference.md)
+- [MSX-AUDIO BASIC Extension Lite との差分](makoto/diff-from-lite.md)
+
 ## Y8960 BASIC Extension / Y8960 Sequencer BIOS
 
 - [Y8960 BASIC Extension リファレンス](y8960/basic-reference.md)

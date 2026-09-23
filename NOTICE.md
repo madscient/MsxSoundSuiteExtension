@@ -12,9 +12,9 @@
 ## 拡張BASIC / BIOS 本体
 
 MSX-MUSIC BASIC Extension V2、MSX-AUDIO BASIC Extension Lite、
-SFG BASIC Extension、MIDI Play BASIC Extension は、日本楽器製造株式会社
-（YAMAHA）および株式会社アスキーの著作物をフォークして改造したものです。
-ソースコードは公開しません。
+SFG BASIC Extension、MIDI Play BASIC Extension、Makoto BASIC Extension は、
+日本楽器製造株式会社（YAMAHA）および株式会社アスキーの著作物をフォークして
+改造したものです。ソースコードは公開しません。
 
 Y8960 BASIC Extension および Y8960 Sequencer BIOS は新規に書き起こした
 ものです。

@@ -18,3 +18,7 @@
 	path = vendor/MidiPlayBasicExtension
 	url = https://github.com/madscient/MidiPlayBasicExtension.git
 	branch = master
+[submodule "vendor/MakotoBasicExtension"]
+	path = vendor/MakotoBasicExtension
+	url = https://github.com/madscient/MakotoBasicExtension.git
+	branch = master

@@ -4,6 +4,55 @@
 利用者向けは [`README.md`](../README.md)、保守手順は
 [`docs/build-and-release.md`](../docs/build-and-release.md)。
 
+## Makoto BASIC Extension を単体 ROM だけのリリース対象に足す
+
+`../MakotoBasicExtension` を `vendor/MakotoBasicExtension` として足し、
+`standalone/makoto.rom` をリリース物に加えた。**`y8960bas.rom` には入れない。**
+
+**前提**：Makoto は Y8960 とは別のハードウェア（YM2608 を載せた音源
+カートリッジ）向けで、Y8960 カートリッジのページ1を分け合う5本には
+参加しない。Makoto 側の `CLAUDE.md` にも同じことが書かれている。これが
+変わらない限り、`manifest.py` の `inputs` は空のままでよく、
+`package.py` の同一性検査もこの ROM を見ない。
+
+**前提**：ライセンス条件は兄弟と同じ。`src/` は YAMAHA／アスキーの著作物の
+フォークで、許諾されているのはバイナリの配布のみ、個人利用に限る。公開文書の
+規則も兄弟と同じで、`doc/` の2本だけを `docs/makoto/` へ複製し、`plan.md` と
+`CLAUDE.md` は複製しない。
+
+**外に出る値**（変えるなら波及先）：
+
+| 値 | 波及先 |
+|---|---|
+| `manifest.py` のキー `makoto` | `build.py <key>` の引数。`manifest.py` 1か所 |
+| パッケージ内 `standalone/makoto.rom` | `manifest.py`・`README.md`・`release-notes.md` |
+| リリース資産名 `makoto.rom` | 同上。`release.py` は basename を使うので別に決められない |
+| `docs/makoto/` | `manifest.py` の `docs`。`docs/README.md` は生成物 |
+
+ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決まっているので、
+ここでは振らない。
+
+**ピンは `4650edc`**（`origin/master`）。作業リポジトリのローカル master は
+`64f5f8b` まで進んでいるが未 push で、差分は `CLAUDE.md` のみ。ROM と複製する
+文書には届かないので、ピンを進めるのは push の後でよい。
+
+**未決**：プリセット音色（N88-BASIC(86) の OPN 音色データ）を ROM に入れて
+配布してよいかが Makoto 側の未確定事項に残っている。`standalone/makoto.rom`
+はこのデータを含む。公開の前に決着が要る。決着したら `NOTICE.md` に
+「リズム音色データ」と同じ形で出典の節を足す。
+
+### 確度
+
+- **確認済み** ―― `build.py makoto` が通り、`build/rom/makoto.rom` が 16384
+  バイトで出る（14600 バイト使用）
+- **確認済み** ―― `sync_docs.py` が `docs/makoto/` の2本を新規に書き、索引を
+  更新し、相対リンクが全解決する。複製後の2本に `plan.md` や `CLAUDE.md`、
+  非公開ソースへのリンクは残っていない（`grep` で確認）
+- **確認済み** ―― `package.py` が 6 本の ROM と `docs/` を集めて zip を作る。
+  同一性検査は従来どおり4バンクを照合して通り、`MANIFEST.txt` に Makoto の
+  リビジョンが入る。確認に使った試験パッケージは削除した
+- **未検証** ―― `release.py` を通した実行。`--dry-run` も含めて走らせていない
+
 ## 統合する ROM の探し場所を呼ぶ側から渡す
 
 Y8960 の `rom.py` は統合する4本を自身の `vendor/` と `../<repo>` の両方から

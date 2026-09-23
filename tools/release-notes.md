@@ -14,6 +14,7 @@
 | `mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
 | `midi.rom` | 16KB | MIDI インターフェースを鳴らす単体カートリッジ用 |
+| `makoto.rom` | 16KB | Makoto（YM2608）単体カートリッジ用。`y8960bas.rom` には含まれない |
 
 下の「Source code (zip / tar.gz)」は GitHub が自動で付けるもので、中身は
 ドキュメントとビルド用スクリプトだけです。拡張BASIC 本体のソースコードは
