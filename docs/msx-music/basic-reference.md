@@ -791,8 +791,47 @@ n から 64 を引いた値の bit5〜4 がバンク、bit3〜0 が音色番号�
 音色番号 0 はユーザ音色でバンクが持たないため、`@64` `@80` `@96` `@112`
 は `Illegal function call`。128 以上も同じ。
 
+バンクごとの音色は次のとおり。名称は各チップの音色表のもので、同じ名前でも
+バンクが違えば別の音色。
+
+| `@`*n* | バンク0（OPLL） | `@`*n* | バンク1（OPLL-X） |
+|--:|---|--:|---|
+| 65 | Violin | 81 | Strings |
+| 66 | Guitar | 82 | Guitar |
+| 67 | Piano | 83 | Electric Guitar |
+| 68 | Flute | 84 | Electric Piano 2 |
+| 69 | Clarinet | 85 | Flute |
+| 70 | Oboe | 86 | Marimba |
+| 71 | Trumpet | 87 | Trumpet |
+| 72 | Organ | 88 | Harmonica |
+| 73 | Horn | 89 | Tuba |
+| 74 | Synthesizer | 90 | Synth Brass 2 |
+| 75 | Harpsichord | 91 | Short Saw |
+| 76 | Vibraphone | 92 | Vibraphone |
+| 77 | Synthesizer Bass | 93 | Electric Guitar 2 |
+| 78 | Acoustic Bass | 94 | Synth Bass 2 |
+| 79 | Electric Guitar | 95 | Sitar |
+
+| `@`*n* | バンク2（OPLL-P） | `@`*n* | バンク3（VRC7） |
+|--:|---|--:|---|
+| 97 | Clarinet | 113 | Buzzy Bell |
+| 98 | Synth Bass | 114 | Guitar |
+| 99 | Piano | 115 | Wurly |
+| 100 | Flute | 116 | Flute |
+| 101 | Square Wave | 117 | Clarinet |
+| 102 | Space Oboe | 118 | Synth |
+| 103 | Trumpet | 119 | Trumpet |
+| 104 | Wow Bell | 120 | Organ |
+| 105 | Electric Guitar | 121 | Bells |
+| 106 | Vibes | 122 | Vibes |
+| 107 | Bass | 123 | Vibraphone |
+| 108 | Vibraphone | 124 | Tutti |
+| 109 | Vibrato Bell | 125 | Fretless |
+| 110 | Click Sine | 126 | Synth Bass |
+| 111 | Noise and Tone | 127 | Sweep |
+
 ```basic
-PLAY#2, "@113O4CDE"   ' VRC7 の1番の音色で鳴らす
+PLAY#2, "@113O4CDE"   ' VRC7 の Buzzy Bell で鳴らす
 ```
 
 `@0`〜`@63` は必ずバンク 0 で鳴る。バンク付きの音色を指定したあとでも、

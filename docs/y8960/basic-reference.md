@@ -828,6 +828,11 @@ CALL MTRK(0,0,"|:ABC[1D][2E]F:|2")     ' 1回目 ABC D F / 2回目 ABC E F
   `|::|0` のように時間を取らないループを書くと `MTRK` は通るが、演奏は
   イベントを 256 個読んだところでそのトラックを終わらせる。止めないと機械が
   応答しなくなるため
+- **`(DC)` と `(FINE)` で周が終わるとき、鳴っている音を止めるのは次の周の
+  最初のコマンド。** 音符も休符も鳴っている音を止めてから始まるので、どちらで
+  始まるトラックも音が残らない。**`@W`*n* だけは音を止めないので、周の頭が
+  `@W`*n* のトラックは前の周の最後の音を保ったまま次の周に入る。** 繰り返しを
+  使い切って演奏が終わるときは、どのトラックも音が止まる
 
 ### 音長と連符
 
@@ -892,7 +897,7 @@ CALL MTRK(0,0,"|:ABC[1D][2E]F:|2")     ' 1回目 ABC D F / 2回目 ABC E F
 |---|---|---|
 | 0-63 | プリセット | プリセット |
 | 64 | エラー | エラー |
-| 65-127 | チップ内蔵の音色。*n*−64 の bit5-4 が音色バンク（0-3）、bit3-0 がバンクの中の音色番号（1-15。0 はチップのユーザー音色） | 無視される（それまでの音色のまま） |
+| 65-127 | チップ内蔵の音色。*n*−64 の bit5-4 が音色バンク（0-3）、bit3-0 がバンクの中の音色番号（1-15。0 はチップのユーザー音色）。**一覧は下記** | 無視される（それまでの音色のまま） |
 | 128-191 | `VOICE COPY` で作った音色 | `VOICE COPY` で作った音色 |
 
 **OPLLEX でプリセットと作った音色を鳴らすときは、チップのユーザー音色を使う。**
@@ -905,6 +910,63 @@ ADPCM チャンネルではボイスファイル0 になる。曲を繰り返す
 音色から始まる。**`@0` と書いたのと同じに扱われる**ので、OPLLEX では最初の
 音符の時点でそのトラックがチップのユーザー音色を `@0` にする ―― 同じ OPLLEX の
 別のチャンネルがプリセットを選んでいれば、そちらも `@0` で鳴ることになる。
+
+#### OPLLEX のチップ内蔵音色
+
+バンクごとに 15 音色ある。名称は各チップの音色表のもので、同じ名前でも
+バンクが違えば別の音色。
+
+| バンク | チップ | `@`*n* |
+|--:|---|---|
+| 0 | OPLL（YM2413 相当） | `@65`-`@79` |
+| 1 | OPLL-X（YM2423 相当） | `@81`-`@95` |
+| 2 | OPLL-P（YMF281 相当） | `@97`-`@111` |
+| 3 | VRC7（DS1001 相当） | `@113`-`@127` |
+
+| `@`*n* | バンク0（OPLL） | `@`*n* | バンク1（OPLL-X） |
+|--:|---|--:|---|
+| 65 | Violin | 81 | Strings |
+| 66 | Guitar | 82 | Guitar |
+| 67 | Piano | 83 | Electric Guitar |
+| 68 | Flute | 84 | Electric Piano 2 |
+| 69 | Clarinet | 85 | Flute |
+| 70 | Oboe | 86 | Marimba |
+| 71 | Trumpet | 87 | Trumpet |
+| 72 | Organ | 88 | Harmonica |
+| 73 | Horn | 89 | Tuba |
+| 74 | Synthesizer | 90 | Synth Brass 2 |
+| 75 | Harpsichord | 91 | Short Saw |
+| 76 | Vibraphone | 92 | Vibraphone |
+| 77 | Synthesizer Bass | 93 | Electric Guitar 2 |
+| 78 | Acoustic Bass | 94 | Synth Bass 2 |
+| 79 | Electric Guitar | 95 | Sitar |
+
+| `@`*n* | バンク2（OPLL-P） | `@`*n* | バンク3（VRC7） |
+|--:|---|--:|---|
+| 97 | Clarinet | 113 | Buzzy Bell |
+| 98 | Synth Bass | 114 | Guitar |
+| 99 | Piano | 115 | Wurly |
+| 100 | Flute | 116 | Flute |
+| 101 | Square Wave | 117 | Clarinet |
+| 102 | Space Oboe | 118 | Synth |
+| 103 | Trumpet | 119 | Trumpet |
+| 104 | Wow Bell | 120 | Organ |
+| 105 | Electric Guitar | 121 | Bells |
+| 106 | Vibes | 122 | Vibes |
+| 107 | Bass | 123 | Vibraphone |
+| 108 | Vibraphone | 124 | Tutti |
+| 109 | Vibrato Bell | 125 | Fretless |
+| 110 | Click Sine | 126 | Synth Bass |
+| 111 | Noise and Tone | 127 | Sweep |
+
+**どのバンクにも音色番号 0 は無い。** `@80` `@96` `@112` はそのバンクを選んだ
+うえでチップのユーザー音色を鳴らす ―― プリセットと `VOICE COPY` で作った音色が
+使うものと同じ1つで、同じ OPLLEX の別のチャンネルが上書きする。`@64` は
+`Illegal function call`。
+
+```basic
+CALL MTRK(0,0,"@113O4CDE")   ' VRC7 の Buzzy Bell で鳴らす
+```
 
 #### SSGS の `@`*n*
 
