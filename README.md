@@ -38,6 +38,10 @@ MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play / Makoto の各 BASIC Extension は
 リポジトリにあり、このリポジトリはその参照（`vendor/`）を持つだけなので、
 アーカイブ内では空のディレクトリになります。
 
+## 系統
+
+![拡張BASICの系統図](docs/phylogenetic-tree.svg)
+
 ## 収録内容
 
 ### MSX-MUSIC BASIC Extension V2

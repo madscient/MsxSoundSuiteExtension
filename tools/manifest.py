@@ -175,6 +175,15 @@ LINK_REWRITE = {
     "plan.md": None,
 }
 
+# docs/ に置く図。PlantUML のソースと、そこから描いたもの。どちらも docs/ に
+# 置くのは、埋め込む文書と同じ場所に在る必要があるため ―― package.py は
+# docs/ を丸ごと複製し、sync_docs.py のリンク検査は文書からの相対リンクを
+# 解決する。ラベルは索引に埋め込むときの代替テキストになる。
+DIAGRAMS = [
+    ("phylogenetic-tree.pu", "phylogenetic-tree.svg",
+     "拡張BASICの系統図"),
+]
+
 # docs/ にあるが、ソースリポジトリから複製したものではない文書。
 # 索引に載せるだけで、sync_docs.py は内容に触れない。
 LOCAL_DOCS = [

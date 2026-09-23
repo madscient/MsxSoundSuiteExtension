@@ -7,7 +7,7 @@
 
 | | |
 |---|---|
-| `docs/` | 公開ドキュメント。各ソースリポジトリからの複製と、この文書 |
+| `docs/` | 公開ドキュメント。各ソースリポジトリからの複製、図、この文書 |
 | `tools/` | ビルド・パッケージ化・リリースのスクリプト |
 | `vendor/` | 各拡張BASICのソースリポジトリ（サブモジュール、非公開） |
 | `dist/` | 生成されたパッケージ（コミットしない） |
@@ -21,6 +21,7 @@
 |---|---|
 | Python | 3.x |
 | zmac | [48k.ca/zmac.html](https://48k.ca/zmac.html)。環境変数 `ZMAC_EXE` で場所を指定 |
+| PlantUML | 図を描き直すときだけ要る。環境変数 `PLANTUML_JAR` で jar の場所を指定。JRE と Graphviz も要る |
 | GitHub CLI | [cli.github.com](https://cli.github.com/)。`gh auth login` 済みであること |
 
 Linux では zmac をソースからビルドし（C 単体、依存なし）、`ZMAC_EXE` に
@@ -32,6 +33,7 @@ Linux では zmac をソースからビルドし（C 単体、依存なし）、
 git submodule update --init            # 6リポジトリを取得（--recursive は不要）
 python tools/build.py                  # 全ROMをビルド
 python tools/sync_docs.py              # docs/ を最新のソースから更新
+python tools/diagram.py                # 図を描き直す（.pu を直したときだけ）
 python tools/package.py                # dist/ にパッケージと zip を生成
 python tools/changelog.py              # リリースノートの材料を dist/ に出す
                                        # 材料から dist/notes.md を書く（下記）
@@ -48,6 +50,7 @@ python tools/release.py v0.1.0 --notes-file dist/notes.md
 | `tools/manifest.py` | ビルド手順・ビルド環境・成果物・複製するドキュメントの定義。他の5本はここだけを読む |
 | `tools/build.py` | 各サブモジュールのビルドスクリプトを順に呼ぶ |
 | `tools/sync_docs.py` | `docs/` を更新する。`--check` で陳腐化を検査 |
+| `tools/diagram.py` | `docs/` の図を PlantUML のソースから描く。`--check` で陳腐化を検査。下記 |
 | `tools/package.py` | `dist/` にパッケージと zip を生成する。生成前に下記の検査を行う |
 | `tools/changelog.py` | リリースノートに書く材料を集める。下記。`release.py` からは呼ばれない |
 | `tools/release.py` | ビルドとパッケージ化を通しで実行し、タグ付けとアップロードまで行う。下記の検査を行う |
@@ -119,6 +122,25 @@ Makoto についてここで捕まるものは無い。
 バンク配置は Y8960 の `tools/zbuild/targets.py` から読む。配置が動いても
 こちらを直す必要はない。
 
+## 図
+
+`docs/` の図は PlantUML のソース（`.pu`）から `tools/diagram.py` が描き、
+描いたものもコミットする。`README.md` と `docs/README.md` が埋め込んでいる。
+
+**描いたファイルには元のソースの sha256 が書き込まれる。** `--check` はそれを
+読んで突き合わせるだけなので、**PlantUML も JRE も要らない**。日付では判定
+しない ―― クローンした直後のタイムスタンプはチェックアウトが書いたもので、
+ドキュメントだけの更新はビルドを挟まずに行う（下記）。
+
+`package.py` は図がソースより古いとパッケージ化を拒否する。`.pu` を直したら
+`tools/diagram.py` を実行して両方コミットすること。
+
+図を増やすときは `manifest.py` の `DIAGRAMS` に足す。`docs/README.md` の索引へ
+埋め込むのは `sync_docs.py` が行う。**ソースと描いたものは両方 `docs/` に置く。**
+`package.py` は `docs/` を丸ごと複製し、`sync_docs.py` のリンク検査は文書からの
+相対リンクを解決するので、置き場所が離れると図がパッケージから抜けるか、
+リンクが切れる。
+
 ## ドキュメントの複製
 
 `docs/` 配下の各リファレンスは各ソースリポジトリの `doc/` からの複製で、
@@ -128,7 +150,7 @@ GitHub 上で非公開ソースなしに読めるようコミットする。`syn
 
 `package.py` は `docs/` がソースより古いとパッケージ化を拒否するので、
 `sync_docs.py` の結果を先にコミットすること。`sync_docs.py --check` で書き換え
-ずに確認できる。
+ずに確認できる。図についても同じ検査が入る（上記）。
 
 ### ドキュメントだけを更新する
 

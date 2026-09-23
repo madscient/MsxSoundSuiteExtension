@@ -58,6 +58,10 @@ def render(entry, src_rel, dst_rel):
 def index():
     lines = ["# ドキュメント", "",
              "MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。", ""]
+    # 図は tools/diagram.py が描く。ここが唯一の埋め込み箇所ではないので、
+    # 描き直しの検査は package.py が diagram.py --check で行う。
+    for _, dst_rel, label in manifest.DIAGRAMS:
+        lines += [f"![{label}]({dst_rel})", ""]
     for key, title in manifest.DOC_SECTIONS:
         entry = manifest.repo(key)
         lines += [f"## {title}", ""]
@@ -147,7 +151,8 @@ def main():
         print(f"ERROR: {src}: link to {target} has no copy in docs/")
     if bad:
         print("\nlist the target in the repository's \"docs\" entry in "
-              "manifest.py, or drop the link at the source")
+              "manifest.py if it is a document, run tools/diagram.py if it "
+              "is a diagram, or drop the link at the source")
         return 1
     print("    all relative links resolve")
 

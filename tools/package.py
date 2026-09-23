@@ -223,7 +223,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", default=None)
     parser.add_argument("--skip-docs-check", action="store_true",
-                        help="package even if docs/ is older than the sources")
+                        help="package even if docs/ or its diagrams are "
+                             "older than the sources")
     args = parser.parse_args()
     version = args.version or default_version()
 
@@ -234,6 +235,13 @@ def main():
         if check.returncode != 0:
             print(check.stdout)
             print("ERROR: docs/ is stale; run tools/sync_docs.py and commit")
+            return 1
+        check = subprocess.run([sys.executable,
+                                manifest.abspath("tools", "diagram.py"),
+                                "--check"], capture_output=True, text=True)
+        if check.returncode != 0:
+            print(check.stdout)
+            print("ERROR: a diagram is stale; run tools/diagram.py and commit")
             return 1
 
     print(f"=== {NAME} {version} ===")

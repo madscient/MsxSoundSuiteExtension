@@ -1,0 +1,54 @@
+@startuml
+top to bottom direction
+skinparam nodeStyle rectangle
+
+node "MS-BASIC MML系統図" as root{
+    node "N88-BASIC V2" as n88 #BDBDBD {
+        [YM2203]
+    }
+    node "MSX-AUDIO" as audio #BDBDBD {
+        [Y8950 + PSG]
+    }
+    node "MSX-MUSIC" as music #BDBDBD {
+        [YM2413 + PSG]
+    }
+    node "MSX-MIDI" as midi #BDBDBD {
+        [YM2413 + PSG + MIDI OUT]
+    }
+    node "MSX-MUSIC V2" as music2 #LightBlue {
+        [YM2413 / Y8960 OPLLEX + SSGS]
+    }
+    node "MSX-AUDIO Lite" as lite #LightBlue {
+        [Y8950 / Y8960 OPL2EX + SSGS]
+    }
+    node "SFG BASIC" as sfg #LightBlue {
+        [YM2151 / YM2164 + SSGS]
+    }
+    node "MIDI BASIC" as play #LightBlue {
+        [MIDI OUT]
+    }
+    node "Makoto BASIC" as makoto #LightBlue {
+        [YM2608]
+    }
+}
+
+n88 --> audio : Y8950用に移植
+audio --> music : OPLL用に移植
+music --> midi : MIDI OUT機能を追加
+music --> music2 : MML機能強化、Y8960対応
+music2 --> lite : Y8950用に移植
+audio --> lite : 一部ADPCM機能を継承
+music2 --> sfg : OPM/OPP用に移植
+midi --> play : MML記法を流用\n PSG、FM機能を削除
+lite --> makoto : OPNA用に移植
+
+skinparam legendBackgroundColor transparent
+skinparam tableBorderColor transparent
+skinparam TableBorderThickness 0
+
+legend bottom
+<font color="#BDBDBD">■</font>当時の拡張BASIC。このリポジトリには含まれません
+<font color="#ADD8E6">■</font>このリポジトリで配布する拡張BASIC
+endlegend
+
+@enduml

@@ -2,6 +2,8 @@
 
 MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 
+![拡張BASICの系統図](phylogenetic-tree.svg)
+
 ## MSX-MUSIC BASIC Extension V2
 
 - [MSX-MUSIC BASIC Extension V2 リファレンス](msx-music/basic-reference.md)
