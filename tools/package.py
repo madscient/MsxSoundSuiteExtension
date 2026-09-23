@@ -8,7 +8,7 @@ Usage:
 Produces dist/MsxSoundSuiteExtension-<version>/ and the zip beside it.
 Nothing is built here: run tools/build.py first.
 
-The ROMs embedded in the cartridge image are checked against the ones we
+The ROMs embedded in each cartridge image are checked against the ones we
 built before anything is copied; see check_cartridge_identity.
 
 The version defaults to `git describe` of this repository, so a package cut
@@ -85,6 +85,11 @@ def check_cartridge_identity():
     the comparison still catches is a cartridge that was linked before the
     image it holds was last written - an older build left in place, or a
     ROM reassembled from stale intermediate output afterwards.
+
+    Every cartridge image the Y8960 entry ships is checked, not only the
+    first, and each is checked against the set of banks Y8960's own
+    targets.py gives for that image. Which extensions a cartridge holds is
+    Y8960's to decide, and it may ship more than one combination.
     """
     targets = load_y8960_targets()
     if targets is None:
@@ -92,8 +97,14 @@ def check_cartridge_identity():
 
     entry = manifest.repo("y8960")
     our_vendor = manifest.abspath(manifest.VENDOR)
+    ok = True
+    for src_rel, _, _ in entry["artifacts"]:
+        if not check_one_cartridge(targets, entry, our_vendor, src_rel):
+            ok = False
+    return ok
 
-    src_rel = entry["artifacts"][0][0]
+
+def check_one_cartridge(targets, entry, our_vendor, src_rel):
     name = os.path.splitext(os.path.basename(src_rel))[0]
     if name not in targets.ROM:
         print(f"ERROR: {src_rel} is not one of Y8960's ROM images "

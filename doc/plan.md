@@ -10,10 +10,10 @@
 `standalone/makoto.rom` をリリース物に加えた。**`y8960bas.rom` には入れない。**
 
 **前提**：Makoto は Y8960 とは別のハードウェア（YM2608 を載せた音源
-カートリッジ）向けで、Y8960 カートリッジのページ1を分け合う5本には
+カートリッジ）向けで、いまのところ Y8960 カートリッジのページ1を分け合う5本には
 参加しない。Makoto 側の `CLAUDE.md` にも同じことが書かれている。これが
 変わらない限り、`manifest.py` の `inputs` は空のままでよく、
-`package.py` の同一性検査もこの ROM を見ない。
+`package.py` の同一性検査もこの ROM を見ない。**この前提は将来外れる**（下記）。
 
 **前提**：ライセンス条件は兄弟と同じ。`src/` は YAMAHA／アスキーの著作物の
 フォークで、許諾されているのはバイナリの配布のみ、個人利用に限る。公開文書の
@@ -52,6 +52,37 @@ ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決ま�
 Makoto BASIC Extension を挙げているので、別の節は足さない。`mabel.rom` の
 リズム音色（CC BY-SA）のように、出典の明記を条件に求められるものではない。
 
+### 統合ROMが複数になる場合に備える
+
+持ち主から、**将来 Makoto を統合ROMに入れる可能性があり、その場合は組み合わせの
+違う統合ROMを複数リリースすることになる**と聞いた（2026-09-23）。例として挙がった
+のは MMBE+MABEL+SFG+MIDI、MMBE+MABEL+SFG+Makoto、MMBE+MABEL+Makoto+MIDI。
+
+組み合わせの集合も各イメージの名前もまだ決まっていないので、器は作らない。
+決まっていなくても外せる決め打ちが1つあったので、そこだけ先に外した。
+
+- **外した**：`package.py` の `check_cartridge_identity` が
+  `entry["artifacts"][0][0]` で統合ROMを1本と決め打ちしていた。y8960 の項の
+  `artifacts` をすべて回し、1本ぶんの検査を `check_one_cartridge` に切り出した。
+  各イメージがどのバンクに何を持つかは従来どおり Y8960 の `targets.py` の
+  `ROM[<名前>]["prebuilt"]` から読むので、組み合わせが増えてもこちらは変わらない
+- **すでに対応済み**：`build.py` の成果物の存在確認、`collect_roms`、
+  `release.py` の資産の組み立ては、どれも `artifacts` を回しているので
+  イメージが増えても動く
+
+**決まってから要るもの**（やり直しの値段）：
+
+| | |
+|---|---|
+| 各統合ROMのファイル名 | Y8960 の `targets.py` の `rom_name` が正。MSSE 側は `manifest.py` の `artifacts` に行を足すだけ |
+| 各ソースが作る y8960 版 ROM | 組み合わせが変わってもバンクの割り当てが同じなら作り直しは不要。**未確認** |
+| `README.md`・`tools/release-notes.md` の収録物の表 | 手で書く。イメージごとに1行 |
+| `manifest.py` の docstring の「four of the others」 | 組み合わせごとに本数が違うので書き換わる |
+
+MSSE 側の波及は `manifest.py` の `artifacts` の行と文書2本の表で、コードの構造は
+動かない見込み。**未検証**（統合ROMが2本ある `targets.py` を持っていないので、
+複数本の経路は走らせていない）。
+
 ### 確度
 
 - **確認済み** ―― `build.py makoto` が通り、`build/rom/makoto.rom` が 16384
@@ -62,6 +93,9 @@ Makoto BASIC Extension を挙げているので、別の節は足さない。`ma
 - **確認済み** ―― `package.py` が 6 本の ROM と `docs/` を集めて zip を作る。
   同一性検査は従来どおり4バンクを照合して通り、`MANIFEST.txt` に Makoto の
   リビジョンが入る。確認に使った試験パッケージは削除した
+- **確認済み** ―― 同一性検査を複数イメージ対応に書き換えても空振りしない。
+  `mmbe_y8960.rom` の `0x100` を反転させると `y8960bas` バンク #0 で拒否して
+  終了コード 1 になり、元へ戻すと sha256 が一致して再び通る
 - **確認済み** ―― ピンを `7b33e80` へ進めても `makoto.rom` の sha256 が
   `0872d94a` のまま変わらず、`sync_docs.py` が「unchanged」を返す
 - **確認済み** ―― `release.py --dry-run`。定型文のままでは

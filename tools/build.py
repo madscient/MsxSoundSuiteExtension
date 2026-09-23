@@ -5,7 +5,7 @@ Build every source repository's ROM images.
 Usage:
     python tools/build.py [<key> ...] [--dirty]
 
-With no key, every repository is built in manifest order. Requires zmac
+With no key, all six are built in manifest order. Requires zmac
 (https://48k.ca/zmac.html); each repository picks it up from the ZMAC_EXE
 environment variable, which is passed through unchanged, as is the rest of
 the environment plus whatever the manifest entry declares in "env".

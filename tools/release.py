@@ -10,7 +10,7 @@ Runs build.py, packages, tags this repository and uploads the package with
 the GitHub CLI (`gh auth login` first). The zip and the loose ROM images are
 both attached: the zip carries the documents, the loose files save a click.
 
-The release describes one state of every source, so it refuses to run
+The release describes one state of the six sources, so it refuses to run
 unless this repository is clean and every submodule sits exactly on its
 recorded commit - otherwise the tag would point at a package nobody can
 rebuild.
