@@ -38,9 +38,10 @@ ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決ま�
 `Makoto カートリッジ` と書いて分ける（`Y8960 カートリッジ` と同じ形。この区別は
 こちらで決めたもので、持ち主の指示ではない）。
 
-**ピンは `4650edc`**（`origin/master`）。作業リポジトリのローカル master は
-`64f5f8b` まで進んでいるが未 push で、差分は `CLAUDE.md` のみ。ROM と複製する
-文書には届かないので、ピンを進めるのは push の後でよい。
+**ピンは `7b33e80`**（`origin/master`）。`4650edc` から動いたのは `CLAUDE.md`・
+`README.md`・`doc/plan.md` の3本で、`src/` と複製する2本の文書には届かない。版の
+文字列は最終コミットの日付から作るので、同じ日のコミットである間は ROM のバイト列
+も変わらない。
 
 **プリセット音色は持ち主の判断で ROM の他の部分と同じ扱いとする**
 （2026-09-23）。YAMAHA／アスキーの著作物であり、ライセンス元も MSX
@@ -58,6 +59,8 @@ Makoto BASIC Extension を挙げているので、別の節は足さない。`ma
 - **確認済み** ―― `package.py` が 6 本の ROM と `docs/` を集めて zip を作る。
   同一性検査は従来どおり4バンクを照合して通り、`MANIFEST.txt` に Makoto の
   リビジョンが入る。確認に使った試験パッケージは削除した
+- **確認済み** ―― ピンを `7b33e80` へ進めても `makoto.rom` の sha256 が
+  `0872d94a` のまま変わらず、`sync_docs.py` が「unchanged」を返す
 - **確認済み** ―― `release.py --dry-run`。定型文のままでは
   `vendor/MakotoBasicExtension` と `docs/` の動きを挙げて拒否し、`--notes-file`
   を名指しすると `check_clean` を抜けて `makoto.rom` を資産の一覧に載せる。
