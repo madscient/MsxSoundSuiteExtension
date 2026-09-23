@@ -23,7 +23,8 @@ ROM イメージは [Releases](../../releases) から入手してください。
 電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /
 `CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
 
-`standalone/makoto.rom` は Makoto 専用で、`y8960bas.rom` には含まれません。
+`standalone/makoto.rom` は Makoto カートリッジ専用で、`y8960bas.rom` には
+含まれません。
 
 ### ソースコードについて
 
