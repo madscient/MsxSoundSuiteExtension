@@ -7,11 +7,11 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 
 | | Lite | Makoto BASIC Extension |
 |---|---|---|
-| チップ | Y8950（MSX-AUDIO）、Y8960 の OPL2EX | YM2608（Makoto） |
+| チップ | Y8950（MSX-AUDIO）、Y8960 の OPL2EX | YM2608（Makoto）、YMF288（Misato） |
 | I/O ポート | `C0H`-`C1H` | `14H`-`17H` |
 | FM | 9 声（リズムを使うと 6 声） | 6 声。リズムを使っても減らない |
 | リズム | 5 楽器。FM のチャンネル 7〜9 を使う | 6 楽器（リムショットが増えた）。チップ内蔵の音 |
-| ADPCM | 1 声、〜49716Hz | 1 声、〜55555Hz |
+| ADPCM | 1 声、〜49716Hz | 1 声、〜55555Hz。Misato には無く、ADPCM に関わるものは断る（[Misato](basic-reference.md#misato)） |
 | SSG | 無い | 3 声。PLAY 文の SSG 用の文字列 |
 | PSG の文字列 | 本体の PSG（Y8960 では SSGS にも） | 本体の PSG |
 
@@ -21,7 +21,7 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 |---|---|---|
 | 初期化 | `CALL AUDIO` | `CALL MAKOTO`。引数の意味は同じ |
 | PLAY 文のチャンネル数の合計 | リズム不使用で 9、使用で 6 まで | リズムの有無によらず 6 まで |
-| 確保するメモリ | 1027 バイト | 1399 バイト（ユーザー音色 11 個ぶんを含む） |
+| 確保するメモリ | 1027 バイト | 1443 バイト（ユーザー音色 11 個ぶんを含む） |
 | `PLAY#1` | `Illegal function call` | SSG と PSG |
 | `PLAY#2` | FM・PCM・リズム・PSG | FM・PCM・リズム・SSG。PSG は鳴らさない |
 | `PLAY#3` | `#2` と同じ | FM・PCM・リズム・SSG・PSG |
@@ -29,7 +29,7 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 | `CALL AUDREG` のレジスタ番号 | 8 ビット | 9 ビット（`100H`〜`1FFH` が裏のバンク） |
 | `CALL VOICE` の引数 | 9 個まで | 6 個まで |
 | 音色番号 | 0〜63。63 がユーザー音色 | 0〜79。0〜68 がプリセット、69〜79 がユーザー音色 |
-| 音色の配列 | 32 バイト（Y8950 のレジスタの並び） | N88-BASIC(86) の音色配列（50 個の整数） |
+| 音色の配列 | 32 バイト（Y8950 のレジスタの並び） | N88-BASIC(86) の音色配列（50 個の整数）に SSG-EG と AMS を加えたもの |
 | `CALL VOICE COPY` の転送先 | 63 番のみ | 69〜79 番 |
 | `CALL SET PCM` のサンプリング周波数 | 1800〜49716 | 1800〜55555 |
 | `CALL MUSIC` / `CALL MINIT` / `CALL SFG` / `CALL MIDI` | Y8960 カートリッジ版にある | 無い |
@@ -55,6 +55,6 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 
 ## 音長をタイマーで刻むモード
 
-`CALL MAKOTO` のモード bit2 の働きは Lite の `CALL AUDIO` と同じで、刻みの頻度もほぼ同じ（T32 で約 102Hz、T255 で約 204Hz）。刻むのは YM2608 のタイマー A になる。
+`CALL MAKOTO` のモード bit2 の働きは Lite の `CALL AUDIO` と同じで、刻みの頻度もほぼ同じ（T32 で約 102Hz、T255 で約 204Hz）。刻むのは YM2608（Misato では YMF288）のタイマー A になる。
 
-**Makoto の割り込みが本体に届くことが前提である。**
+**音源の割り込みが本体に届くことが前提である。**
