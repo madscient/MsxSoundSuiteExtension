@@ -14,12 +14,12 @@ ROM イメージは [Releases](../../releases) から入手してください。
 | `standalone/mabel.rom` | 16KB | MSX-AUDIO（Y8950）単体カートリッジ用 |
 | `standalone/sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
 | `standalone/midi.rom` | 16KB | MIDI インターフェースを制御する単体カートリッジ用 |
-| `standalone/makoto.rom` | 16KB | Makoto（YM2608）単体カートリッジ用 |
+| `standalone/makoto.rom` | 16KB | Makoto（YM2608）・Misato（YMF288）単体カートリッジ用 |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /　`CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
 
-`standalone/makoto.rom` は Makoto カートリッジ専用で、`y8960bas.rom` には含まれません。
+`standalone/makoto.rom` は Makoto カートリッジと Misato カートリッジ用で、`y8960bas.rom` には含まれません。
 
 ### ソースコードについて
 
@@ -57,7 +57,7 @@ MIDI インターフェースを制御して MIDI 音源モジュールを演奏
 
 ### Makoto BASIC Extension
 
-MSX-AUDIO BASIC Extension Lite を、YM2608（OPNA）を載せた音源カートリッジMakoto 向けに移植したものです。ステートメントと MML をそのまま引き継ぎ、FM 6声・リズム 6音・ADPCM 1声を `PLAY` 文から鳴らします。Y8960 カートリッジ用のイメージには含まれません。
+MSX-AUDIO BASIC Extension Lite を、YM2608（OPNA）を載せた音源カートリッジMakoto 向けに移植したものです。ステートメントと MML をそのまま引き継ぎ、FM 6声・リズム 6音・ADPCM 1声を `PLAY` 文から鳴らします。YMF288 を載せた音源カートリッジ Misato でも動きます（ADPCM を除く）。Y8960 カートリッジ用のイメージには含まれません。
 
 ### Y8960 BASIC Extension
 
