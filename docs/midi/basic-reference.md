@@ -204,7 +204,7 @@ PLAY "BSH8H8", "@H1O4CDE"      ' 第1文字列 → リズム(CH10)、第2文字�
 CALL MUSIC     ' MSX-MUSIC BASIC Extension V2 へ切り替える
 CALL AUDIO     ' MSX-AUDIO BASIC Extension Lite へ切り替える
 CALL MINIT     ' Y8960 BASIC Extension へ切り替える
-CALL SFG       ' SFG BASIC Extension へ切り替える
+CALL OPM       ' OPM BASIC Extension へ切り替える
 ```
 
 切り替えると、この拡張BASIC が確保したものは返され、演奏は止まる。引数は切り替えた先の拡張BASIC が読むので、書き方はそちらのものに従う。

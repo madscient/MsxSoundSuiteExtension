@@ -12,10 +12,10 @@ MSX Sound Suite Extension（MSSX）は、ひとつのカートリッジに複数
 | 0 | MSX-MUSIC BASIC Extension V2 | #0, #1、#5 の一部（[下記](#id-0-の-fmbios-本体は-5-に置く)） | [MsxMusicBasicExtension](https://github.com/madscient/MsxMusicBasicExtension) |
 | 1 | MSX-AUDIO BASIC Extension Lite | #2, #3 | [MsxAudioBasicExtensionLite](https://github.com/madscient/MsxAudioBasicExtensionLite) |
 | 2 | Y8960 BASIC Extension | #4, #5, #10-#15 | このリポジトリ |
-| 3 | SFG BASIC Extension | #6, #7 | [SFGBasicExtension](https://github.com/madscient/SFGBasicExtension) |
+| 3 | OPM BASIC Extension | #6, #7 | [SFGBasicExtension](https://github.com/madscient/SFGBasicExtension) |
 | 4 | MIDI Play BASIC Extension | #8, #9 | [MidiPlayBasicExtension](https://github.com/madscient/MidiPlayBasicExtension) |
 
-SFG BASIC Extension が鳴らすのは別スロットに挿さった SFG-01/05 の YM2151 で、Y8960 の音源ではない。MIDI Play BASIC Extension が鳴らすのも別スロットの MIDI インターフェースにつながった外部音源で、同じく Y8960 の音源ではない。
+OPM BASIC Extension は SFG BASIC Extension を Y8960 の OPM 向けにしたもので、同じリポジトリから組む。鳴らすのはカートリッジ内蔵の OPM で、別スロットの SFG-01/05 は鳴らさない。MIDI Play BASIC Extension が鳴らすのは別スロットの MIDI インターフェースにつながった外部音源で、Y8960 の音源ではない。
 
 **ただし、主たる音源がどこにあろうと、本体 PSG を鳴らす ROM は Y8960 の SSGS も鳴らせる。** SSGS は本体 PSG と同じポートに座るので、PSG のドライバが書くレジスタがそのまま届く。**SSGS を使うなら、[I/O Enabler](#io-enabler) を書く義務を負う。** 使わないなら、カートリッジ側の I/O ポートを一切使わないので義務も負わない。MIDI Play BASIC Extension は PSG を持たないので、この選択肢も無い。
 
@@ -152,6 +152,39 @@ SSGS のポート `A0h`/`A1h` は本体内蔵 PSG と同じで、開けるとレ
 
 実害が無いのは開ける側の判断にとどまる。**明け渡すときは SSGS も 0 に戻す。**次に表に出る ROM が SSGS を使うとは限らず、使わない ROM の PSG が理由なく二重に鳴る。
 
+## Digital Mixer
+
+カートリッジは、マスターと5ブロック（SSGS、OPLLEX、OPL2EX、SCC、OPM）の音量を持つ Digital Mixer を1組だけ持つ。レジスタは BANK1 の Memory Mapped I/O にあり、6本とも 0 で消音、128 で最大、リセット値は 128（[`hardware.md`](hardware.md)）。
+
+ここでいう「カートリッジの音源を鳴らす ROM」は ID 0-3 の4本。MIDI Play BASIC Extension はカートリッジの音源を鳴らさないので、この節の義務を負わない。
+
+### 受け取った側が初期化する
+
+**カートリッジの音源を鳴らす ROM は、表に出た時点でミキサーの6本を 128 にする。** 書く場所は I/O Enabler と同じで、アタッチエントリの「自分宛て」経路と、拡張BASIC の `ENTER`。どちらの経路でも BANK1 には参加 ROM の後半が出ているので、レジスタは見えている。
+
+**ページ1 を渡す側には、ミキサーを戻す義務が無い。** 前の持ち主が何を残したかにかかわらず、受け取った側が自分で既定の状態にする。前の持ち主がミキサーに触ったかどうかは、受け取る側からは分からないためである。
+
+**ID 0 は、カートリッジ INIT でも6本を 128 にする。** リセットを伴わないウォームブートでは、ミキサーは前の持ち主が残した値のままで、切り替えも起きない。ID 0 の INIT は、MSX-MUSIC の FMBIOS をそのまま使う従来のアプリケーションが起動する前に必ず通る。ほかの ROM の INIT は初期化しない。INIT の時点で BANK1 に ROM バンクが出ているとは限らないので、書く前に自分の後半を出す。
+
+拡張BASIC の初期化と終了のステートメントは、ミキサーに触らない。触るのは表に出た時点と、次の `CALL MIXER` だけ。
+
+### `CALL MIXER` はどの ROM が表に出ていても使える
+
+カートリッジの音源を鳴らす拡張BASIC は、MSX Sound Suite として統合したビルドで `CALL MIXER` を持つ。切り替えの引き金ではなく、**表に出ている ROM が自分で実行する。**
+
+`CALL MIXER(マスター, SSGS, OPLLEX, OPL2EX, SCC, OPM)`
+
+- 引数は6つとも省略できない。各 0-128
+- 値をそのままレジスタに書く。マスターは `7FFEh`、SSGS から SCC までの4ブロックは `7FF7h`-`7FFAh`、OPM は `7FFDh`。ほかのレジスタには書かない
+- 1つでも範囲外なら `Illegal function call` で、ミキサーには何も書かない
+- 初期化のステートメントを先に実行している必要は無い
+
+ミキサーの値は、表に出る ROM が替わると 128 に戻る（替わった先が MIDI Play BASIC Extension なら、そのまま残る）。切り替えをまたいで値を持ち越す口は無い。
+
+### アプリケーションは BIOS を使う
+
+アプリケーションは、ミキサーのレジスタに直接書かず、Y8960 BASIC Extension の `SQMIX`（[`sequencer-bios.md`](sequencer-bios.md)）を使うことを推奨する。**ID 0-3 のどれかをアタッチすると6本とも 128 に戻る**ので、設定は ID 2 をアタッチした後に行う。
+
 ## 明け渡す前の後始末
 
 **ページ1 を渡す側が、自分の拡張機能を強制的に終了させてから渡す。** フックを張ったまま ROM が消えると、次の割り込みで、行き先の ROM のその番地にたまたま置かれているものが実行される。ユーザやアプリケーションに明示的な終了を求める形にはしない。
@@ -205,7 +238,7 @@ SSGS のポート `A0h`/`A1h` は本体内蔵 PSG と同じで、開けるとレ
 | `CALL MUSIC` | MSX-MUSIC BASIC Extension V2 |
 | `CALL AUDIO` | MSX-AUDIO BASIC Extension Lite |
 | `CALL MINIT` | Y8960 BASIC Extension |
-| `CALL SFG` | SFG BASIC Extension |
+| `CALL OPM` | OPM BASIC Extension |
 | `CALL MIDI` | MIDI Play BASIC Extension |
 
 参加している拡張BASIC は、自分以外の全員の名前をステートメント名テーブルに持ち、そのハンドラでは**引数を一切読まずに**ページ1 を渡す。引数は行き先のROM が自分のテーブルから実行するときに読む。`CALL MUSIC(-1)` の `(-1)` を解釈するのは MSX-MUSIC であって、渡した側ではない。

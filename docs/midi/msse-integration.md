@@ -23,10 +23,10 @@ MSX Sound Suite Extension（MSSX）の取り決め全文は[`Y8960BasicExtension
 | 0 | MSX-MUSIC BASIC Extension V2 | #0, #1 | `CALL MUSIC` |
 | 1 | MSX-AUDIO BASIC Extension Lite | #2, #3 | `CALL AUDIO` |
 | 2 | Y8960 BASIC Extension | #4, #5, #10-#13 | `CALL MINIT` |
-| 3 | SFG BASIC Extension | #6, #7 | `CALL SFG` |
+| 3 | OPM BASIC Extension | #6, #7 | `CALL OPM` |
 | 4 | MIDI Play BASIC Extension（このリポジトリ） | #8, #9 | `CALL MIDI` |
 
-**`CALL MIDI` を他の4ROMのステートメント名テーブルに追加する作業は、それぞれのリポジトリ側で必要になる。** 本リポジトリの実装だけでは、既存の4ROMから本ROMへページ1を渡すことはできない（逆方向、本ROMから既存4ROMへ渡す `CALL MUSIC`/`CALL AUDIO`/`CALL MINIT`/`CALL SFG` は本ROM側の実装だけで足りる）。実装フェーズで各リポジトリへの変更が要ることを`plan.md` の段階0に含める。
+**`CALL MIDI` を他の4ROMのステートメント名テーブルに追加する作業は、それぞれのリポジトリ側で必要になる。** 本リポジトリの実装だけでは、既存の4ROMから本ROMへページ1を渡すことはできない（逆方向、本ROMから既存4ROMへ渡す `CALL MUSIC`/`CALL AUDIO`/`CALL MINIT`/`CALL OPM` は本ROM側の実装だけで足りる）。実装フェーズで各リポジトリへの変更が要ることを`plan.md` の段階0に含める。
 
 ## 単体ビルドとの関係
 

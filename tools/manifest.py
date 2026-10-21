@@ -70,11 +70,11 @@ REPOS = [
         "title": "SFG BASIC Extension",
         "path": f"{VENDOR}/SFGBasicExtension",
         "steps": [
-            ["tools/zbuild/build.py", "sfg", "sfg_y8960"],
-            ["tools/zbuild/rom.py", "sfg", "sfg_y8960"],
+            ["tools/zbuild/build.py", "sfg", "opm_y8960"],
+            ["tools/zbuild/rom.py", "sfg", "opm_y8960"],
         ],
         "artifacts": [("build/rom/sfg.rom", "standalone/sfg.rom", 16384)],
-        "inputs": ["build/rom/sfg_y8960.rom"],
+        "inputs": ["build/rom/opm_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "sfg/basic-reference.md",
              "SFG BASIC Extension リファレンス"),
