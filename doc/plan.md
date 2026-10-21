@@ -314,6 +314,13 @@ Y8960 の `targets.py` の `PREBUILT` を読むので、こちらは直さずに
 タグ `v0.5.1` は `83fedfe` を指す。資産は zip と単体 ROM 5本と `y8960bas.rom` の
 7点。zip は `MsxSoundSuiteExtension-0.5.1.zip`（349896 バイト）。
 
+ドラフトのあと、持ち主がノートの冒頭の段落を直し、その指示で公開した
+（2026-10-21 15:55 UTC）。対応するカートリッジを「OPM の載った仕様」から
+Y8960_Cartridge のリリース v0.9.3 と名指す形にし、「v0.9.3 以上が必要」とした。
+版の対応づけは持ち主のもので、こちらでは v0.9.3 の中身と突き合わせていない
+（`hardware.md` の写しの元は 2026-10-20 版の仕様書、SCC の節は RTL の v0.9.3 を
+読んでいる）。公開の時点で `master` は push されていない。
+
 ### 確度
 
 - **確認済み** ―― Y8960 の `origin/master` が持つ兄弟4本の gitlink が、MSSE の
@@ -325,6 +332,10 @@ Y8960 の `targets.py` の `PREBUILT` を読むので、こちらは直さずに
 - **確認済み** ―― ドラフトの状態。`isDraft=true`・`isPrerelease=false`・
   `targetCommitish=master`、資産7点を落とし直して手元のパッケージと `cmp` で一致、
   本文は `dist/notes.md` と末尾の改行を除いて一致
+- **確認済み** ―― 公開後の状態。`isDraft: false`、`isPrerelease: false`、
+  `gh release list` で Latest、資産7点、リリースページが HTTP 200、本文は
+  持ち主が直した `dist/notes.md` と末尾の改行を除いて一致。直した段落が足した
+  リンク（Y8960_Cartridge の v0.9.3 のリリース）も HTTP 200
 - **確認済み** ―― 系統図の描き直し。`diagram.py` が終了コード 0 で、同じソースから
   PNG を描いて OPM BASIC の箱と矢印が載っていることを目で見た
 - **確認済み** ―― ROM ごとの v0.5.0 との差。v0.5.0 のビルド物と `cmp -l` で
