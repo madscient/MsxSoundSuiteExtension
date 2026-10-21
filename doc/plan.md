@@ -296,18 +296,37 @@ Y8960 の `targets.py` の `PREBUILT` を読むので、こちらは直さずに
 0 をそのままレジスタに書いている。変わったのはカートリッジ側の解釈（RTL が 0 を
 左端として扱う）と文書で、v0.5.0 のノートも「0 も中央」と書いていた。
 
-**ドラフトの前に持ち主に諮るもの**（公開文面で、zip にも入る）：README・NOTICE・
-`docs/README.md` の索引の SFG の節・系統図に OPM BASIC Extension を載せるか、
-どう書くか。
+**README・NOTICE・索引・系統図に OPM BASIC Extension を載せた**（持ち主の判断、
+4つとも）。どれも zip に入るので、タグの前に入れた。README は `CALL SFG` を
+`CALL OPM` に直し、「収録内容」に節を足し、SFG の節には Y8960 のイメージに入らない
+ことを書いた。索引の SFG の節の見出しとリンクのラベルは、複製元の文書の題に揃えて
+「SFG BASIC Extension / OPM BASIC Extension」にした。値を変える値段は
+`manifest.py` の2行と `sync_docs.py` の再実行で、パス `docs/sfg/` は変えていない。
+系統図は SFG BASIC から OPM BASIC へ「Y8960内蔵OPM用に改修 / プリセット音色を削除」
+の矢印を足した。
+
+**ドラフトで出した。** ノートのリンク先9本はいずれも v0.5.0 以前から `master` に
+在る文書で、初出のものは無い。`master` を push するまでの間、リンク先は v0.5.0
+時点の内容を見せる。
+
+### 出した結果
+
+タグ `v0.5.1` は `83fedfe` を指す。資産は zip と単体 ROM 5本と `y8960bas.rom` の
+7点。zip は `MsxSoundSuiteExtension-0.5.1.zip`（349896 バイト）。
 
 ### 確度
 
 - **確認済み** ―― Y8960 の `origin/master` が持つ兄弟4本の gitlink が、MSSE の
   新しいピン（各 `origin/master`）と一致する（`git ls-tree` で突き合わせた）。
   v0.5.0 では MIDI だけ食い違っていたが、今回は一致
-- **確認済み** ―― 6本の通しビルドとパッケージ化。`release.py v0.5.1 --dry-run
-  --notes-file tools/release-notes.md` が終了コード 0。同一性検査は4バンクとも一致し、
-  バンク #6 は `opm_y8960.rom` と照合された
+- **確認済み** ―― 6本の通しビルドとパッケージ化。`release.py v0.5.1 --dry-run`
+  （定型文と `dist/notes.md` の両方）と本番の `--draft` がともに終了コード 0。
+  同一性検査は4バンクとも一致し、バンク #6 は `opm_y8960.rom` と照合された
+- **確認済み** ―― ドラフトの状態。`isDraft=true`・`isPrerelease=false`・
+  `targetCommitish=master`、資産7点を落とし直して手元のパッケージと `cmp` で一致、
+  本文は `dist/notes.md` と末尾の改行を除いて一致
+- **確認済み** ―― 系統図の描き直し。`diagram.py` が終了コード 0 で、同じソースから
+  PNG を描いて OPM BASIC の箱と矢印が載っていることを目で見た
 - **確認済み** ―― ROM ごとの v0.5.0 との差。v0.5.0 のビルド物と `cmp -l` で
   比べた。`makoto.rom` は同一、`midi.rom` は3バイトで版の文字列の日付
   （`2026 09 29` → `2026 10 21`）だけ。ほかは `mmbe.rom` 8224、`mabel.rom` 10837、
