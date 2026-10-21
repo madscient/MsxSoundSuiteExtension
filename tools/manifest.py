@@ -77,7 +77,7 @@ REPOS = [
         "inputs": ["build/rom/opm_y8960.rom"],
         "docs": [
             ("doc/basic-reference.md", "sfg/basic-reference.md",
-             "SFG BASIC Extension リファレンス"),
+             "SFG BASIC Extension / OPM BASIC Extension リファレンス"),
             ("doc/diff-from-mmbe.md", "sfg/diff-from-mmbe.md",
              "MSX-MUSIC BASIC Extension V2 との差分ガイド"),
         ],
@@ -193,7 +193,7 @@ LOCAL_DOCS = [
 DOC_SECTIONS = [
     ("msx-music", "MSX-MUSIC BASIC Extension V2"),
     ("msx-audio", "MSX-AUDIO BASIC Extension Lite"),
-    ("sfg", "SFG BASIC Extension"),
+    ("sfg", "SFG BASIC Extension / OPM BASIC Extension"),
     ("midi", "MIDI Play BASIC Extension"),
     ("makoto", "Makoto BASIC Extension"),
     ("y8960", "Y8960 BASIC Extension / Y8960 Sequencer BIOS"),

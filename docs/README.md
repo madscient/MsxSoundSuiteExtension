@@ -15,9 +15,9 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 - [MSX-MUSIC BASIC Extension V2 との差分](msx-audio/diff-from-mmbe.md)
 - [当時の MSX-AUDIO 拡張BASIC との差分](msx-audio/diff-from-msxaudio.md)
 
-## SFG BASIC Extension
+## SFG BASIC Extension / OPM BASIC Extension
 
-- [SFG BASIC Extension リファレンス](sfg/basic-reference.md)
+- [SFG BASIC Extension / OPM BASIC Extension リファレンス](sfg/basic-reference.md)
 - [MSX-MUSIC BASIC Extension V2 との差分ガイド](sfg/diff-from-mmbe.md)
 
 ## MIDI Play BASIC Extension

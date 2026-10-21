@@ -17,7 +17,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 | `standalone/makoto.rom` | 16KB | Makoto（YM2608）・Misato（YMF288）単体カートリッジ用 |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
-電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /　`CALL MUSIC` / `CALL AUDIO` / `CALL SFG` / `CALL MIDI` で切り替わります。
+電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /　`CALL MUSIC` / `CALL AUDIO` / `CALL OPM` / `CALL MIDI` で切り替わります。
 
 `standalone/makoto.rom` は Makoto カートリッジと Misato カートリッジ用で、`y8960bas.rom` には含まれません。
 
@@ -25,7 +25,7 @@ ROM イメージは [Releases](../../releases) から入手してください。
 
 リリースページに並ぶ「Source code (zip)」「Source code (tar.gz)」は GitHub がすべてのリリースに自動で付けるもので、中身はこのリポジトリのドキュメントとビルド用スクリプトだけです。**拡張BASIC 本体のソースコードは含まれません。**
 
-MSX-MUSIC / MSX-AUDIO / SFG / MIDI Play / Makoto の各 BASIC Extension は日本楽器製造株式会社（YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されているのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、このリポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空のディレクトリになります。
+MSX-MUSIC / MSX-AUDIO / SFG / OPM / MIDI Play / Makoto の各 BASIC Extension は日本楽器製造株式会社（YAMAHA）および株式会社アスキーの著作物をフォークしたもので、許諾されているのはバイナリの配布に限られます。ソースは非公開のリポジトリにあり、このリポジトリはその参照（`vendor/`）を持つだけなので、アーカイブ内では空のディレクトリになります。
 
 ## 系統
 
@@ -43,7 +43,11 @@ MSX-MUSIC BASIC Extension V2 を MSX-AUDIO 向けに改修したもので、従�
 
 ### SFG BASIC Extension
 
-MSX-MUSIC BASIC Extension V2 を SFG-01/05 向けに移植したものです。MSX-MUSIC 互換 MML で OPM/OPP を演奏できます。
+MSX-MUSIC BASIC Extension V2 を SFG-01/05 向けに移植したものです。MSX-MUSIC 互換 MML で OPM/OPP を演奏できます。Y8960 カートリッジ用のイメージには含まれません。
+
+### OPM BASIC Extension
+
+SFG BASIC Extension を、Y8960 カートリッジ内蔵の OPM 向けにしたものです。ステートメントと MML は SFG BASIC Extension と同じで、初期化は `CALL OPM` です。SFG-01/05 は要りません。プリセット音色は持たず、音色は `CALL VOICE COPY` でユーザー音色に作ります。Y8960 カートリッジ用のイメージにだけ含まれます。
 
 ### MIDI Play BASIC Extension
 

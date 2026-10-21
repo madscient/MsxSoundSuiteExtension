@@ -24,6 +24,9 @@ node "MS-BASIC MML系統図" as root{
     node "SFG BASIC" as sfg #LightBlue {
         [YM2151 / YM2164 + SSGS]
     }
+    node "OPM BASIC" as opm #LightBlue {
+        [Y8960 OPM + SSGS]
+    }
     node "MIDI BASIC" as play #LightBlue {
         [MIDI OUT]
     }
@@ -39,6 +42,7 @@ music --> music2 : MML機能強化、Y8960対応
 music2 --> lite : Y8950用に移植
 audio --> lite : 一部ADPCM機能を継承
 music2 --> sfg : OPM/OPP用に移植
+sfg --> opm : Y8960内蔵OPM用に改修\n プリセット音色を削除
 midi --> play : MML記法を流用\n PSG、FM機能を削除
 lite --> makoto : OPNA用に移植
 
