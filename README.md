@@ -1,5 +1,7 @@
 # MSX Sound Suite Extension
 
+日本語 | [English](README.en.md)
+
 MSX Sound Suite Extension（MSSX）は、[Y8960 カートリッジ](https://github.com/hra1129/Y8960_Cartridge)向けの拡張BASICと BIOS、および同じコードベースから作った他の音源向けの単体ROM の総称です。
 
 ## 入手
@@ -57,7 +59,7 @@ MIDI インターフェースを制御して MIDI 音源モジュールを演奏
 - MSX-MIDI (μPACK)
 - YAMAHA SFG-01 (FMシンセサイザユニット)
 - YAMAHA SFG-05 (FMシンセサイザユニットII)
-- Phillips NMS1205
+- Philips NMS1205
 
 ### Makoto BASIC Extension
 

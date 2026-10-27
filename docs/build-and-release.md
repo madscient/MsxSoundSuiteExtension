@@ -15,6 +15,10 @@
 `vendor/` の6リポジトリはライセンスの都合で非公開のため、サブモジュールの
 取得には各リポジトリへのアクセス権が要る。
 
+`README.md` と `README.en.md` は同じ内容の日本語版と英語版で、どちらも zip に
+入る。片方を直したら、もう片方も同じコミットで直す。`docs/` の仕様書は日本語
+だけである。
+
 ## 前提
 
 | | |
@@ -36,7 +40,7 @@ python tools/sync_docs.py              # docs/ を最新のソースから更新
 python tools/diagram.py                # 図を描き直す（.pu を直したときだけ）
 python tools/package.py                # dist/ にパッケージと zip を生成
 python tools/changelog.py              # リリースノートの材料を dist/ に出す
-                                       # 材料から dist/notes.md を書く（下記）
+                                       # 材料から dist/notes.md を日英で書く（下記）
 python tools/release.py v0.1.0 --notes-file dist/notes.md
 ```
 
@@ -54,7 +58,7 @@ python tools/release.py v0.1.0 --notes-file dist/notes.md
 | `tools/package.py` | `dist/` にパッケージと zip を生成する。生成前に下記の検査を行う |
 | `tools/changelog.py` | リリースノートに書く材料を集める。下記。`release.py` からは呼ばれない |
 | `tools/release.py` | ビルドとパッケージ化を通しで実行し、タグ付けとアップロードまで行う。下記の検査を行う |
-| `tools/release-notes.md` | リリースノートの定型文。`--notes-file` で差し替え可 |
+| `tools/release-notes.md` | リリースノートの定型文（日本語と英語）。`--notes-file` で差し替え可 |
 
 成果物やドキュメントを増やすときは `manifest.py` だけを変更する。
 
@@ -63,6 +67,16 @@ python tools/release.py v0.1.0 --notes-file dist/notes.md
 `tools/release-notes.md` は毎回同じ定型文（利用条件と収録物）で、前回からの
 変更は入っていない。定型文の写しに変更点の節を足したものを `dist/notes.md` に
 作り、`--notes-file` で渡す。
+
+**ノートは日本語と英語の両方を書く。** 1つのファイルに日本語、`---` だけの行、
+英語の順に並べる。定型文もこの形になっている。変更点の節は日本語と英語の
+両方に足す。`---` の行の前後には空行を置く（直前が段落の行だと、Markdown では
+見出しになる）。
+
+`release.py` は、`---` だけの行がちょうど1本でないとき、または日本語と英語で
+見出しの数が違うとき、リリースを拒否する。見ているのは見出しの数だけで、
+訳が古いままかどうかは見分けられない。英語は README と同じく、仕様書
+（日本語のみ）へのリンクに「in Japanese」と添える。
 
 **リリースのたびに書く。** 前回からの変更が無かった回も、無かったことを確かめて
 から飛ばす。ノートは「どの変更をすでに載せたか」の記録でもあるので、回を飛ばすと
@@ -125,7 +139,7 @@ Makoto についてここで捕まるものは無い。
 ## 図
 
 `docs/` の図は PlantUML のソース（`.pu`）から `tools/diagram.py` が描き、
-描いたものもコミットする。`README.md` と `docs/README.md` が埋め込んでいる。
+描いたものもコミットする。`README.md`・`README.en.md`・`docs/README.md` が埋め込んでいる。
 
 **描いたファイルには元のソースの sha256 が書き込まれる。** `--check` はそれを
 読んで突き合わせるだけなので、**PlantUML も JRE も要らない**。日付では判定

@@ -25,3 +25,33 @@ zip にはドキュメントと、各 ROM のビルド元コミットおよび S
 
 ステートメントと MML の仕様は [`docs/`](https://github.com/madscient/MsxSoundSuiteExtension/tree/master/docs) を参照して
 ください。
+
+---
+
+## Terms of use
+
+These ROM images are licensed for **personal use only**.
+
+**Redistribution requires separate permission from MSX Licensing Corporation.**
+See the included `NOTICE.md` (in Japanese) for details.
+
+## Contents
+
+| File | Size | Purpose |
+|---|--:|---|
+| `y8960bas.rom` | 128KB | For the Y8960 cartridge. Contains all five BASIC extensions |
+| `mmbe.rom` | 16KB | Standalone MSX-MUSIC. Replaces the built-in MSX-MUSIC of a computer, or runs as a ROM cartridge |
+| `mabel.rom` | 16KB | Standalone cartridge for MSX-AUDIO (Y8950) |
+| `sfg.rom` | 16KB | Standalone cartridge used together with an SFG-01/05 |
+| `midi.rom` | 16KB | Standalone cartridge that drives a MIDI interface |
+| `makoto.rom` | 16KB | Standalone cartridge for Makoto (YM2608) and Misato (YMF288). Not included in `y8960bas.rom` |
+
+The "Source code (zip / tar.gz)" files below are added automatically by GitHub and
+contain only the documentation and build scripts. They do not contain the source
+code of the BASIC extensions (only distribution of the binaries is permitted).
+
+The zip contains the documentation and `MANIFEST.txt`, which records the commit
+each ROM was built from and its SHA256.
+
+See [`docs/`](https://github.com/madscient/MsxSoundSuiteExtension/tree/master/docs) (in Japanese)
+for the specifications of the statements and MML.

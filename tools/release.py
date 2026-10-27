@@ -16,7 +16,8 @@ recorded commit - otherwise the tag would point at a package nobody can
 rebuild.
 
 It also refuses the boilerplate notes when anything a user can see has
-moved since the previous tag; see notes_gate.
+moved since the previous tag; see notes_gate. The notes carry Japanese
+then English, split by one "---" line; see bilingual_gate.
 """
 import argparse
 import os
@@ -31,6 +32,7 @@ import package as packager
 # The release page has to carry the licence terms on its own: someone who
 # downloads a single .rom asset never opens the zip's NOTICE.md.
 DEFAULT_NOTES = "tools/release-notes.md"
+NOTES_SEPARATOR = "---"
 
 
 def run(cmd, cwd=None, dry_run=False):
@@ -113,6 +115,30 @@ def notes_gate(tag):
     return False
 
 
+def bilingual_gate(path):
+    """Refuse notes whose English half is missing or falls behind.
+
+    The notes are written in Japanese and then translated, so the English
+    half is the one that gets forgotten. Matching heading counts is a
+    cheap stand-in for "every section was translated"; it cannot tell a
+    stale translation from a current one.
+    """
+    with open(path, encoding="utf-8") as f:
+        lines = [ln.rstrip("\r\n") for ln in f]
+    seps = [i for i, ln in enumerate(lines) if ln == NOTES_SEPARATOR]
+    if len(seps) != 1:
+        print(f"ERROR: {path} needs exactly one '{NOTES_SEPARATOR}' line "
+              f"between the Japanese and English notes; found {len(seps)}")
+        return False
+    ja = [ln for ln in lines[:seps[0]] if ln.startswith("#")]
+    en = [ln for ln in lines[seps[0] + 1:] if ln.startswith("#")]
+    if not en or len(ja) != len(en):
+        print(f"ERROR: {path} has {len(ja)} headings in Japanese but "
+              f"{len(en)} in English; translate every section")
+        return False
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("tag", help="release tag, e.g. v0.1.0")
@@ -136,6 +162,10 @@ def main():
         return 1
     if not args.notes_file and not args.generate_notes:
         if not notes_gate(args.tag):
+            return 1
+    if not args.generate_notes:
+        if not bilingual_gate(args.notes_file
+                              or manifest.abspath(DEFAULT_NOTES)):
             return 1
 
     if not args.no_build:

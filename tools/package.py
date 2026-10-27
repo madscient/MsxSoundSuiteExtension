@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import manifest
 
 NAME = "MsxSoundSuiteExtension"
-EXTRA_FILES = ["README.md", "NOTICE.md"]
+EXTRA_FILES = ["README.md", "README.en.md", "NOTICE.md"]
 
 
 def git(args, cwd):
