@@ -16,12 +16,14 @@
 | SFG 向けの拡張BASIC | SFG BASIC Extension | SFG BASIC, SFGBX, SFG (*) |
 | Y8960 の OPM 向けの拡張BASIC | OPM BASIC Extension | （未定。決まるまで短縮しない） |
 | MIDI 向けの拡張BASIC | MIDI Play BASIC Extension | MIDI BASIC, MIDI Play |
+| Makoto カートリッジ（YM2608）向けの拡張BASIC | Makoto BASIC Extension | Makoto BASIC, Makoto (*) |
 | Y8960 向けの拡張BASIC | Y8960 BASIC Extension | Y8960BASIC |
 | Y8960 のシーケンサーBIOS | Y8960 Sequencer BIOS | Y8960BIOS |
-| 5本の総称、および Y8960 カートリッジのファームウェア | MSX Sound Suite Extension | MSX Sound Suite, Sound Suite, MSSX |
+| 6本の総称、および Y8960 カートリッジのファームウェア | MSX Sound Suite Extension | MSX Sound Suite, Sound Suite, MSSX |
 
-(*) 一般名詞や他の固有名詞（SFG が該当）と混同しない文脈でのみ使う。兄弟との
-比較のように、何と何を並べているかが直前に書いてある場所。
+(*) 一般名詞や他の固有名詞（SFG と Makoto が該当。どちらもハードウェアの名前でも
+ある）と混同しない文脈でのみ使う。兄弟との比較のように、何と何を並べているかが
+直前に書いてある場所。
 
 ## 一般名詞と使い分ける
 
