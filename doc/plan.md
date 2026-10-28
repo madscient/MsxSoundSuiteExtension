@@ -7,7 +7,10 @@
 master より先に公開側へ届く）。
 
 利用者向けは [`README.md`](../README.md)、保守手順は
-[`docs/build-and-release.md`](../docs/build-and-release.md)。
+[`docs/build-and-release.md`](../docs/build-and-release.md)。6本のソースリポジトリと
+共通の文書の規約は [`msse-doc-rule.md`](msse-doc-rule.md)（製品名は
+[`naming.md`](naming.md)、検証は [`verification.md`](verification.md)）。公開文書の
+英語版を作る道具は [`tools/doc/`](../tools/doc/README.md)。
 
 ## Makoto BASIC Extension を単体 ROM だけのリリース対象に足す
 
@@ -37,10 +40,11 @@ master より先に公開側へ届く）。
 ROM 署名・ROM ファイル名・版の文字列は Makoto 側で既に決まっているので、
 ここでは振らない。
 
-**名前の表記**：正は `vendor/Y8960BasicExtension/doc/naming.md`（兄弟に共通する
-製品名の表）。**MSSE 側に写しは持たない。** 持ち主の指示（2026-09-23）は製品名
-`Makoto BASIC Extension`、短縮形 `Makoto BASIC`、略称 `Makoto`。naming.md への
-行の追加は未了で、あちらのリポジトリなので文面を渡した。
+**名前の表記**：正は [`naming.md`](naming.md)（兄弟に共通する製品名の表。
+2026-10-28 に Y8960BasicExtension から引き取った。下の「文書の規約と英語版の道具を
+引き取る」）。持ち主の指示（2026-09-23）は製品名 `Makoto BASIC Extension`、
+短縮形 `Makoto BASIC`、略称 `Makoto`。naming.md への行の追加は、引き取ったときに
+済ませた。
 
 ハードウェアの音源カートリッジも `Makoto` なので、`README.md` で ROM と紛れる
 箇所は `Makoto カートリッジ` と書いて分けた（`Y8960 カートリッジ` と同じ形）。
@@ -326,6 +330,134 @@ PlantUML も JRE も要らない。** 理由は2つ ―― クローンした直
 - **確認済み** ―― `package.py` が zip に `README.en.md` を入れること。試しの版名で
   パッケージを作って中を見た。v0.5.2 の zip には入っていない。`EXTRA_FILES` は
   在るファイルだけを写すので、ファイルが消えても黙って通る
+
+## 文書の規約と英語版の道具を引き取る（2026-10-28）
+
+6本のソースリポジトリに共通する文書の規約3本と、公開文書の英語版を作る道具を
+ここに置き、以後ここで保守する。**持ち主の判断**（同日。MsxAudioBasicExtensionLite の
+セッションで決まり、依頼文で届いた）。理由は「道具と使い方が別の場所にあると、
+使いにくく、漏れる」。規約は「公開かどうかは `manifest.py` で決まる」と定めていて、
+その仕組みもここにある。
+
+| 置いたもの | 元 | 元の版 |
+|---|---|---|
+| `doc/msse-doc-rule.md`・`doc/naming.md`・`doc/verification.md` | Y8960BasicExtension の `doc/` | `53ef602` |
+| `tools/doc/` の `check.py`・`assemble.py`・`corpus.py`・`mdlib.py`・`brief.md`・`README.md`・`glossary.md` | MsxAudioBasicExtensionLite の `tools/doc/` | `8566729` |
+
+`translation.py` と `translation.txt` は引き取らない。記録がリポジトリごとの状態で、
+各リポジトリの試験の入口から呼ばれている。
+
+**役割**は元のリポジトリと同じ。規約3本と道具の `README.md`・`glossary.md` は
+仕様書、`brief.md` は訳者（サブエージェント）への依頼の雛形。読者は6本で文書を
+書く AI と開発者。どれも `manifest.py` に載せないが、このリポジトリは public なので
+誰でも読める。
+
+**前提**：兄弟は道具を写さずに、隣にあるこの作業ツリーから走らせる
+（`python ../MsxSoundSuiteExtension/tools/doc/check.py ...`）。リポジトリが同じ
+フォルダに並んでいる限り成り立つ。
+
+**外に出る値**（変えるなら波及先）：
+
+| 値 | 波及先 |
+|---|---|
+| `doc/` の規約3本の名前 | 6本の `CLAUDE.md`・`README.md` などからの参照、Y8960BasicExtension に残す案内 |
+| `tools/doc/` と道具のファイル名 | 6本に書くコマンド、道具の `README.md`、`msse-doc-rule.md` の表 |
+
+名前は元のまま。古い場所を指す参照は、リポジトリの部分だけを替えれば済む。
+
+### 置き場所に合わせて直したもの
+
+- 正の置き場所と本数。Makoto も規約を参照しているので6本にした
+- 移すと切れるリンク。`msse-abi.md` は `docs/y8960/` の複製へ向け、
+  Y8960BasicExtension の文書台帳へのリンクは外した
+- Y8960BasicExtension を「このリポジトリ」「こちら」と書いていた箇所を名前にした
+- `verification.md` の表に Makoto を足した。カートリッジに入らないので ID を持たず、
+  統合版の取り決めは掛からない
+- このリポジトリが public であること。役割が「公開しない」文書も読めることと、
+  `README.md`・`README.en.md` の製品名は公開する文書と同じに書くこと
+  （`msse-doc-rule.md` と `naming.md` の「MSSE と MSSX」）。今の `README.md` は
+  すでにそうなっている
+- `naming.md` に Makoto の行を足した（上の Makoto の節で未了だったもの）。略称
+  `Makoto` には、SFG と同じ「紛れない文脈でだけ使う」印を付けた。これは
+  こちらの判断で、持ち主の指示ではない
+- 道具の `README.md` を、ソースリポジトリの根から回す形にした
+- `glossary.md` を6本共通にした。製品名は `naming.md` に従うこと、
+  Y8960BasicExtension の英訳の取り決めにあった「表に出る」「次の周」、数値や
+  レジスタ名を写す決まりを足した。訳し終えたら足した語をここへ戻す、と書いた
+
+### 公開に合わせて直したもの
+
+規約は非公開のリポジトリにあったので、置く前に全文を読んだ。
+
+- `verification.md` の `setx OPENMSX_DIR` の例を、変数名だけの形にした
+- 経緯を書いていた段落4か所を、現在形の取り決めに書き直した。取り決めと理由は
+  残し、経緯だけを落とした
+- 「この機械で測った」を、測った環境（Windows 10 上の openMSX）の名前にした
+
+### 見送った案
+
+- **このリポジトリにも文書台帳（`doc/documents.md`）を作る** ―― 見送った。
+  理由：`doc/` の文書は4本で、それぞれの冒頭に役割と読者がある。引き取ったものの
+  役割は上に残した。文書が増えたら作る
+- **`README.md` から規約を指す** ―― 見送った。理由：このリポジトリの
+  `README.md` はエンドユーザー向けで、規約の「エンドユーザー向けの文書に開発用
+  文書への参照を書かない」に当たる。この文書の冒頭と、
+  `docs/build-and-release.md` の構成の表から指す
+- **`CLAUDE.md` を作って規約を指す** ―― 見送った。理由：このリポジトリは
+  `CLAUDE.md` を持っていない。作るかどうかは持ち主が決めることで、依頼の範囲を
+  超える
+- **道具の docstring にある使い方の行を、兄弟から回す形にする** ―― 見送った。
+  理由：元のバイト列のままなら、引き取った版と同じかを hash で確かめられる。
+  このリポジトリの根から回せば docstring のとおりに動く
+
+### 残っていること
+
+- push したら持ち主に伝える。そのあと Y8960BasicExtension が元の3本を移った先だけを
+  書いた案内に替え、MsxAudioBasicExtensionLite が道具の写しを消して参照を張り替える
+  （それぞれへの依頼は MsxAudioBasicExtensionLite から出ている）
+- ほかのリポジトリの古い参照は、各リポジトリが次に触るときに張り替える。0件に
+  なったら Y8960BasicExtension が案内を消す。この日に数えた数は、
+  MsxMusicBasicExtension 14、MsxAudioBasicExtensionLite 9、SFGBasicExtension 16、
+  MidiPlayBasicExtension 17、MakotoBasicExtension 3。こちらの1件（この文書）は
+  張り替えた
+- Y8960BasicExtension の文書台帳の「英語版」の節にある英訳の取り決めは、
+  `glossary.md` と重なる。あちらが次に触るときに、こちらを指す形にできる
+- 規約がこのリポジトリ自身の文書にどこまで掛かるかは決めていない。書き足したのは
+  public であることと製品名の表記だけで、ほかはソースリポジトリ向けの文面のまま
+
+### 確度
+
+- **確認済み** ―― 引き取った10本は、元の版とブロブが一致した状態から直し始めた
+  （写しの `git hash-object` と元の `git ls-tree` を突き合わせた）
+- **確認済み** ―― ここの `check.py` を兄弟の作業ツリーから走らせた。英語版のある
+  11本（Y8960BasicExtension 6、MsxMusicBasicExtension 2、
+  MsxAudioBasicExtensionLite 3）で、元の写しと出力がバイト単位で一致した。
+  エラーは Y8960BasicExtension の `bytecode.md` 309 行の2件だけで、依頼文が挙げた
+  既知の行ずれ（`D9`）。`--selftest` は 67 件すべて caught。兄弟の作業ツリーは
+  汚れていない
+- **確認済み** ―― `corpus.py` がここから兄弟3本の対訳を作り、語を引けた。
+  `assemble.py` は兄弟の作業ツリーから、引数なしで使い方を出し、既にある英語版の
+  上書きを拒んで止まった。書き込む経路は走らせていない
+- **確認済み** ―― 置いた6本の文書の相対リンクが、アンカーまで含めて全部解決する。
+  ここの `check.py` の `dead_links` で見た。アンカーを1本壊した写しと、
+  `docs/` の無い写しでは、2件とも拾った
+- **確認済み** ―― 置いた10本に、機械のパス・利用者名・機械名・メールアドレスが無い。
+  検索語は実行時に環境変数から組み立てた。当たったのは道具の `README.md` の
+  `X:/...`（書き方の例）1件。利用者のプロファイルのパスと、元の `setx` の例を対照に
+  して、どちらも拾うことを見た
+- **確認済み** ―― 訳語集の各行を、Y8960BasicExtension と MsxMusicBasicExtension の
+  対訳 3277 組と機械で突き合わせた。割合が低く出た行は引いて読み、どれも数え方の
+  粗さ（活用、大文字、部分一致、訳語の候補の1つ目だけを見たこと）だった。
+  兄弟に出てこない語は突き合わせられていない
+- **確認済み** ―― 足した「表に出る → be switched in」「次の周 → the next pass」は、
+  Y8960BasicExtension の英語版の訳と同じ
+- **確認済み** ―― 7本とも `.gitattributes` が `* -text`（`msse-doc-rule.md` の
+  「行末」の根拠）
+- **確認済み** ―― 古い場所を指す参照の数。依頼文の数え方の `grep` で数え、依頼文の
+  表と一致した
+- **確認済み** ―― `sync_docs.py --check` が通る。`docs/` に変わりは無い
+- **未検証** ―― 書き直した段落が、元の取り決めの意味を変えていないこと。差分を
+  読み比べただけ
 
 ## v0.5.2 のリリース（2026-10-27）
 
