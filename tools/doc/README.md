@@ -47,7 +47,10 @@
    「…」で見出しを指している所が、これでそろう
 4. **訳語集**：`../MsxSoundSuiteExtension/tools/doc/glossary.md` を作業フォルダへ写して足す。
    兄弟の訳は `python ../MsxSoundSuiteExtension/tools/doc/corpus.py terms <作業>/corpus <語>...`
-   で引く。**訳し終えたら、足した語をここの `glossary.md` に戻す**
+   で引く。**訳者へ配る前に足す語も、兄弟の訳を引いてから入れる。**訳者は訳語集を兄弟の
+   対訳より優先するので、先に足した語が兄弟とずれていると、そのずれが全訳者に広がる。
+   **訳し終えたら、足した語を MsxSoundSuiteExtension への依頼文に表で並べる。**ここの
+   `glossary.md` に入れるのは MsxSoundSuiteExtension のセッションが行う
 5. **原文を切る**：`sed -n '<最初>,<最後>p' doc/<名前>.md > <作業>/ja/<部分>.md`。
    節の切れ目で切り、表やコードの途中で切らない
 6. **訳者に配る**：`brief.md` を作業フォルダへ写し、担当（原文の部分、最初の行番号、
