@@ -110,7 +110,7 @@ def main():
             return 1
 
     stale = False
-    for src_rel, dst_rel, _ in manifest.DIAGRAMS:
+    for src_rel, dst_rel, _, _ in manifest.DIAGRAMS:
         src = manifest.abspath(manifest.DOCS, src_rel)
         dst = manifest.abspath(manifest.DOCS, dst_rel)
         if not os.path.isfile(src):

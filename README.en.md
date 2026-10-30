@@ -75,7 +75,7 @@ A BIOS for using the sequence data created by Y8960 BASIC Extension from DOS app
 
 ## Documentation
 
-The specifications of the statements and MML, and the conventions for ROM and application developers, are in [`docs/`](docs/) (in Japanese). The index is [`docs/README.md`](docs/README.md).
+The specifications of the statements and MML, and the conventions for ROM and application developers, are in [`docs/`](docs/). The index of the English versions is [`docs/README.en.md`](docs/README.en.md). Each English version links to its Japanese original, which is authoritative where the two differ.
 
 ## Rights
 

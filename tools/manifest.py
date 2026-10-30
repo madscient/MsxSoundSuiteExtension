@@ -45,6 +45,14 @@ REPOS = [
             ("doc/new-feature.md", "msx-music/new-feature.md",
              "MSX-MUSIC BASIC Extension V2 新機能ガイド（従来版との差分）"),
         ],
+        # 英訳は docs/README.en.md に載せる。ソースの doc/en/ と同じく1段下に
+        # 同じ名前で置くので、英訳どうしのリンクと日本語版へ戻るリンクがそのまま解決する。
+        "docs_en": [
+            ("doc/en/basic-reference.md", "msx-music/en/basic-reference.md",
+             "MSX-MUSIC BASIC Extension V2 Reference"),
+            ("doc/en/new-feature.md", "msx-music/en/new-feature.md",
+             "MSX-MUSIC BASIC Extension V2 New Features (differences from the original)"),
+        ],
     },
     {
         "key": "msx-audio",
@@ -64,6 +72,14 @@ REPOS = [
             ("doc/diff-from-msxaudio.md", "msx-audio/diff-from-msxaudio.md",
              "当時の MSX-AUDIO 拡張BASIC との差分"),
         ],
+        "docs_en": [
+            ("doc/en/basic-reference.md", "msx-audio/en/basic-reference.md",
+             "MSX-AUDIO BASIC Extension Lite Reference"),
+            ("doc/en/diff-from-mmbe.md", "msx-audio/en/diff-from-mmbe.md",
+             "Differences from MSX-MUSIC BASIC Extension V2"),
+            ("doc/en/diff-from-msxaudio.md", "msx-audio/en/diff-from-msxaudio.md",
+             "Differences from the original MSX-AUDIO BASIC extension"),
+        ],
     },
     {
         "key": "sfg",
@@ -81,6 +97,12 @@ REPOS = [
             ("doc/diff-from-mmbe.md", "sfg/diff-from-mmbe.md",
              "MSX-MUSIC BASIC Extension V2 との差分ガイド"),
         ],
+        "docs_en": [
+            ("doc/en/basic-reference.md", "sfg/en/basic-reference.md",
+             "SFG BASIC Extension / OPM BASIC Extension Reference"),
+            ("doc/en/diff-from-mmbe.md", "sfg/en/diff-from-mmbe.md",
+             "Differences from MSX-MUSIC BASIC Extension V2"),
+        ],
     },
     {
         "key": "midi",
@@ -97,12 +119,12 @@ REPOS = [
              "MIDI Play BASIC Extension リファレンス"),
             ("doc/diff-from-msxmidi.md", "midi/diff-from-msxmidi.md",
              "MSX-MIDI 拡張BASIC との差分ガイド"),
-            ("doc/midi-mml.md", "midi/midi-mml.md",
-             "MIDI 固有 MML コマンドとMIDIメッセージの対応"),
-            ("doc/midi-interfaces.md", "midi/midi-interfaces.md",
-             "対応MIDIインターフェースと判別方式"),
-            ("doc/msse-integration.md", "midi/msse-integration.md",
-             "MSX Sound Suite 統合の本ROM固有情報（開発者向け）"),
+        ],
+        "docs_en": [
+            ("doc/en/basic-reference.md", "midi/en/basic-reference.md",
+             "MIDI Play BASIC Extension Reference"),
+            ("doc/en/diff-from-msxmidi.md", "midi/en/diff-from-msxmidi.md",
+             "Differences from the original MSX-MIDI BASIC extension"),
         ],
     },
     {
@@ -122,6 +144,12 @@ REPOS = [
              "Makoto BASIC Extension リファレンス"),
             ("doc/diff-from-lite.md", "makoto/diff-from-lite.md",
              "MSX-AUDIO BASIC Extension Lite との差分"),
+        ],
+        "docs_en": [
+            ("doc/en/basic-reference.md", "makoto/en/basic-reference.md",
+             "Makoto BASIC Extension Reference"),
+            ("doc/en/diff-from-lite.md", "makoto/en/diff-from-lite.md",
+             "Differences from MSX-AUDIO BASIC Extension Lite"),
         ],
     },
     {
@@ -152,25 +180,36 @@ REPOS = [
             ("doc/pcmfile.md", "y8960/pcmfile.md",
              "Y8960 PCM ファイル形式（EXPORT PCM / IMPORT PCM、ツール作者向け）"),
         ],
+        "docs_en": [
+            ("doc/en/basic-reference.md", "y8960/en/basic-reference.md",
+             "Y8960 BASIC Extension Reference"),
+            ("doc/en/msse-abi.md", "y8960/en/msse-abi.md",
+             "MSX Sound Suite integration interface (for ROM and application developers)"),
+            ("doc/en/hardware.md", "y8960/en/hardware.md",
+             "Y8960 hardware (the parts this firmware depends on)"),
+            ("doc/en/sequencer-bios.md", "y8960/en/sequencer-bios.md",
+             "Y8960 Sequencer BIOS (for application developers)"),
+            ("doc/en/bytecode.md", "y8960/en/bytecode.md",
+             "Y8SQ format (the bytes of a sequence; for authors of cross compilers and players)"),
+            ("doc/en/pcmfile.md", "y8960/en/pcmfile.md",
+             "Y8960 PCM file format (EXPORT PCM / IMPORT PCM; for tool authors)"),
+        ],
     },
 ]
 
 # Markdown links in the copied documents that point outside the copy.
-# Anything not listed keeps working because co-located documents stay
-# co-located; anything that pointed into a private source tree is unlinked
-# (the link markup is dropped, the label text stays).
+# A link to another document of the same repository needs no entry:
+# sync_docs.py finds it in "docs" / "docs_en" and points it at that copy.
+# Anything that pointed into a private source tree is unlinked (the link
+# markup is dropped, the label text stays). Keys are the link text as
+# written, so doc/en/ needs its own keys, one "../" longer.
 LINK_REWRITE = {
     "../src/inc/msse.inc": None,
     "../src/inc/y8960hw.inc": None,
-    "../tools/zbuild/targets.py": None,
+    "../../src/inc/msse.inc": None,
+    "../../src/inc/y8960hw.inc": None,
     "../../MsxMusicBasicExtension": "../msx-music/basic-reference.md",
-    "../../SFGBasicExtension/src/BASIC/sfgdet.mac": None,
-    "../../MSX_SOUND_BIOS/doc/build-variants.md": None,
-    "../../MSX_SOUND_BIOS/doc/variant-differences.md": None,
-    "../../MSX_SOUND_BIOS/music_midi": None,
-    "../../Y8960BasicExtension/doc/msse-abi.md": "../y8960/msse-abi.md",
-    # 兄弟リポジトリへ計画を渡すための一時文書で、公開しない。
-    "../../MsxAudioBasicExtensionLite/doc/plan-tick-source.md": None,
+    "../../../MsxMusicBasicExtension": "../../msx-music/en/basic-reference.md",
     # 各リポジトリの plan.md は内部文書で複製しない。
     "plan.md": None,
 }
@@ -178,16 +217,17 @@ LINK_REWRITE = {
 # docs/ に置く図。PlantUML のソースと、そこから描いたもの。どちらも docs/ に
 # 置くのは、埋め込む文書と同じ場所に在る必要があるため ―― package.py は
 # docs/ を丸ごと複製し、sync_docs.py のリンク検査は文書からの相対リンクを
-# 解決する。ラベルは索引に埋め込むときの代替テキストになる。
+# 解決する。ラベル（日本語・英語）は各言語の索引に埋め込むときの代替テキストになる。
 DIAGRAMS = [
     ("phylogenetic-tree.pu", "phylogenetic-tree.svg",
-     "拡張BASICの系統図"),
+     "拡張BASICの系統図", "Lineage of the BASIC extensions"),
 ]
 
 # docs/ にあるが、ソースリポジトリから複製したものではない文書。
 # 索引に載せるだけで、sync_docs.py は内容に触れない。
 LOCAL_DOCS = [
-    ("build-and-release.md", "ビルドとリリース（このリポジトリの保守）"),
+    ("build-and-release.md", "ビルドとリリース（このリポジトリの保守）",
+     "Building and releasing (maintenance of this repository, in Japanese)"),
 ]
 
 DOC_SECTIONS = [

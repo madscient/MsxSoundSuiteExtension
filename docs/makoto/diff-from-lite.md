@@ -13,7 +13,7 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 | リズム | 5 楽器。FM のチャンネル 7〜9 を使う | 6 楽器（リムショットが増えた）。チップ内蔵の音 |
 | ADPCM | 1 声、〜49716Hz | 1 声、〜55555Hz。Misato には無く、ADPCM に関わるものは断る（[Misato](basic-reference.md#misato)） |
 | SSG | 無い | 3 声。PLAY 文の SSG 用の文字列 |
-| PSG の文字列 | 本体の PSG（Y8960 では SSGS にも） | 本体の PSG |
+| PSG の文字列 | 本体の PSG（Y8960 カートリッジ版では SSGS にも） | 本体の PSG |
 
 ## ステートメント
 
@@ -21,18 +21,19 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 |---|---|---|
 | 初期化 | `CALL AUDIO` | `CALL MAKOTO`。引数の意味は同じ |
 | PLAY 文のチャンネル数の合計 | リズム不使用で 9、使用で 6 まで | リズムの有無によらず 6 まで |
-| 確保するメモリ | 1027 バイト | 1443 バイト（ユーザー音色 11 個ぶんを含む） |
-| `PLAY#1` | `Illegal function call` | SSG と PSG |
+| 確保するメモリ | 2051 バイト（Y8960 カートリッジ版は 1328 バイト） | 1443 バイト（ユーザー音色 11 個ぶんを含む） |
+| `PLAY#1` | `Illegal function call`（Y8960 カートリッジ版は PSG と SSGS の第2セット） | SSG と PSG |
 | `PLAY#2` | FM・PCM・リズム・PSG | FM・PCM・リズム・SSG。PSG は鳴らさない |
-| `PLAY#3` | `#2` と同じ | FM・PCM・リズム・SSG・PSG |
-| `CALL PLAY` のストリング番号 | ストリング数 +3 まで | ストリング数 +6 まで（SSG の 3 本が PSG の前に入る） |
+| `PLAY#3` | `#2` と同じ（Y8960 カートリッジ版は SSGS の第2セットが加わる） | FM・PCM・リズム・SSG・PSG |
+| `CALL PLAY` のストリング番号 | ストリング数 +3 まで（Y8960 カートリッジ版は +6） | ストリング数 +6 まで（SSG の 3 本が PSG の前に入る） |
 | `CALL AUDREG` のレジスタ番号 | 8 ビット | 9 ビット（`100H`〜`1FFH` が裏のバンク） |
 | `CALL VOICE` の引数 | 9 個まで | 6 個まで |
-| 音色番号 | 0〜63。63 がユーザー音色 | 0〜79。0〜68 がプリセット、69〜79 がユーザー音色 |
+| 音色番号 | 0〜95。63 と 64〜95 がユーザー音色 | 0〜79。0〜68 がプリセット、69〜79 がユーザー音色 |
+| ユーザー音色が戻る時機 | 64〜95 は `CALL AUDIO` のたびに Silence に戻る | 最初の `CALL MAKOTO` でどのオペレータも鳴らない音色になり、`CALL MAKOTO(-1)` まで残る |
 | 音色の配列 | 32 バイト（Y8950 のレジスタの並び） | N88-BASIC(86) の音色配列（50 個の整数）に SSG-EG と AMS を加えたもの |
-| `CALL VOICE COPY` の転送先 | 63 番のみ | 69〜79 番 |
+| `CALL VOICE COPY` の転送先 | 63〜95 番 | 69〜79 番 |
 | `CALL SET PCM` のサンプリング周波数 | 1800〜49716 | 1800〜55555 |
-| `CALL MUSIC` / `CALL MINIT` / `CALL SFG` / `CALL MIDI` | Y8960 カートリッジ版にある | 無い |
+| `CALL MUSIC` / `CALL MINIT` / `CALL OPM` / `CALL MIDI` / `CALL MIXER` | Y8960 カートリッジ版にある | 無い |
 
 **音色ライブラリの中身は別物である。**番号が同じでも音色は違う。一覧は[`basic-reference.md`](basic-reference.md#音色ライブラリ一覧) にある。
 
@@ -42,12 +43,13 @@ MSX-AUDIO BASIC Extension Lite（以下 Lite）を使ったことがある人向
 
 | | Lite | Makoto BASIC Extension |
 |---|---|---|
-| FM の `In` | `Illegal function call` | パンポット。`I1` 左、`I2` 右、`I3` 両方、`I0` 無音 |
-| PCM の `In` | `Illegal function call` | パンポット。値は FM と同じ |
-| リズムの `In` | 無い | 6 楽器まとめてのパンポット |
-| PSG の `In` | SSGS のパンポット（0〜15） | 0〜15 を受け付けて何もしない。SSG も同じ |
+| FM の `In` | 定位（0〜255、128 が中央）。効くのは Y8960 の OPL2EX だけで、Y8950 では動かない | パンポット。`I1` 左、`I2` 右、`I3` 両方、`I0` 無音 |
+| PCM の `In` | ADPCM の定位。値と効く条件は FM と同じ | パンポット。値は FM と同じ |
+| リズムの `In` | チャンネル 7〜9 の定位。値と効く条件は FM と同じ | 6 楽器まとめてのパンポット。値は FM と同じ |
+| PSG の `In` | SSGS のパンポット（0〜255）。効くのは Y8960 カートリッジ版だけ | 0〜15 を受け付けて何もしない。SSG も同じ |
 | リズムの楽器 | `B` `S` `M` `C` `H` | 加えて `F`（リムショット） |
-| FM の `@n` | 0〜63 | 0〜79 |
+| FM の `@n` | 0〜95 | 0〜79 |
+| PSG の `N0` | 休符 | 定めない。休符は `R` で書く。SSG も同じ |
 | `Yr,d` の r | 8 ビット | 9 ビット。16進なら `$1B4` のように3桁まで書ける |
 | `Yr,d,m` の m が効くレジスタ | `B0H`〜`B8H` と `BDH` | SSG（`000H`〜`00DH`）、FB/AL とパン（`0B0H`〜`0B2H`、`0B4H`〜`0B6H`、`1B0H`〜`1B2H`、`1B4H`〜`1B6H`） |
 

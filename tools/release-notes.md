@@ -53,5 +53,5 @@ code of the BASIC extensions (only distribution of the binaries is permitted).
 The zip contains the documentation and `MANIFEST.txt`, which records the commit
 each ROM was built from and its SHA256.
 
-See [`docs/`](https://github.com/madscient/MsxSoundSuiteExtension/tree/master/docs) (in Japanese)
+See [`docs/README.en.md`](https://github.com/madscient/MsxSoundSuiteExtension/blob/master/docs/README.en.md)
 for the specifications of the statements and MML.

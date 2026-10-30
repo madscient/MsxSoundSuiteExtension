@@ -1,5 +1,7 @@
 # ドキュメント
 
+日本語 | [English](README.en.md)
+
 MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 
 ![拡張BASICの系統図](phylogenetic-tree.svg)
@@ -24,9 +26,6 @@ MSX Sound Suite Extension に含まれる各拡張BASICの仕様書。
 
 - [MIDI Play BASIC Extension リファレンス](midi/basic-reference.md)
 - [MSX-MIDI 拡張BASIC との差分ガイド](midi/diff-from-msxmidi.md)
-- [MIDI 固有 MML コマンドとMIDIメッセージの対応](midi/midi-mml.md)
-- [対応MIDIインターフェースと判別方式](midi/midi-interfaces.md)
-- [MSX Sound Suite 統合の本ROM固有情報（開発者向け）](midi/msse-integration.md)
 
 ## Makoto BASIC Extension
 

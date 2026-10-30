@@ -56,7 +56,7 @@ MSX-MUSIC BASIC Extension V2 は、#0 と #1 に入りきらない FMBIOS の本
 | `7800h`-`7FDFh` | MSX-MUSIC BASIC Extension V2 の FMBIOS 本体（2016 バイト） |
 | `7FE0h`-`7FFFh` | どちらも置かない。`FFh` |
 
-BANK1 に ROM バンクが出ている間は `7FEAh` から上に Memory Mapped I/O が現れる（[`hardware.md`](hardware.md)）ので、境界はその手前の `7FE0h` に置く。
+BANK1 に ROM バンクが出ている間は `7FF0h` から上に Memory Mapped I/O が現れる（[`hardware.md`](hardware.md)）ので、境界はその手前の `7FE0h` に置く。
 
 - **Y8960 BASIC Extension の後半は #5 から動かせない。** FMBIOS 本体に入るとき BANK1 に書く 5 は、MSX-MUSIC BASIC Extension V2 が定数として持っている。「後半と追加バンク」で後半のバンク番号を自由にしたことの、ID 2 に限った例外
 - **本体は MSX-MUSIC BASIC Extension V2 のリポジトリが `build/rom/mmbe_y8960_fmbios.bin` として出す。** `7800h`-`7FFFh` に当たる 2048 バイトの生のイメージで、`7FE0h` から後ろは `FFh`
