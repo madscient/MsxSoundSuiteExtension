@@ -154,7 +154,12 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
-    print(f"wrote {os.path.relpath(out, manifest.REPO_ROOT)}")
+    try:
+        shown = os.path.relpath(out, manifest.REPO_ROOT)
+    except ValueError:
+        # Windows: no relative path between drives.
+        shown = out
+    print(f"wrote {shown}")
     return 0
 
 
