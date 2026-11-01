@@ -106,7 +106,7 @@ PLAY#1, "Y$20,64"   ' halves the volume of first-set A
 
 **`mabel.rom` also accepts the numbers of the second set (`10H`-`1DH`) and of SSGS's own registers (`20H`-`2EH`), but writes nothing.** There is no error, so MML written for the cartridge build runs as is. The accepted range and the numbers that give `Illegal function call` are the same as in the cartridge build. As in the cartridge build, they cannot be placed between `~` and the target note.
 
-The memory that `CALL AUDIO` allocates below HIMEM is 1328 bytes in the cartridge build (2051 bytes for `mabel.rom`). The cartridge build needs more for the SSGS second set and the record of the SSGS's own registers, and less because it places user voices 64-95 in the cartridge's RAM.
+The memory that `CALL AUDIO` allocates below HIMEM is 1340 bytes in the cartridge build (2057 bytes for `mabel.rom`). The cartridge build needs more for the SSGS second set and the record of the SSGS's own registers, and less because it places user voices 64-95 in the cartridge's RAM.
 
 ---
 
@@ -173,7 +173,7 @@ Executing this statement links the system's interrupt hook to the system softwar
 
 On the timer side, the faster the tempo, the more frequent the interrupts. **Even when silent, it runs at the frequency of the tempo that is set**, so the "silent" rows above also include a cost that depends on the tempo.
 
-It also does the equivalent of `CLEAR` internally to allocate its work area, so **the memory available to BASIC decreases by 2051 bytes (1328 bytes for the Y8960 cartridge build), and all variables are cleared.**
+It also does the equivalent of `CLEAR` internally to allocate its work area, so **the memory available to BASIC decreases by 2057 bytes (1340 bytes for the Y8960 cartridge build), and all variables are cleared.**
 
 Initialization also measures the capacity of the sample RAM, and **if there is 32KB or more, assigns the first 32KB to voice file 0** (the same state as `CALL SET PCM(0,0,0,,128,8000)`). The other voice files get length 0. On a cartridge without sample RAM, voice file 0 also stays at length 0 ([Sound chips](#sound-chips)).
 
@@ -184,7 +184,7 @@ Returns everything that initialization took, and goes back to the state before `
 - Stops playback and keys off all channels
 - Restores the interrupt hook (`H.TIMI` if bit2=0, `H.KEYI` if bit2=1)
 - Fills the PLAY statement hook (`H.PLAY`) with RET. If something was using `H.PLAY` before `CALL AUDIO`, that is not restored
-- Returns 2051 bytes of memory (1328 bytes for the Y8960 cartridge build) to BASIC
+- Returns 2057 bytes of memory (1340 bytes for the Y8960 cartridge build) to BASIC
 - Goes back to the uninitialized state, so **it can be initialized again with `CALL AUDIO`**
 
 Calling it when not initialized gives `Illegal function call`. If something took the same interrupt hook after this BASIC extension, it also gives
@@ -307,7 +307,7 @@ If something took the interrupt hook that [`CALL AUDIO(-1)`](#call-audio-1) rest
 
 ### CALL PITCH
 
-Gives the pitch of FM melodic sounds.
+Gives the pitch of FM melodic sounds and of the tones of the PSG sound chip.
 
 ```
 CALL PITCH(<pitch 1> [, <pitch 2>])
@@ -319,7 +319,9 @@ CALL PITCH(440)
 
 The range is 410-459, in Hz. The pitch is expressed as the frequency of the A just above middle C (a2). It can be set independently of the transpose, and the default is 440. Executing `CALL AUDIO` again returns it to 440.
 
-Changing the pitch or the transpose changes the pitch of FM sounds other than the rhythm sounds and unpitched sounds. **It does not act on the PSG sound chip or the PCM sound chip.**
+Changing the pitch or the transpose changes the pitch of FM sounds other than the rhythm sounds and unpitched sounds, and of the tones of the PSG sound chip. The PSG noise does not change. **It does not act on the PCM sound chip.**
+
+When it is changed during playback, which note the change starts from is not guaranteed, on either the FM or the PSG sound chip. Even when it is placed right after a PLAY statement, how far playback has got by the time it is reached is not determined. To keep only the PSG untransposed, write `P` in the opposite direction in the PSG strings (`P-700` for `CALL TRANSPOSE(700)`).
 
 `<pitch 2>` is ignored even if specified (a remnant of two-chip configurations).
 
@@ -405,7 +407,7 @@ CALL STOPM
 
 ### CALL TEMPER
 
-Gives the temperament. It affects the pitch of FM melodic sounds. It has no effect on the PCM sound chip. The PCM sound chip sounds in equal temperament under any temperament.
+Gives the temperament. It affects the pitch of FM melodic sounds and of the tones of the PSG sound chip. It has no effect on the PCM sound chip. The PCM sound chip sounds in equal temperament under any temperament.
 
 ```
 CALL TEMPER(<temperament number>)      ' 0-21
@@ -433,7 +435,7 @@ The "(modified)" versions are by Tatsuji Hirashima.
 
 ### CALL TRANSPOSE
 
-Transposes FM melodic sounds in units of cents.
+Transposes FM melodic sounds and the tones of the PSG sound chip in units of cents.
 
 ```
 CALL TRANSPOSE(<transpose value 1> [, <transpose value 2>])
@@ -446,7 +448,7 @@ CALL TRANSPOSE(0, 700)
 
 The unit makes a semitone 100. To raise by 1 octave, use +1200. The allowed range is ±12799, but in practice, depending on the voice, pitches outside a certain range are limited. A value out of range gives `Illegal function call`. However, `-32768` alone gives no error and is the same as specifying `0`. Pitch accuracy is about ±1 cent because of a limitation of the LSI.
 
-It can be set independently of the pitch, and its value at initialization is 0. Executing `CALL AUDIO` again returns it to 0. `<transpose value 2>` is ignored.
+It can be set independently of the pitch, and its value at initialization is 0. Executing `CALL AUDIO` again returns it to 0. `<transpose value 2>` is ignored. It acts on the PSG sound chip in the same way as [CALL PITCH](#call-pitch).
 
 ---
 
@@ -572,31 +574,35 @@ A transfer does not change the definition of the destination voice file (its len
 ### Writing numbers
 
 Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal.
-**`$` is always followed by exactly 2 digits**, in the range `$00`-`$FF`.
+**`$` is followed by 1 to 4 digits**, in the range `$0`-`$FFFF`. The values accepted are the same as when written in decimal (`M$1234` is `M4660`).
 
 ```basic
 PLAY#2, "Y$30,$53"                        ' 53H to register 30H
-PLAY#2, "", "", "", "", "Y$06,$0A,$10"    ' the mask can also be written in hexadecimal
+PLAY#2, "", "", "", "", "Y$6,$A,$10"      ' the mask can also be written in hexadecimal
 ```
 
 `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
 
-The number of digits is fixed because **`A`-`F` are both hexadecimal digits and note names**. If digits were read until they ran out, note names placed after the number would also be taken into it. Because counting stops after 2 digits, nothing written after them is added to the number.
+**A number ends at its 4th digit, or at a character that is not a hexadecimal digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the 4th digit, even a hexadecimal digit starts the next command.
+
+**To follow a number of fewer than 4 digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hexadecimal digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow 4 digits). A space does not separate them.
 
 ```basic
-PLAY#2, "Y$20,$0FCDE"    ' 0FH to register 20H, then the notes C D E
-PLAY#2, "Y$30,$1AC4"     ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$20,$0F;CDE"   ' 0FH to register 20H, then the notes C D E
+PLAY#2, "Y$30,$1A;C4"    ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$30,$001AC4"   ' the same as above. With 4 digits no ; is needed
+PLAY#2, "@$A O4C4"       ' O is not a hexadecimal digit, so no ; is needed
+PLAY#2, "Y$30,$1AC4"     ' → Illegal function call. Read as 1AC4H
+PLAY#2, "Y$30,$0FCDE"    ' → Illegal function call. Split into 0FCDH and E, and 0FCDH is out of range
 ```
 
-**Ending with 1 digit is `Illegal function call`.** If `$F` were allowed, then when a `C` came
-after it, it could not be told apart from `$FC`, so write `$0F` with 2 digits.
+With `Mn`, whose range is wide, a missing separator gives a different value instead of an error. `M$12CDE` is split into `M$12CD` and `E`.
+
+**`$` with no digit after it gives `Illegal function call`.**
 
 ```basic
-PLAY#2, "Y$30,$1"        ' → Illegal function call
-PLAY#2, "O$4"            ' → Illegal function call. Write O$04
+PLAY#2, "Y$30,$"         ' → Illegal function call
 ```
-
-**Values whose absolute value is 256 or more cannot be written in hexadecimal.** For `Mn` (1-65535), and for `Pn` `@Pn` `~n` (±1200), write values whose absolute value is 256 or more in decimal. If they are written in hexadecimal, the remaining digits are read as MML from that point — most become `Illegal function call`, but some sequences, such as `M$FFFF`, let the rest pass as note names.
 
 **Write a length of `0` with a decimal digit.** `C$00`, `R$00` and a 0 passed with `=x;` do not become a note or rest that consumes no time; they are the same as omitting the length. A note takes the length of `Ln`, and a rest is a quarter rest (inside a tuplet, the tuplet length; [Dotted rests](#dotted-rests)) ([Length 0 and @W](#length-0-and-w)). In the MML for rhythm sounds the length cannot be omitted, so 0 is `Illegal function call` however it is written.
 
@@ -659,11 +665,18 @@ To change the tempo partway through, **write the same `T` in every string, both 
 PLAY#2, "T120C4C4C4T60C4", "T120E4E4E4T60E4"
 ```
 
+**When strings are long, split the `PLAY` statement at the position where the tempo changes.** There is a limit to the number of notes that can be read ahead of playback, and a string that exceeds it is read a little at a time, alternating with the other strings. When that happens, even with the way of writing above, a `T` in another string takes effect early on notes that have not been read yet. If you split the `PLAY` statement and write `T` at the start of every string, the tempo changes at the written position regardless of the length of the strings.
+
+```basic
+10 PLAY#2, "T120L8CDEFGABAGFEDCDEF", "T120C1C1"
+20 PLAY#2, "T60C4", "T60E4"
+```
+
 #### The tick source
 
 There are two interrupts that time note lengths, selected with bit2 of the [`CALL AUDIO`](#call-audio) mode. **The default is VSYNC.**
 
-**MML is written the same way with either.** Neither how the tempo takes effect nor the range that can be written in `Ln` changes. However, whether a `T` written in another string changes the length of notes already read differs with the tick source. Written the way shown above (with `T` at the same position in every string), the result is the same with either. What differs is the tick resolution and the real-time accuracy, the time taken from BASIC, and the limit below that exists only with VSYNC.
+**MML is written the same way with either.** Neither how the tempo takes effect nor the range that can be written in `Ln` changes. However, whether a `T` written in another string changes the length of notes already read differs with the tick source. Written the way shown above (with `T` at the same position in every string, and the `PLAY` statement split for long strings), the result is the same with either. What differs is the tick resolution and the real-time accuracy, the time taken from BASIC, and the limit below that exists only with VSYNC.
 
 | | bit2=0 VSYNC (default) | bit2=1 sound chip's timer |
 |---|---|---|

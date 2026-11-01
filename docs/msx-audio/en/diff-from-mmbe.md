@@ -16,7 +16,7 @@ This BASIC extension is a port of V2 to the Y8950, and **their MML notation is a
 | PSG | 3 voices (6 voices in the cartridge build, with the second set of SSGS added) | Same |
 | Voices | Only one at a time for part of the library and for array voices | Independent per channel |
 | Initialization | `CALL MUSIC` | `CALL AUDIO` |
-| Decrease in memory available to BASIC | 965 bytes (1255 bytes in the cartridge build) | 2051 bytes (1328 bytes in the cartridge build) |
+| Decrease in memory available to BASIC | 971 bytes (1267 bytes in the cartridge build) | 2057 bytes (1340 bytes in the cartridge build) |
 
 ---
 

@@ -23,7 +23,7 @@ For those who have used MSX-AUDIO BASIC Extension Lite (hereafter Lite), this do
 |---|---|---|
 | Initialization | `CALL AUDIO` | `CALL MAKOTO`. The arguments have the same meaning |
 | Total number of channels in the PLAY statement | Up to 9 without rhythm, up to 6 with rhythm | Up to 6, with or without rhythm |
-| Memory allocated | 2051 bytes (1328 bytes in the Y8960 cartridge build) | 1443 bytes (including 11 user voices) |
+| Memory allocated | 2057 bytes (1340 bytes in the Y8960 cartridge build) | 1455 bytes (including 11 user voices) |
 | `PLAY#1` | `Illegal function call` (PSG and the second set of SSGS in the Y8960 cartridge build) | SSG and PSG |
 | `PLAY#2` | FM, PCM, rhythm, PSG | FM, PCM, rhythm, SSG. PSG is not played |
 | `PLAY#3` | Same as `#2` (the Y8960 cartridge build adds the second set of SSGS) | FM, PCM, rhythm, SSG, PSG |
@@ -52,7 +52,7 @@ For those who have used MSX-AUDIO BASIC Extension Lite (hereafter Lite), this do
 | Rhythm instruments | `B` `S` `M` `C` `H` | Plus `F` (rimshot) |
 | FM `@n` | 0-95 | 0-79 |
 | PSG `N0` | Rest | Not defined. Write rests with `R`. The same for SSG |
-| r of `Yr,d` | 8 bits | 9 bits. In hexadecimal, up to 3 digits can be written, as in `$1B4` |
+| r of `Yr,d` | 8 bits | 9 bits |
 | Registers on which m of `Yr,d,m` takes effect | `B0H`-`B8H` and `BDH` | SSG (`000H`-`00DH`), FB/AL and pan (`0B0H`-`0B2H`, `0B4H`-`0B6H`, `1B0H`-`1B2H`, `1B4H`-`1B6H`) |
 
 The pitch is the same. FM `O4A` is 220Hz in both.

@@ -229,7 +229,7 @@ These were added in MSX-MUSIC BASIC Extension V2 and can be used as they are.
 
 | Form | Contents |
 |---|---|
-| `$` followed by 2 hexadecimal digits | `O$04` is `O4`, `@C$07,$40` is `@C7,64` |
+| `$` followed by 1 to 4 hexadecimal digits | `O$4` is `O4`, `@C$7,$40` is `@C7,64`. To follow a number of fewer than four digits with a note name, separate them with `;` (`O$4;C4`) |
 | Length `0` (`C0`) | Issues only a note-on and consumes no time |
 | `R0` | Issues only a note-off and consumes no time |
 | `R.` | Dotted rest |

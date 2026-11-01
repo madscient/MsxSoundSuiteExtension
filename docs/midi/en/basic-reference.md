@@ -236,25 +236,29 @@ The basic grammar, such as notes, rests, lengths, octaves and tempo, is the same
 
 ### Writing numbers
 
-Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal. **`$` is always followed by exactly two digits**, in the range `$00`-`$FF`. `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
+Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal. **`$` is followed by one to four digits**, in the range `$0`-`$FFFF`. The values accepted are the same as when written in decimal. `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
 
 ```basic
-PLAY "O$04C4"        ' O4, then C as a quarter note
-PLAY "@C$07,$40"     ' the same as @C7,64
+PLAY "O$4;C4"        ' O4, then C as a quarter note
+PLAY "@C$7,$40"      ' the same as @C7,64
 ```
 
-The number of digits is fixed because **`A`-`F` are both hexadecimal digits and note names**. If digits were read until they ran out, note names placed after the number would also be taken into it. Because counting stops after two digits, nothing written after them is added to the number. Inserting a space does not change this (spaces are skipped).
+**A number ends at its fourth digit, or at a character that is not a hexadecimal digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the fourth digit, even a hexadecimal digit starts the next command.
 
-**Ending with one digit is `Illegal function call`.** If `$F` were allowed, it could not be told apart from `$FC` when a `C` follows, so write `$0F` with two digits. A third digit is not added to the number and is read as the next command.
+**To follow a number of fewer than four digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hexadecimal digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow four digits). A space does not separate them (spaces are skipped).
 
 ```basic
-PLAY "O$4"           ' → Illegal function call. Write O$04
-PLAY "V$0FF"         ' V15, then plays the note F
+PLAY "O$0004C4"      ' the same as above. With four digits no ; is needed
+PLAY "@$A O4C4"      ' O is not a hexadecimal digit, so no ; is needed
+PLAY "O$04C4"        ' → Illegal function call. Read as $04C4 (1220)
+PLAY "V$0FC4"        ' → Illegal function call. Read as $0FC4
 ```
 
-**Values whose absolute value is 256 or more cannot be written in hexadecimal.** For `Pn` and `@Pn` (-1200 to 1200), and for the `r` of `@Nr,d` and `@Rr,d` (0-16383), write values whose absolute value is above 255 in decimal.
+A missing separator usually shows up as an out-of-range `Illegal function call`. But when the number is short and stays within the range even with the note name taken in, it becomes a different value without an error (`@V$7C` is `@V124`, and no `C` is played).
 
-**Write a length of `0` in decimal.** `C$00` and `R$00` do not become a note or rest that consumes no time; they are treated the same as writing them with the length omitted.
+**`$` with no digit after it gives `Illegal function call`.**
+
+**Write a length of `0` in decimal.** `C$0` and `R$00` do not become a note or rest that consumes no time; they are treated the same as writing them with the length omitted.
 
 Writing `=x;` instead of a number uses the value of the BASIC variable `x`.
 

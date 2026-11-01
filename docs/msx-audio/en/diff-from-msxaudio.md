@@ -41,6 +41,7 @@ Set the second argument (the number of channels for the instrument) to 0, and fr
   - [`@n` on PSG channels selects tone/noise and the envelope](#n-on-psg-channels-selects-tonenoise-and-the-envelope)
   - [How PLAY receives its strings](#how-play-receives-its-strings)
   - [ADPCM pitch and volume](#adpcm-pitch-and-volume)
+  - [The PSG is also affected by pitch, transposition and temperament](#the-psg-is-also-affected-by-pitch-transposition-and-temperament)
   - [The voice library and the rhythm voices](#the-voice-library-and-the-rhythm-voices)
   - [Bits ignored in voice parameters](#bits-ignored-in-voice-parameters)
   - [Arguments for two-chip configurations](#arguments-for-two-chip-configurations)
@@ -91,7 +92,7 @@ CALL AUDIO(-1)
 | With no arguments | Same as `CALL AUDIO(1,0,2,2,2)` | Same |
 | 0 and omission in channel counts | 0 gives `Illegal function call`, omission gives `Syntax error` | Same |
 | ADPCM at initialization | The first 32KB of sample RAM as voice file 0 | Same |
-| BASIC memory | Not stated in the original documentation | **Decreases by 2051 bytes** (1328 bytes in the Y8960 cartridge build). Variables are also cleared |
+| BASIC memory | Not stated in the original documentation | **Decreases by 2057 bytes** (1340 bytes in the Y8960 cartridge build). Variables are also cleared |
 | Release | Not possible | **`CALL AUDIO(-1)`** |
 
 **Only the second argument needs fixing.** The channels originally assigned to the music keyboard are either given to `PLAY` instead, or left out.
@@ -165,7 +166,7 @@ Forms that were originally errors, or did not exist, now have a meaning.
 | Length `0` (`C0`) | Issues only a note-on and consumes no time | None |
 | `R0` | Issues only a note-off and consumes no time | None |
 | `R.` | Dotted rest | None |
-| `$` followed by 2 hexadecimal digits | `O$04` is `O4`, `Y$30,$53` is `Y48,83` | None |
+| `$` followed by 1 to 4 hexadecimal digits | `O$4` is `O4`, `Y$30,$53` is `Y48,83` | None |
 | `In` (0-255) | Panning. For the FM, PCM and rhythm strings, the Y8960's OPL2EX responds; for the PSG strings, the Y8960's SSGS responds | None |
 | Third argument of `Yr, d, m` | Mask of the bits to keep | None |
 | `Yr, d` on PSG channels | Writes to PSG registers 0-13. The Y8960 cartridge build also writes SSGS `10H`-`1DH` and `20H`-`2EH` (except `23H` `27H` `2BH`) ([reference](basic-reference.md#the-six-ssgs-channels-y8960-cartridge-build)) | Was ignored |
@@ -267,6 +268,12 @@ PLAY#2, "C4"+T$, "D4"+T$    ' 1st plays C E, 2nd plays D E
 **The sampling frequency given with `SET PCM` is the reference for pitch.** `O5 E` is the pitch at exactly that frequency, and each semitone away from it multiplies the frequency by 2 to the power of 1/12. The original documentation does not describe the pitch of MML for PCM.
 
 **The volume is set with `Vn` / `@Vn` in the string for PCM.** The original `CALL PCM VOL` does not exist ([What was removed](#what-was-removed)).
+
+### The PSG is also affected by pitch, transposition and temperament
+
+`CALL PITCH`, `CALL TRANSPOSE` and `CALL TEMPER` change the pitch of the tones of the PSG sound chip as well as that of FM melodic sounds. The noise period does not change ([reference](basic-reference.md#call-pitch)). The original documentation says that `CALL PITCH` does not act on the PSG sound chip, and says only that `CALL TRANSPOSE` and `CALL TEMPER` act on the pitch of the FM sound chip.
+
+**If a program written for the original transposes only FM while playing the PSG, the pitch of the PSG changes too.** To bring only the PSG back to its original pitch, write `P` in the opposite direction in the PSG strings.
 
 ### The voice library and the rhythm voices
 

@@ -129,7 +129,7 @@ Executing this statement links the system's interrupt hook to the system softwar
 
 With bit2=1, the interrupt frequency changes with the tempo. Raising the tempo raises the frequency, and it drops by half at T63 and T126, where the number of ticks per quarter note switches, so it moves back and forth within 101-204Hz (102Hz at T32, 204Hz at T255). **Even when silent, it runs at the frequency of the tempo that is set**, so the "silent" rows above also include a cost that depends on the tempo.
 
-It also does the equivalent of `CLEAR` internally to allocate its work area, so **the memory available to BASIC decreases by 1443 bytes, and all variables are cleared.** Of that, 330 bytes are where the user voices (numbers 69-79) are kept. All open files are closed.
+It also does the equivalent of `CLEAR` internally to allocate its work area, so **the memory available to BASIC decreases by 1455 bytes, and all variables are cleared.** Of that, 330 bytes are where the user voices (numbers 69-79) are kept. All open files are closed.
 
 Initialization also measures the capacity of the sample RAM, and **if there is 32KB or more, assigns the first 32KB to voice file 0** (the same state as `CALL SET PCM(0,0,0,,128,8000)`). The other voice files get length 0. On Misato it is not measured.
 
@@ -142,7 +142,7 @@ Returns everything that initialization took, and goes back to the state before `
 - Stops playback and keys off all channels
 - Restores the interrupt hook (`H.TIMI` if bit2=0, `H.KEYI` if bit2=1)
 - Fills the PLAY statement hook (`H.PLAY`) with RET. If something was using `H.PLAY` before `CALL MAKOTO`, that is not restored
-- Returns 1443 bytes of memory to BASIC. The user voices are also lost here
+- Returns 1455 bytes of memory to BASIC. The user voices are also lost here
 - Closes all open files
 - Goes back to the uninitialized state, so **it can be initialized again with `CALL MAKOTO`**
 
@@ -211,7 +211,7 @@ Initialization by `CALL MAKOTO` specifies background processing.
 
 ### CALL PITCH
 
-Gives the pitch of FM melodic sounds.
+Gives the pitch of FM melodic sounds and of the tones of SSG and the PSG sound chip.
 
 ```
 CALL PITCH(<pitch 1> [, <pitch 2>])
@@ -222,7 +222,9 @@ CALL PITCH(440)
 ```
 
 The range is 410-459, in Hz. The pitch is expressed as the frequency of the A just above middle C (a2). It can be set independently of the transpose, and the default is 440. Executing `CALL MAKOTO` again returns it to 440.
-Changing the pitch or the transpose changes the pitch of FM sounds. **It does not act on the rhythm sounds, SSG, the PSG sound chip or the PCM sound chip.**
+Changing the pitch or the transpose changes the pitch of FM sounds and of the tones of SSG and the PSG sound chip. The SSG and PSG noise does not change. **It does not act on the rhythm sounds or the PCM sound chip.**
+
+When it is changed during playback, which note the change starts from is not guaranteed, on any of FM, SSG and the PSG sound chip. Even when it is placed right after a PLAY statement, how far playback has got by the time it is reached is not determined. To keep only SSG and the PSG untransposed, write `P` in the opposite direction in their strings (`P-700` for `CALL TRANSPOSE(700)`).
 
 `<pitch 2>` is ignored even if specified.
 
@@ -309,7 +311,7 @@ CALL STOPM
 
 ### CALL TEMPER
 
-Gives the temperament. It affects the pitch of FM melodic sounds. It has no effect on the rhythm sounds, SSG, the PSG sound chip or the PCM sound chip. The PCM sound chip sounds in equal temperament under any temperament.
+Gives the temperament. It affects the pitch of FM melodic sounds and of the tones of SSG and the PSG sound chip. It has no effect on the rhythm sounds or the PCM sound chip. The PCM sound chip sounds in equal temperament under any temperament.
 
 ```
 CALL TEMPER(<temperament number>)      ' 0-21
@@ -338,7 +340,7 @@ The "(modified)" versions are by Tatsuji Hirashima.
 
 ### CALL TRANSPOSE
 
-Transposes FM melodic sounds in units of cents.
+Transposes FM melodic sounds and the tones of SSG and the PSG sound chip in units of cents.
 
 ```
 CALL TRANSPOSE(<transpose value 1> [, <transpose value 2>])
@@ -353,7 +355,7 @@ The unit makes a semitone 100. To raise by 1 octave, use +1200. The allowed rang
 
 A value out of range gives `Illegal function call`. However, `-32768` alone gives no error and is the same as specifying `0`.
 
-It can be set independently of the pitch, and its value at initialization is 0. Executing `CALL MAKOTO` again returns it to 0. `<transpose value 2>` is ignored.
+It can be set independently of the pitch, and its value at initialization is 0. Executing `CALL MAKOTO` again returns it to 0. `<transpose value 2>` is ignored. It acts on SSG and the PSG sound chip in the same way as [CALL PITCH](#call-pitch).
 
 ---
 
@@ -479,37 +481,36 @@ A transfer does not change the definition of the destination voice file (its len
 
 ### Writing numbers
 
-Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal. **`$` is always followed by exactly 2 digits**, in the range `$00`-`$FF` (the exception is the register number of `Y`, below).
+Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal. **`$` is followed by 1 to 4 digits**, in the range `$0`-`$FFFF`. The values accepted are the same as when written in decimal (`M$1234` is `M4660`).
 
 ```basic
 PLAY#2, "Y$30,$53"                        ' 53H to register 30H
-PLAY#2, "", "", "", "", "Y$06,$0A,$10"    ' the mask can also be written in hexadecimal
+PLAY#2, "", "", "", "", "Y$6,$A,$10"      ' the mask can also be written in hexadecimal
+PLAY#2, "Y$1B4,$80"                       ' 80H to B4H of the second bank (panning of channel 4)
 ```
 
 `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
 
-The number of digits is fixed because **`A`-`F` are both hexadecimal digits and note names**. If digits were read until they ran out, note names placed after the number would also be taken into it. Because counting stops after 2 digits, nothing written after them is added to the number.
+**A number ends at its 4th digit, or at a character that is not a hexadecimal digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the 4th digit, even a hexadecimal digit starts the next command.
+
+**To follow a number of fewer than 4 digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hexadecimal digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow 4 digits). A space does not separate them.
 
 ```basic
-PLAY#2, "Y$B4,$C0CDE"    ' C0H to register B4H, then the notes C D E
-PLAY#2, "Y$30,$1AC4"     ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$B4,$C0;CDE"   ' C0H to register B4H, then the notes C D E
+PLAY#2, "Y$30,$1A;C4"    ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$30,$001AC4"   ' the same as above. With 4 digits no ; is needed
+PLAY#2, "@$A O4C4"       ' O is not a hexadecimal digit, so no ; is needed
+PLAY#2, "Y$30,$1AC4"     ' → Illegal function call. Read as 1AC4H
+PLAY#2, "Y$B4,$C0CDE"    ' → Illegal function call. Split into C0CDH and E, and C0CDH is out of range
 ```
 
-**Ending with 1 digit is `Illegal function call`.** If `$F` were allowed, then when a `C` came after it, it could not be told apart from `$FC`, so write `$0F` with 2 digits.
+With `Mn`, whose range is wide, a missing separator gives a different value instead of an error. `M$12CDE` is split into `M$12CD` and `E`.
+
+**`$` with no digit after it gives `Illegal function call`.**
 
 ```basic
-PLAY#2, "Y$30,$1"        ' → Illegal function call
-PLAY#2, "O$4"            ' → Illegal function call. Write O$04
+PLAY#2, "Y$30,$"         ' → Illegal function call
 ```
-
-**Only the register number of `Y` in the strings for FM, PCM and rhythm can be written with up to 3 digits.** YM2608 register numbers are 9 bits, and the register number of `Y` is always followed by `,`, so the digit right after the 2nd digit cannot be confused with a note name.
-
-```basic
-PLAY#2, "Y$1B4,$80"      ' 80H to B4H of the second bank (panning of channel 4)
-PLAY#2, "Y$B4,$40"       ' B4H of the first bank. 2 digits also work
-```
-
-**Values whose absolute value is 256 or more cannot be written in hexadecimal** (except the register number of `Y`). For `Mn` (1-65535), and for `Pn` `@Pn` `~n` (±1200), write values whose absolute value is 256 or more in decimal. If they are written in hexadecimal, the remaining digits are read as MML from that point — most become `Illegal function call`, but some sequences, such as `M$FFFF`, let the rest pass as note names.
 
 **Write a length of `0` with a decimal digit.** `C$00`, `R$00` and a 0 passed with `=x;` do not become a note or rest that consumes no time; they are the same as omitting the length. A note takes the length of `Ln`, and a rest is a quarter rest (inside a tuplet, the tuplet length; [Dotted rests](#dotted-rests)) ([Length 0 and @W](#length-0-and-w)). In the MML for rhythm sounds the length cannot be omitted, so both `$00` and a 0 passed with `=x;` are `Illegal function call` ([MML for rhythm sounds](#mml-for-rhythm-sounds)).
 
@@ -734,7 +735,7 @@ If the number of notes times n exceeds 96, it is `Illegal function call`. Nestin
 
 ### Register writes with `Y`
 
-In the strings for FM, PCM and rhythm, `Yr, d` writes to the YM2608 registers. r is 9 bits, and the accepted range is the same as for [`CALL AUDREG`](#call-audreg). In hexadecimal, up to 3 digits can be written ([Writing numbers](#writing-numbers)). **On SSG channels, `Yr, d` writes to the YM2608's SSG registers (`000H`-`00DH`), and on PSG channels, `Yr, d` writes to the internal PSG registers.** For both, r is 0-13. All of them consume no time, and any number of them can be lined up. On Misato, `Y` with r in `100H`-`10FH` (ADPCM) does nothing ([Misato](#misato)).
+In the strings for FM, PCM and rhythm, `Yr, d` writes to the YM2608 registers. r is 9 bits, and the accepted range is the same as for [`CALL AUDREG`](#call-audreg). **On SSG channels, `Yr, d` writes to the YM2608's SSG registers (`000H`-`00DH`), and on PSG channels, `Yr, d` writes to the internal PSG registers.** For both, r is 0-13. All of them consume no time, and any number of them can be lined up. On Misato, `Y` with r in `100H`-`10FH` (ADPCM) does nothing ([Misato](#misato)).
 
 ```basic
 PLAY#2, "Y$1B4,$40C4"               ' sets channel 4 to the right only, then C

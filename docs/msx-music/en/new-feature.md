@@ -52,6 +52,7 @@ In addition, [One ROM for all machines](#one-rom-for-all-machines) describes the
   - [R — takes the tuplet length inside a tuplet](#r--takes-the-tuplet-length-inside-a-tuplet)
   - [PLAY tempo accuracy](#play-tempo-accuracy)
   - [How PLAY receives its strings](#how-play-receives-its-strings)
+  - [CALL PITCH / CALL TEMPER / CALL TRANSPOSE — also act on the PSG](#call-pitch--call-temper--call-transpose--also-act-on-the-psg)
 - [One ROM for all machines](#one-rom-for-all-machines)
 - [Differences between sound chips](#differences-between-sound-chips)
 - [Combining them](#combining-them)
@@ -71,7 +72,7 @@ Returns everything that `CALL MUSIC` initialized, and goes back to the state bef
 
 - Stops playback and keys off all channels
 - Restores the interrupt hook (`H.TIMI`) and fills the PLAY statement hook (`H.PLAY`) with RET (if something was using `H.PLAY` before `CALL MUSIC`, that is not restored)
-- Returns 965 bytes (1255 bytes on the MSX Sound Suite cartridge build) to `HIMEM`
+- Returns 971 bytes (1267 bytes on the MSX Sound Suite cartridge build) to `HIMEM`
 - It goes back to the uninitialized state, so **`CALL MUSIC` can initialize again**
 
 ```basic
@@ -218,7 +219,7 @@ PLAY#1, "O4C", "O4E", "O4G", "O5C", "O5E", "O5G"   ' six parts
 - The SSGS's own channel volume (`20H`-`22H`, `24H`-`26H`) and panning (`28H`-`2AH`, `2CH`-`2EH`) can also be written with `Y`. `CALL MUSIC`, and stopping playback (`CALL STOPM`, CTRL-STOP, an error in this BASIC extension), set the volume to maximum (128) and the panning to center (128)
 - The channel volume can also be written with `@V` on PSG channels ([@Vn — SSGS channel volume on PSG](#vn--ssgs-channel-volume-on-psg))
 - The replacement build also accepts the register numbers of the second set and of the SSGS itself, but writes nothing. MML written for the cartridge build runs as it is
-- The memory that `CALL MUSIC` allocates below HIMEM is 1255 bytes (965 on the replacement build)
+- The memory that `CALL MUSIC` allocates below HIMEM is 1267 bytes (971 on the replacement build)
 
 The replacement build for the built-in MSX-MUSIC does not have this. For details, see "The six SSGS channels" in [`basic-reference.md`](basic-reference.md).
 
@@ -408,15 +409,16 @@ It can be written the same way on FM channels. The OPLL cannot read back its reg
 ### Hexadecimal literals `$`
 
 ```
-$nn        Always 2 digits. $00-$FF
+$n-$nnnn   1 to 4 digits. $0-$FFFF
 ```
 
-**Putting `$` before a number lets you write it in hexadecimal.** Previously only decimal could be written.
+**Putting `$` before a number lets you write it in hexadecimal.** Previously only decimal could be written. The values accepted are the same as when written in decimal.
 
 ```basic
 PLAY#2, "Y$30,$53"                       ' 53H to register 30H
-PLAY#2, "", "", "", "", "Y$06,$0A,$10"   ' 0AH to register 6, keeping bit4
-PLAY#2, "@$0A O$04 C$10"                 ' anywhere a number can be written
+PLAY#2, "", "", "", "", "Y$6,$A,$10"     ' 0AH to register 6, keeping bit4
+PLAY#2, "@$A O$4;C$10"                   ' anywhere a number can be written
+PLAY#2, "", "", "", "", "M$1234;C"       ' the same as M4660
 ```
 
 `A`-`F` may be upper or lower case. For a negative value, write `-` first.
@@ -425,18 +427,22 @@ PLAY#2, "@$0A O$04 C$10"                 ' anywhere a number can be written
 PLAY#2, "P-$64"     ' -100 cents
 ```
 
-**The number of digits is fixed at two.** `A`-`F` are both hexadecimal digits and note names, so if digits were read until they ran out, a note name placed after the number would also be taken into it. Because counting ends at two digits, nothing written after it is added to the number.
+**A number ends at its fourth digit, or at a character that is not a hex digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the fourth digit, even a hexadecimal digit starts the next command.
+
+**To follow a number of fewer than four digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hexadecimal digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow four digits). A space does not separate them.
 
 ```basic
-PLAY#2, "Y$20,$0FCDE"    ' 0FH to register 20H, then the notes C D E
-PLAY#2, "Y$30,$1AC4"     ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$20,$0F;CDE"   ' 0FH to register 20H, then the notes C D E
+PLAY#2, "Y$30,$1A;C4"    ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$30,$001AC4"   ' the same as above. With four digits no ; is needed
+PLAY#2, "Y$30,$1AC4"     ' → Illegal function call. Read as 1AC4H
 ```
 
-**Ending with one digit gives `Illegal function call`.** If `$F` were allowed, it could not be told apart from `$FC` when a `C` follows, so write it with two digits as `$0F`. Write `O$4` as `O$04`, and `C$0` as `C$00`.
+With `Mn`, whose range is wide, a missing separator gives a different value instead of an error. `M$12CDE` is split into `M$12CD` and `E`.
 
-**Values whose absolute value is 256 or more cannot be written in hexadecimal.** Write `Mn` (1-65535), and values of `Pn` `@Pn` `~n` (±1200) whose absolute value is 256 or more, in decimal.
+**`$` with no digit after it gives `Illegal function call`.**
 
-**Only a length of 0 is written in decimal.** `C$00` and `R$00` do not become a note or rest that consumes no time; they are treated the same as when the length is omitted (`C$00` has the length of `Ln`, and `R$00` is the same as `R` with the length omitted).
+**Only a length of 0 is written in decimal.** `C$0` and `R$00` do not become a note or rest that consumes no time; they are treated the same as when the length is omitted (`C$0` has the length of `Ln`, and `R$00` is the same as `R` with the length omitted).
 
 Nothing changes in how decimal is written.
 
@@ -486,7 +492,7 @@ PLAY#2, "", "", "", "", "T120L4{CDE}4"   ' three 12th notes = one quarter note
 
 The specification is the same as on FM: `R` with the length omitted takes the tuplet length, and `@Wn` does not take the tuplet length. See "Tuplets `{ }n`" in [`basic-reference.md`](basic-reference.md).
 
-**The PSG tuplet lengths are placed in the block that `CALL MUSIC` allocates below HIMEM.** FM can hold one byte in the VCB of each channel, but the PSG VCBs are in the MSX system area from `0FB41H` onward with no room to spare, and the corresponding byte there is filled with the tick count of that item for each note. That block also holds the FM voice parameters, the PSG portamento state, the temperament table, and user voices 64, 80, 96 and 112, and the memory that `CALL MUSIC` allocates is 965 bytes, 158 bytes more than the previous 807 bytes (portamento state 15, tuplet lengths 3, temperament table 12, user voices 128). The cartridge build further adds the three channels of the SSGS second set, the record of the SSGS's own channel volume and panning, and user voice 63, for 1255 bytes (in the replacement build, user voice 63 is in the MSX work area).
+**The PSG tuplet lengths are placed in the block that `CALL MUSIC` allocates below HIMEM.** FM can hold one byte in the VCB of each channel, but the PSG VCBs are in the MSX system area from `0FB41H` onward with no room to spare, and the corresponding byte there is filled with the tick count of that item for each note. That block also holds the FM voice parameters, the PSG portamento state, the temperament table, and user voices 64, 80, 96 and 112, and the memory that `CALL MUSIC` allocates is 971 bytes, 164 bytes more than the previous 807 bytes (portamento state 21, tuplet lengths 3, temperament table 12, user voices 128). The cartridge build further adds the three channels of the SSGS second set, the record of the SSGS's own channel volume and panning, and user voice 63, for 1267 bytes (in the replacement build, user voice 63 is in the MSX work area).
 
 ---
 
@@ -503,6 +509,7 @@ The following keep the same way of writing but change meaning.
 | `@Vn` | PSG | Accepts 0-127 and ignores it | The cartridge build writes the SSGS channel volume. Accepts n of 0-128 |
 | `Yr, d` | PSG | Only reads and discards the arguments; does nothing | Writes to PSG registers. The accepted r changes from 0-200 to 0-13 and the SSGS numbers |
 | `&` | PSG | Is ignored | Works as tie/legato |
+| `CALL PITCH`, `CALL TEMPER`, `CALL TRANSPOSE` | PSG | Have no effect | Also change the pitch of the PSG tones ([CALL PITCH / CALL TEMPER / CALL TRANSPOSE](#call-pitch--call-temper--call-transpose--also-act-on-the-psg)) |
 
 The handling of tempo fractions has also changed, on both FM and PSG ([PLAY tempo accuracy](#play-tempo-accuracy)).
 
@@ -642,6 +649,19 @@ Even when the string area runs short and is reorganized, strings written earlier
 **Built strings are limited to 10 per `PLAY` statement**, and the 11th gives `String formula too complex`. String constants and variables are not counted.
 
 Also, a problem has been fixed where, after a `PLAY` that ran into an error (such as `1/0`) while evaluating its strings, a `PLAY` with fewer strings could fail to return.
+
+### CALL PITCH / CALL TEMPER / CALL TRANSPOSE — also act on the PSG
+
+**Previously they acted only on the FM sound chip, and the pitch of the PSG did not change. They now change the pitch of the PSG tones too.** The amount is the same as for FM melodic sounds. The PSG noise does not change.
+
+```basic
+CALL TRANSPOSE(1200)
+PLAY#2, "", "", "", "", "O4C1"   ' the PSG also sounds one octave up
+```
+
+To leave only the PSG untransposed, write `P` in the opposite direction in the PSG string (`P-700` against `CALL TRANSPOSE(700)`). `P` is an additive term independent of transpose and pitch, so it can be used to cancel them out.
+
+When they are changed during playback, FM changes even the note that is sounding at once. On the PSG, which note the change starts from is not guaranteed.
 
 ---
 

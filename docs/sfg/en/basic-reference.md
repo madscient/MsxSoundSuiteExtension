@@ -144,7 +144,7 @@ Initialization by `CALL SFG` specifies background processing.
 
 ### CALL PITCH
 
-Gives the pitch of FM melodic sounds.
+Gives the pitch of FM melodic sounds and of the PSG tones.
 
 ```
 CALL PITCH(<pitch 1> [, <pitch 2>])
@@ -156,7 +156,9 @@ CALL PITCH(440)
 
 The range is 410-459, in Hz. The pitch is expressed as the frequency of the A just above middle C (a2). It can be set independently of the transpose, and the default is 440.
 
-Changing the pitch or the transpose changes the pitch of FM sounds. **It does not act on the PSG sound chip.**
+Changing the pitch or the transpose changes the pitch of FM sounds and of the PSG tones. The PSG noise does not change.
+
+When it is changed during playback, FM changes even the note that is sounding at once. On the PSG, which note it starts from is not guaranteed. To leave only the PSG untransposed, write `P` in the opposite direction in the PSG string (`P-700` against `CALL TRANSPOSE(700)`).
 
 `<pitch 2>` is ignored even if specified (MSX-AUDIO compatibility).
 
@@ -250,7 +252,7 @@ CALL STOPM
 
 ### CALL TEMPER
 
-Gives the temperament. It affects the pitch of FM melodic sounds.
+Gives the temperament. It affects the pitch of FM melodic sounds and of the PSG tones.
 
 ```
 CALL TEMPER(<temperament number>)      ' 0-21
@@ -279,7 +281,7 @@ The "(modified)" versions are by Tatsuji Hirashima.
 
 ### CALL TRANSPOSE
 
-Transposes FM melodic sounds in units of cents.
+Transposes FM melodic sounds and the PSG tones in units of cents.
 
 ```
 CALL TRANSPOSE(<transpose value 1> [, <transpose value 2>])
@@ -292,7 +294,7 @@ CALL TRANSPOSE(0, 700)
 
 The unit makes a semitone 100. To raise by one octave, use +1200. The allowed range is ±12799, but in practice, depending on the voice, pitches outside a certain range are limited. A value out of range gives `Illegal function call`. However, `-32768` alone gives no error and is the same as specifying `0`. Pitch accuracy is about ±2 cents because of a limitation of the LSI.
 
-It can be set independently of the pitch, and its value at initialization is 0. `<transpose value 2>` is ignored (MSX-AUDIO compatibility).
+It can be set independently of the pitch, and its value at initialization is 0. `<transpose value 2>` is ignored (MSX-AUDIO compatibility). It acts on the PSG in the same way as [CALL PITCH](#call-pitch).
 
 ---
 
@@ -461,25 +463,36 @@ CALL PAUSE(<milliseconds>)
 ### Writing numbers
 
 Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal [Extended].
+**`$` is followed by one to four digits**, in the range `$0`-`$FFFF`. The values accepted are the same as when written in decimal (`M$1234` is `M4660`).
 
 ```basic
 PLAY#2, "Y$60,$5A"        ' 5AH to register 60H
-PLAY#2, "Y$0F,$03,$F0"    ' the mask can also be written in hexadecimal
-PLAY#2, "@$0A O4C4"       ' voice 0AH
+PLAY#2, "Y$F,$3,$F0"      ' the mask can also be written in hexadecimal
+PLAY#2, "@$A O4C4"        ' voice 0AH
 ```
 
 `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
 
-**`$` is always followed by exactly two digits.** `A`-`F` are both hexadecimal digits and note names, so the number is ended by the digit count. Otherwise, even the `C` `D` `E` of `Y$30,$0FCDE` would be taken into the number. Inserting a space does not change this.
+**A number ends at its fourth digit, or at a character that is not a hexadecimal digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the fourth digit, even a hexadecimal digit starts the next command.
 
-- **One digit is `Illegal function call`.** Write `$0F`, not `$F`
-- **Write 256 and above in decimal.** This applies to `Mn` and to `Pn` `@Pn` `~n`
+**To follow a number of fewer than four digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hexadecimal digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow four digits). A space does not separate them.
 
 ```basic
-PLAY#2, "Y$30,$0FCDE"   ' 0FH to register 30H, then C D E play
+PLAY#2, "Y$30,$0F;CDE"   ' 0FH to register 30H, then C D E play
+PLAY#2, "Y$30,$000FCDE"  ' the same as above. With four digits no ; is needed
+PLAY#2, "Y$30,$1AC4"     ' → Illegal function call. Read as 1AC4H
+PLAY#2, "Y$30,$0FCDE"    ' → Illegal function call. Split into 0FCDH and E, and 0FCDH is out of range
 ```
 
-**Write a length of `0` in decimal.** `C$00`, `R$00` and a 0 passed with `=x;` do not become a note or rest that consumes no time; they are the same as omitting the length. A note takes the length of `Ln`, and a rest is a quarter rest (inside a tuplet, the tuplet length; [Dotted rests](#dotted-rests-extended)) ([Length 0 and @W](#length-0-and-w-extended)).
+With `Mn`, whose range is wide, a missing separator gives a different value instead of an error. `M$12CDE` is split into `M$12CD` and `E`.
+
+**`$` with no digit after it gives `Illegal function call`.**
+
+```basic
+PLAY#2, "Y$30,$"         ' → Illegal function call
+```
+
+**Write a length of `0` in decimal.** `C$0`, `R$00` and a 0 passed with `=x;` do not become a note or rest that consumes no time; they are the same as omitting the length. A note takes the length of `Ln`, and a rest is a quarter rest (inside a tuplet, the tuplet length; [Dotted rests](#dotted-rests-extended)) ([Length 0 and @W](#length-0-and-w-extended)).
 
 ### MML for FM and PSG
 

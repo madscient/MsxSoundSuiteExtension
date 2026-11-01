@@ -72,7 +72,7 @@ Used without parameters, it is the same as `CALL MUSIC(1, 0, 1, 1, 1)`, and the 
 
 as listed.
 
-Executing this statement adds interrupt processing so that playback can proceed in the background. It also does the equivalent of `CLEAR` internally to allocate its work area, so **the free memory available to BASIC decreases by 965 bytes (1255 bytes for the MSX Sound Suite cartridge build), and all variables are cleared.** Open files are also closed.
+Executing this statement adds interrupt processing so that playback can proceed in the background. It also does the equivalent of `CLEAR` internally to allocate its work area, so **the free memory available to BASIC decreases by 971 bytes (1267 bytes for the MSX Sound Suite cartridge build), and all variables are cleared.** Open files are also closed.
 
 #### CALL MUSIC(-1) [Extended]
 
@@ -80,7 +80,7 @@ Returns everything that initialization took, and goes back to the state before `
 
 - Stops playback and keys off all channels
 - Restores the interrupt hook (`H.TIMI`) and fills the `PLAY` statement hook (`H.PLAY`) with RET (if something was using `H.PLAY` before `CALL MUSIC`, that is not restored)
-- Returns 965 bytes (1255 bytes for the cartridge build) to free memory
+- Returns 971 bytes (1267 bytes for the cartridge build) to free memory
 - Goes back to the uninitialized state, so **it can be initialized again with `CALL MUSIC`**
 
 Calling it when not initialized gives `Illegal function call`. It also gives `Illegal function call` if a program has hooked into the interrupt processing after `CALL MUSIC`.
@@ -128,7 +128,7 @@ Initialization by `CALL MUSIC` specifies background processing.
 
 ### CALL PITCH
 
-Gives the pitch of FM melodic sounds.
+Gives the pitch of FM melodic sounds and of the PSG sound chip.
 
 ```
 CALL PITCH(<pitch 1> [, <pitch 2>])
@@ -140,7 +140,9 @@ CALL PITCH(440)
 
 The range is 410-459, in Hz. The pitch is expressed as the frequency of the A just above middle C (a2). It can be set independently of the transpose, and the default is 440.
 
-Changing the pitch or the transpose changes the pitch of FM sounds other than the rhythm sounds and unpitched sounds. **It does not act on the PSG sound chip.**
+Changing the pitch or the transpose changes the pitch of FM sounds other than the rhythm sounds and unpitched sounds, and of the PSG tones. The PSG noise does not change.
+
+When it is changed during playback, FM changes even the note that is sounding at once. On the PSG, which note it starts from is not guaranteed. To leave only the PSG untransposed, write `P` in the opposite direction in the PSG string (`P-700` against `CALL TRANSPOSE(700)`).
 
 `<pitch 2>` is ignored even if specified (MSX-AUDIO compatibility).
 
@@ -226,7 +228,7 @@ CALL STOPM
 
 ### CALL TEMPER
 
-Gives the temperament. It affects the pitch of FM melodic sounds.
+Gives the temperament. It affects the pitch of FM melodic sounds and of the PSG tones.
 
 ```
 CALL TEMPER(<temperament number>)      ' 0-21
@@ -255,7 +257,7 @@ The "(modified)" versions are by Tatsuji Hirashima.
 
 ### CALL TRANSPOSE
 
-Transposes FM melodic sounds in units of cents.
+Transposes FM melodic sounds and the PSG tones in units of cents.
 
 ```
 CALL TRANSPOSE(<transpose value 1> [, <transpose value 2>])
@@ -268,7 +270,7 @@ CALL TRANSPOSE(0, 700)
 
 The unit makes a semitone 100. To raise by one octave, use +1200. The allowed range is ±12799, but in practice, depending on the voice, pitches outside a certain range are limited. A value out of range gives `Illegal function call`. However, `-32768` alone gives no error and is the same as specifying `0`. Pitch accuracy is about ±2 cents because of a limitation of the LSI.
 
-It can be set independently of the pitch, and its value at initialization is 0. `<transpose value 2>` is ignored (MSX-AUDIO compatibility).
+It can be set independently of the pitch, and its value at initialization is 0. `<transpose value 2>` is ignored (MSX-AUDIO compatibility). It acts on the PSG in the same way as [CALL PITCH](#call-pitch).
 
 ---
 
@@ -453,32 +455,37 @@ At startup, if no sound chip responds on the MSX-AUDIO ports (`C0H`/`C1H`), the 
 ### Writing numbers
 
 Numbers in MML are written in decimal. With `$`, they can be written in hexadecimal [Extended].
-**`$` is always followed by exactly two digits**, in the range `$00`-`$FF`.
+**`$` is followed by one to four digits**, in the range `$0`-`$FFFF`. The values accepted are the same as when written in decimal (`M$1234` is `M4660`).
 
 ```basic
 PLAY#2, "Y$30,$53"                        ' 53H to register 30H
-PLAY#2, "", "", "", "", "Y$06,$0A,$10"    ' the mask can also be written in hex
+PLAY#2, "", "", "", "", "Y$6,$A,$10"      ' the mask can also be written in hex
 ```
 
 `A`-`F` may be upper or lower case. For a negative value, write `-` first (`P-$64`).
 
-The number of digits is fixed because **`A`-`F` are both hex digits and note names**. If digits were read until they ran out, note names placed after the number would also be taken into it. Because counting stops after two digits, nothing written after them is added to the number.
+**A number ends at its fourth digit, or at a character that is not a hex digit.** Besides `,` and the end of the string, any character other than `A`-`F`, such as `O` or `R`, ends it. After the fourth digit, even a hex digit starts the next command.
+
+**To follow a number of fewer than four digits with a note name `A`-`F`, separate them with `;`.** `A`-`F` are both hex digits and note names, so without the separator they are added to the number. The `;` is discarded (it may also follow four digits). A space does not separate them.
 
 ```basic
-PLAY#2, "Y$20,$0FCDE"    ' 0FH to register 20H, then the notes C D E
-PLAY#2, "Y$30,$1AC4"     ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$20,$0F;CDE"   ' 0FH to register 20H, then the notes C D E
+PLAY#2, "Y$30,$1A;C4"    ' 1AH to register 30H, then C as a quarter note
+PLAY#2, "Y$30,$001AC4"   ' the same as above. With four digits no ; is needed
+PLAY#2, "@$A O4C4"       ' O is not a hex digit, so no ; is needed
+PLAY#2, "Y$30,$1AC4"     ' → Illegal function call. Read as 1AC4H
+PLAY#2, "Y$30,$0FCDE"    ' → Illegal function call. Split into 0FCDH and E, and 0FCDH is out of range
 ```
 
-**Ending with one digit is `Illegal function call`.** If `$F` were allowed, it could not be told apart from `$FC` when a `C` follows, so write `$0F` with two digits.
+With `Mn`, whose range is wide, a missing separator gives a different value instead of an error. `M$12CDE` is split into `M$12CD` and `E`.
+
+**`$` with no digit after it gives `Illegal function call`.**
 
 ```basic
-PLAY#2, "Y$30,$1"        ' → Illegal function call
-PLAY#2, "O$4"            ' → Illegal function call. Write O$04
+PLAY#2, "Y$30,$"         ' → Illegal function call
 ```
 
-**Values whose absolute value is 256 or more cannot be written in hex.** For `Mn` (1-65535), and for `Pn` `@Pn` `~n` (±1200), write values whose absolute value is 256 or more in decimal. If they are written in hex, the remaining digits are read as MML from that point — most become `Illegal function call`, but some sequences, such as `M$FFFF`, let the rest pass as note names.
-
-**Write a length of `0` in decimal.** `C$00` and `R$00` do not become a note or rest that consumes no time; they are treated the same as writing them with the length omitted (`C$00` takes the length of `Ln`, and `R$00` is the same as `R` with the length omitted). The rhythm MML cannot omit the length, so `B$00` is an `Illegal function call`.
+**Write a length of `0` in decimal.** `C$0` and `R$00` do not become a note or rest that consumes no time; they are treated the same as writing them with the length omitted (`C$0` takes the length of `Ln`, and `R$00` is the same as `R` with the length omitted). The rhythm MML cannot omit the length, so `B$00` is an `Illegal function call`.
 
 ### MML for FM and PSG
 
@@ -940,7 +947,7 @@ PLAY#1, "@V64O4C", "", "", "@V128O4E"   ' first-set A at half, second-set A at m
 
 In the cartridge build, `@n`, `I` and `@V` write to that channel's registers (the mixer is the set's `07H` / `17H`, the panpot is the channel's `28H`-`2AH` / `2CH`-`2EH`, the volume is the channel's `20H`-`22H` / `24H`-`26H`).
 
-The memory that `CALL MUSIC` allocates below HIMEM is 1255 bytes in the cartridge build (965 bytes in the replacement build).
+The memory that `CALL MUSIC` allocates below HIMEM is 1267 bytes in the cartridge build (971 bytes in the replacement build).
 
 ---
 
