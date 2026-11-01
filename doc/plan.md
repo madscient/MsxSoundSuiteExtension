@@ -12,6 +12,57 @@ master より先に公開側へ届く）。
 [`naming.md`](naming.md)、検証は [`verification.md`](verification.md)）。公開文書の
 英語版を作る道具は [`tools/doc/`](../tools/doc/README.md)。
 
+## verification.md から「PR で返す」規則を外す（2026-11-01）
+
+`doc/verification.md` の「見つけた欠陥は、見つけた側が直して PR で返す」から、PR で
+連絡する部分を外した（持ち主の指示、同日）。見出しは「MSSE 統合版に固有の欠陥は、
+原因がどの ROM にあっても Y8960BasicExtension が直す」に替えた。
+
+- **削ったもの**：`vendor/` のサブモジュールの作業ツリーで枝を切って PR を送る手順
+  4つ、PR で返す理由、統合側にパッチを溜めない理由
+- **残したもの**：担当（原因がどの ROM にあっても Y8960BasicExtension）とその理由
+  （128KB を組めるのはあそこだけ）、単体版で出ないことの確認は相手のリポジトリの
+  責任という分担、欠陥でない依頼は `prompt-*.md` で渡すという区別
+- Makoto の段落が「見つけた欠陥の返し方」と呼んでいた箇所は、新しい見出しに合わせて
+  「統合版に固有の欠陥の担当」にした
+
+**前提**：兄弟が PR での連絡をやめていること。SFGBasicExtension と
+MidiPlayBasicExtension は、それぞれの `CLAUDE.md` にそう書いている。
+Y8960BasicExtension は同日、`CLAUDE.md` から PR の規則を削った（`plan.md` に記録が
+ある）。MsxAudioBasicExtensionLite と MakotoBasicExtension の `CLAUDE.md` に PR の
+規則は無く、MsxMusicBasicExtension は `CLAUDE.md` を持たない（以上、**確認済み**、
+6本の作業ツリーで `CLAUDE.md` を `PR`・「兄弟」で検索し、3本は該当の段落を読んだ）。また
+SFGBasicExtension は、PR をやめたことが「取り込みの時機を人間が指示する形である限り」
+成り立つと書いている。この形が変われば、返し方は考え直しになる。
+
+**値段**：`verification.md` の1節だけ。見出しへのリンクは6本にも、このリポジトリにも
+無い（**確認済み**、6本の作業ツリーを `verification.md#` で検索して0件。このリポジトリ
+は `vendor/` を除く全体で `verification.md` を検索し、見出しへのリンクは無かった）。
+戻すのもこの1節を書き直すだけで、波及先は無い。
+
+**見送ったこと**
+
+- **節ごと削除** ―― 見送った。理由：担当と理由は PR に依らない。Y8960BasicExtension の
+  `CLAUDE.md` も同じ一文を残している。消すと、統合版の欠陥を誰が調べるかが文書から
+  消える
+- **返し方の新設**（兄弟の `plan.md` に書いて持ち主に拾わせる形） ―― 見送った。
+  理由：Y8960BasicExtension は「返す必要が出たときに持ち主に聞く」としている。
+  決めるのは持ち主で、ここで先取りしない
+
+**未決**：直した欠陥を、相手の ROM のリポジトリへどう返すか。いまの `verification.md` は
+担当だけを定めていて、返し方は書いていない。
+
+**兄弟の記録への影響**（直すのは各リポジトリのセッション）：
+
+- Y8960BasicExtension の `doc/plan.md` に、この節が残っていると見られると書いた注記が
+  ある。外した今は、その注記は解決済みになる
+- 同じ `plan.md` に、旧い見出しを引用した経緯の記録が3か所ある。記録なので
+  書き換えない。ほかの5本には、旧い見出しの引用が無い（**確認済み**、見出しの
+  語句と「PR で返」を検索した）
+- このリポジトリの `vendor/Y8960BasicExtension` の作業ツリーに、`verification.md` の
+  旧い写しがある。サブモジュールが進むまで旧いままで、ここからは参照していない
+  （**確認済み**、`vendor/` を除く全体で `verification.md` を検索した）
+
 ## Makoto BASIC Extension を単体 ROM だけのリリース対象に足す
 
 `../MakotoBasicExtension` を `vendor/MakotoBasicExtension` として足し、
