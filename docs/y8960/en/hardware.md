@@ -203,15 +203,15 @@ The period is **(compare value+1) × unit**, and the unit is **2^(10 + 2×resolu
 
 **The contents of a counter's registers are not included in the confirmed table.** The three above are copied from `src/sound/MSXTimer.cc` of `openMSX_Y8960`, which inherited them from buppu3's implementation.
 
-**The reference clock is 85,909,080Hz** (3.579545MHz×24). The unit for each resolution is therefore as follows.
+**The reference clock is 42,954,540Hz** (3.579545MHz×12, the cartridge's system clock). The unit for each resolution is therefore as follows.
 
 | Resolution | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|
-| Unit | 11.9µs | 47.7µs | 191µs | 763µs | 3.05ms | 12.2ms | 48.8ms | 195ms |
+| Unit | 23.8µs | 95.4µs | 381µs | 1.53ms | 6.10ms | 24.4ms | 97.6ms | 391ms |
 
-The compare value is 8bit, so the longest period is 256×195ms = 50 seconds.
+The compare value is 8bit, so the longest period is 256×391ms = 100 seconds.
 
-**Where this comes from.** The implementation in `src/sound/MSXTimer` of `openMSX_Y8960`. `doc/fork/y8960/hardware-notes.md` §6 of the same repository says "71.5µs - 1.17s", but **the fork side confirmed that it is that document that is wrong and the implementation that is right** (2026-09-10).
+**Where this comes from.** The RTL of cartridge v0.9.9 counts the timer on the system clock, and the hardware's author confirmed that this is intended (2026-11-03). The timer's design sheet gives 85,909,080Hz (3.579545MHz×24); that value is not used. `src/sound/MSXTimer` of `openMSX_Y8960` also counts at this clock from 21.0-y8960.5 on.
 
 ## Open questions
 
