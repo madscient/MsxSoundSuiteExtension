@@ -70,7 +70,7 @@ At power-on and at reset, the initial value of BANK2 is #2, which holds the cart
 The cartridge also responds in page 2 (`8000h`-`BFFFh`), so if left as it is, the BIOS slot scan finds this header and records that page 2 of the same slot has another set of extended statements. Then a `CALL` statement that no ROM in page 1 accepts is passed on to the page 2 record, and the STATEMENT address in the header is called. That address
 is in page 1 and points into the middle of the code of whichever ROM is in page 1 at that moment.
 
-- **ID 0's cartridge INIT sets RAM mode to 1 and writes 5 to `4FFEh` (BANK2).** The scan calls the INIT in page 1 before it reads page 2, so writing it inside INIT is in time. Once the scan is done, nobody reads the header in page 2, so it is not restored
+- **ID 0's cartridge INIT writes 5 to `4FFEh` (BANK2).** The scan calls the INIT in page 1 before it reads page 2, so writing it inside INIT is in time. Once the scan is done, nobody reads the header in page 2, so it is not restored. `4FFEh` is visible only in RAM mode 1, so the INIT sets RAM mode to 1 before writing it and sets it back to 0 before returning ("[RAM mode right after startup](#ram-mode-right-after-startup)")
 - **Do not make the first 2 bytes of #5 `'AB'`.** #5 is the second half of Y8960 BASIC Extension, and it starts with a jump table. The build that assembles the cartridge image verifies this
 - There are two reasons for using #5. A second-half bank does not need a header at its start. And #5's number is already fixed by the section above as ID 2's second half
 
@@ -110,10 +110,10 @@ Switches BANK0 to the ROM with the specified ID.
 | | |
 |---|---|
 | Input | `A` = ID to switch to |
-| Output | CY clear = that ROM's first half is now in BANK0<br>CY set = failure. BANK0 is as it was when called |
+| Output | CY clear = that ROM's first half is now in BANK0<br>CY set = failure. BANK0 is as it was when called<br>In either case, what is in BANK1 is not defined |
 | Destroys | `AF` and the registers the implementation uses. `CALLSLT` itself destroys `IY` |
 
-When `A` is its own ID, it writes its own [I/O Enabler](#io-enabler) without touching the bank registers and returns success. **This path is placed in the first half.**
+When `A` is its own ID, it writes its own [I/O Enabler](#io-enabler) without touching BANK0 and returns success. It may switch its own second half into BANK1 ([When handing over from the attach entry](#when-handing-over-from-the-attach-entry)). If it does, it does not rely on the RAM mode it was called in. An application may call this path without any switch happening first, and right after startup the mode is 0 ([RAM mode right after startup](#ram-mode-right-after-startup)). **This path is placed in the first half.**
 It cannot be placed in the second half: as described later, when it is called in the middle of a switch, BANK1 is not its own second half.
 
 When `A` is another ID, the procedure is as described in "[Switching order](#switching-order)".
@@ -122,7 +122,7 @@ There are two reasons for failure: the other side does not identify itself with 
 
 ## RAM mode and bank registers
 
-Before touching the bank registers, set RAM mode to 1 by writing 1 to `4FFBh`. This is the only address visible in both modes.
+When handing over page 1, set RAM mode to 1 before touching the bank registers, by writing 1 to `4FFBh`. This is the only address visible in both modes.
 
 | | RAM mode 0 | RAM mode 1 |
 |---|---|---|
@@ -130,9 +130,17 @@ Before touching the bank registers, set RAM mode to 1 by writing 1 to `4FFBh`. T
 | BANK1 | `7000h`-`77FFh` | `4FFDh` |
 | BANK2 | `9000h`-`97FFh` | `4FFEh` |
 
-From then on, MSX Sound Suite uses only the RAM mode 1 side. Handing over page 1 writes `4FFCh` / `4FFDh`, and the only place this document specifies writing `4FFEh` is [ID 0 at startup](#page-2-shows-5-at-startup). This does not prevent the one that is switched in from writing the bank registers itself to swap bank RAM in and out ("[Using bank RAM](#using-bank-ram)"). **RAM mode is not restored.**
+Handing over page 1 uses only the RAM mode 1 side, and writes `4FFCh` / `4FFDh`. The only place this document specifies writing `4FFEh` is [ID 0 at startup](#page-2-shows-5-at-startup). This does not prevent the one that is switched in from writing the bank registers itself for its own purposes, such as swapping bank RAM in and out ("[Using bank RAM](#using-bank-ram)") or ID 0 switching in the FMBIOS body. **Handing over does not restore RAM mode.**
 
 The bank registers are write-only and cannot be read. The switching side can switch back because it reads and keeps `XBT_ID` before switching; that ID×2 is the original value of BANK0.
+
+### RAM mode right after startup
+
+**ID 0's cartridge INIT returns with RAM mode set to 0.** This holds both when it set the mode to 1 along the way and when a warm boot left the previous 1 in place. **ID 0's FMBIOS does not change RAM mode.** It returns with the mode it was called in.
+
+This is for software that supports SCC. Like the Konami SCC cartridges, such software writes `3Fh` to `9000h` to bring the SCC registers into page 2. In RAM mode 1 the BANK2 bank register moves to `4FFEh`, and writes to `9000h` do not reach it. A conventional application that calls the FMBIOS directly may use SCC as well, so the FMBIOS does not move the mode either.
+
+RAM mode stays 0 only while no ROM has been switched. Switching sets RAM mode to 1 and does not restore it, and after the attach entry is called the mode may also be 1. From then on, writes to `9000h` do not reach the register.
 
 ## I/O Enabler
 
@@ -234,13 +242,19 @@ Neither the first half nor the second half can page itself out. `4FFCh` is insid
 4. The second-half code reads the destination's `XBTAB` from `400Ah` and checks `'XB'` and `XBT_ID`. If they do not match, it writes its own ID×2 to `4FFCh` to go back, and returns failure
 5. Pass control to the destination. **There are two ways to pass it**
 
-**BANK1 may or may not be switched.** Whether the destination's second half is switched in depends on the way control is passed.
+**The handing-over side need not switch BANK1.** The destination switches in its own second half itself. When it does so depends on the way control is passed.
 
 ### When handing over from the attach entry
 
-`call` the destination's `4060h` with `A` = the destination's ID, and when it returns, `ret` to the application. The destination enters its "addressed to itself" path and writes its own I/O Enabler.
+`jp` to the destination's `4060h` with `A` = the destination's ID. The destination enters its "addressed to itself" path and writes its own I/O Enabler, and its `ret` returns straight to the application. CY reaches the application as it is. None of the handing-over side's code runs after the jump.
 
-**At this point, BANK1 is left holding the called side's second half.** The destination's second half is not switched in. The destination needs its own second half when it starts running, and it can switch it in itself at that point. This is why the "addressed to itself" path of the destination's `4060h` must be in the first half: if it were in the second half, the jump would land on the same address in the called side's second half.
+**When the destination is entered, BANK1 holds the handing-over side's second half.** This is why the "addressed to itself" path of the destination's `4060h` must be in the first half: if it were in the second half, the jump would land on the same address in the handing-over side's second half.
+
+The destination may switch its own second half into BANK1 in its "addressed to itself" path. The handing-over side's second half is no longer needed once the jump has been made. If the destination does not switch it, BANK1 still holds the handing-over side's second half after the return to the application.
+
+**Either way, the destination switches its own second half into BANK1 before entering any code in it.** Once attached, the destination can be entered from a BASIC extension's `STATEMENT`, and from the attach entry once more. It has not gone through `ENTER`, so its own second half is not necessarily there. If the "addressed to itself" path switches it in, the other entries need not.
+
+Do not hand over with `call`. If the destination switches in its own second half in its "addressed to itself" path, the handing-over side's second half that the return address should point into is gone.
 
 ### When handing over to a BASIC extension's ENTER
 
