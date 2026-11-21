@@ -15,6 +15,7 @@
 | `sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
 | `midi.rom` | 16KB | MIDI インターフェースを鳴らす単体カートリッジ用 |
 | `makoto.rom` | 16KB | Makoto（YM2608）・Misato（YMF288）単体カートリッジ用。`y8960bas.rom` には含まれない |
+| `HRA_Y8960_MSSX.xml` | 1KB | openMSX 用の拡張定義。この版の `y8960bas.rom` を入れた Y8960 カートリッジ。Y8960 カートリッジに対応した openMSX が要る（22.0 には含まれない）。使い方は README |
 
 下の「Source code (zip / tar.gz)」は GitHub が自動で付けるもので、中身は
 ドキュメントとビルド用スクリプトだけです。拡張BASIC 本体のソースコードは
@@ -45,6 +46,7 @@ See the included `NOTICE.md` (in Japanese) for details.
 | `sfg.rom` | 16KB | Standalone cartridge used together with an SFG-01/05 |
 | `midi.rom` | 16KB | Standalone cartridge that drives a MIDI interface |
 | `makoto.rom` | 16KB | Standalone cartridge for Makoto (YM2608) and Misato (YMF288). Not included in `y8960bas.rom` |
+| `HRA_Y8960_MSSX.xml` | 1KB | openMSX extension. The Y8960 cartridge with this release's `y8960bas.rom` in it. Needs an openMSX that supports the Y8960 cartridge (22.0 does not). See the README for how to use it |
 
 The "Source code (zip / tar.gz)" files below are added automatically by GitHub and
 contain only the documentation and build scripts. They do not contain the source

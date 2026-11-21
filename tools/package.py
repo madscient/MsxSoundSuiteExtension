@@ -9,7 +9,8 @@ Produces dist/MsxSoundSuiteExtension-<version>/ and the zip beside it.
 Nothing is built here: run tools/build.py first.
 
 The ROMs embedded in each cartridge image are checked against the ones we
-built before anything is copied; see check_cartridge_identity.
+built before anything is copied; see check_cartridge_identity. The openMSX
+configs are filled in from the ROMs as packaged; see write_openmsx_configs.
 
 The version defaults to `git describe` of this repository, so a package cut
 from a tagged commit is named after the tag.
@@ -18,10 +19,13 @@ import argparse
 import hashlib
 import importlib.util
 import os
+import re
 import shutil
 import subprocess
 import sys
 import zipfile
+from xml.etree import ElementTree
+from xml.sax.saxutils import escape as xml_escape
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import manifest
@@ -42,8 +46,8 @@ def default_version():
     return described.lstrip("v") or "0.0.0"
 
 
-def sha256(path):
-    h = hashlib.sha256()
+def file_digest(path, algorithm="sha256"):
+    h = hashlib.new(algorithm)
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(1 << 16), b""):
             h.update(chunk)
@@ -186,6 +190,50 @@ def collect_roms(out_dir):
     return copied
 
 
+def write_openmsx_configs(out_dir, version):
+    """Fill each openMSX config template; returns its package-relative paths.
+
+    The sha1 is taken from the copy already in the package, so the config
+    names the very image shipped beside it.
+    """
+    shipped = {dst for entry in manifest.REPOS
+               for _, dst, _ in entry["artifacts"]}
+    written = []
+    for template_rel, dst_rel, rom_rel in manifest.OPENMSX_CONFIGS:
+        if rom_rel not in shipped:
+            print(f"ERROR: {template_rel} is for {rom_rel}, which is not "
+                  f"one of the shipped ROMs")
+            return None
+        with open(manifest.abspath(template_rel), encoding="utf-8") as f:
+            text = f.read()
+        values = {
+            "@SHA1@": file_digest(os.path.join(out_dir, rom_rel), "sha1"),
+            "@FILENAME@": xml_escape(os.path.basename(rom_rel)),
+            "@VERSION@": xml_escape(version),
+        }
+        for key, value in values.items():
+            if key not in text:
+                print(f"ERROR: {template_rel} has no {key}")
+                return None
+            text = text.replace(key, value)
+        leftover = re.findall(r"@[A-Z_]+@", text)
+        if leftover:
+            print(f"ERROR: {template_rel} has unknown placeholders {leftover}")
+            return None
+        try:
+            ElementTree.fromstring(text.encode("utf-8"))
+        except ElementTree.ParseError as e:
+            print(f"ERROR: {template_rel} is not well-formed XML: {e}")
+            return None
+        dst = os.path.join(out_dir, dst_rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        with open(dst, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        print(f"    {dst_rel}  (sha1 {values['@SHA1@']} of {rom_rel})")
+        written.append(dst_rel)
+    return written
+
+
 def write_buildinfo(out_dir, version):
     lines = [f"{NAME} {version}", ""]
     lines.append("ソースリビジョン")
@@ -203,7 +251,7 @@ def write_buildinfo(out_dir, version):
         for name in sorted(files):
             path = os.path.join(root, name)
             rel = os.path.relpath(path, out_dir).replace(os.sep, "/")
-            lines.append(f"  {sha256(path)}  {rel}")
+            lines.append(f"  {file_digest(path)}  {rel}")
     text = "\n".join(lines) + "\n"
     with open(os.path.join(out_dir, "MANIFEST.txt"), "w",
               encoding="utf-8", newline="\n") as f:
@@ -254,6 +302,8 @@ def main():
     os.makedirs(out_dir)
 
     if collect_roms(out_dir) is None:
+        return 1
+    if write_openmsx_configs(out_dir, version) is None:
         return 1
 
     shutil.copytree(manifest.abspath(manifest.DOCS),

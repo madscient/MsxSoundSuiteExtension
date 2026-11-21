@@ -3,7 +3,7 @@
 What each source repository produces and where it lands.
 
 This is the single place that names build commands, the environment they
-need, ROM images and documents; build.py, sync_docs.py, package.py and
+need, ROM images, openMSX configs and documents; build.py, sync_docs.py, package.py and
 release.py all read it, so a new target is added here and nowhere else.
 
 The order of REPOS is a build order, not a listing order: Y8960 links
@@ -221,6 +221,17 @@ LINK_REWRITE = {
 DIAGRAMS = [
     ("phylogenetic-tree.pu", "phylogenetic-tree.svg",
      "拡張BASICの系統図", "Lineage of the BASIC extensions"),
+]
+
+# openMSX の拡張定義。(テンプレート, パッケージ内の置き場所, 対象の ROM のパッケージ内の置き場所)。
+# package.py が、パッケージに入れた ROM の sha1 とファイル名、パッケージの版をテンプレートに
+# 書き込む。ROM の版が出るたびに sha1 が変わるので、定義は ROM を組むここで書き出す。
+#
+# HRA_Y8960_MSSX.xml は openMSX の share/extensions/HRA_Y8960.xml（f5d087499）の写しで、
+# 違うのは <info> と <rom> だけ。openMSX 側の HRA_Y8960.xml が変わったら、こちらも合わせる。
+OPENMSX_CONFIGS = [
+    ("tools/openmsx/HRA_Y8960_MSSX.xml", "openmsx/HRA_Y8960_MSSX.xml",
+     "y8960bas.rom"),
 ]
 
 # docs/ にあるが、ソースリポジトリから複製したものではない文書。

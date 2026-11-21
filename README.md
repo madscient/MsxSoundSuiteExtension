@@ -17,11 +17,22 @@ ROM イメージは [Releases](../../releases) から入手してください。
 | `standalone/sfg.rom` | 16KB | SFG-01/05 と併用する単体カートリッジ用 |
 | `standalone/midi.rom` | 16KB | MIDI インターフェースを制御する単体カートリッジ用 |
 | `standalone/makoto.rom` | 16KB | Makoto（YM2608）・Misato（YMF288）単体カートリッジ用 |
+| `openmsx/HRA_Y8960_MSSX.xml` | 1KB | openMSX 用の拡張定義。`y8960bas.rom` を入れた Y8960 カートリッジ |
 
 `y8960bas.rom` はページ1（`4000H`-`7FFFH`）を5つの拡張BASICで分け合います。
 電源投入時に表に出るのは MSX-MUSIC BASIC Extension V2 で、`CALL MINIT` /　`CALL MUSIC` / `CALL AUDIO` / `CALL OPM` / `CALL MIDI` で切り替わります。
 
 `standalone/makoto.rom` は Makoto カートリッジと Misato カートリッジ用で、`y8960bas.rom` には含まれません。
+
+### openMSX で使う
+
+`openmsx/HRA_Y8960_MSSX.xml` は、`y8960bas.rom` を入れた Y8960 カートリッジを openMSX に差すための拡張定義です。Y8960 カートリッジに対応した openMSX が要ります（openMSX 22.0 には含まれません）。
+
+1. `HRA_Y8960_MSSX.xml` を、openMSX のユーザーディレクトリ（`share`）の下の `extensions` に置きます
+2. `y8960bas.rom` を、同じ `extensions` か、ユーザーディレクトリの下の `systemroms` に置きます
+3. 拡張 `HRA_Y8960_MSSX` を差します。起動時なら `-ext HRA_Y8960_MSSX`、コンソールなら `ext HRA_Y8960_MSSX` です
+
+ユーザーディレクトリの場所は、openMSX の [Setup Guide](https://openmsx.org/manual/setup.html#romlocation) にあります。定義は、同じリリースの `y8960bas.rom` の SHA1 を持っています。`systemroms` に置いた ROM はこの SHA1 で探されるので、ファイル名を変えても見つかります。
 
 ### ソースコードについて
 

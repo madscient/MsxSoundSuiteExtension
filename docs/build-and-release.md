@@ -9,7 +9,7 @@
 |---|---|
 | `docs/` | 公開ドキュメント。各ソースリポジトリからの複製、図、この文書 |
 | `doc/` | 6本のソースリポジトリに共通する文書の規約（書き方・製品名・検証）と、このリポジトリの作業計画 |
-| `tools/` | ビルド・パッケージ化・リリースのスクリプト。`tools/doc/` は、ソースリポジトリの公開文書の英語版を作って照合する道具で、ソースリポジトリの作業ツリーから走らせる |
+| `tools/` | ビルド・パッケージ化・リリースのスクリプト。`tools/doc/` は、ソースリポジトリの公開文書の英語版を作って照合する道具で、ソースリポジトリの作業ツリーから走らせる。`tools/openmsx/` は openMSX の拡張定義のテンプレート（下記） |
 | `vendor/` | 各拡張BASICのソースリポジトリ（サブモジュール、非公開） |
 | `dist/` | 生成されたパッケージ（コミットしない） |
 
@@ -53,7 +53,7 @@ python tools/release.py v0.1.0 --notes-file dist/notes.md
 
 | | |
 |---|---|
-| `tools/manifest.py` | ビルド手順・ビルド環境・成果物・複製するドキュメントの定義。他の5本はここだけを読む |
+| `tools/manifest.py` | ビルド手順・ビルド環境・成果物・openMSX の拡張定義・複製するドキュメントの定義。他の5本はここだけを読む |
 | `tools/build.py` | 各サブモジュールのビルドスクリプトを順に呼ぶ |
 | `tools/sync_docs.py` | `docs/` を更新する。`--check` で陳腐化を検査 |
 | `tools/diagram.py` | `docs/` の図を PlantUML のソースから描く。`--check` で陳腐化を検査。下記 |
@@ -62,7 +62,8 @@ python tools/release.py v0.1.0 --notes-file dist/notes.md
 | `tools/release.py` | ビルドとパッケージ化を通しで実行し、タグ付けとアップロードまで行う。下記の検査を行う |
 | `tools/release-notes.md` | リリースノートの定型文（日本語と英語）。`--notes-file` で差し替え可 |
 
-成果物やドキュメントを増やすときは `manifest.py` だけを変更する。
+成果物やドキュメントを増やすときは `manifest.py` だけを変更する（openMSX の
+拡張定義は、加えてテンプレートを置く）。
 
 ## リリースノートを書く
 
@@ -137,6 +138,33 @@ Makoto についてここで捕まるものは無い。
 
 バンク配置は Y8960 の `tools/zbuild/targets.py` から読む。配置が動いても
 こちらを直す必要はない。
+
+## openMSX の拡張定義
+
+`package.py` は、`manifest.py` の `OPENMSX_CONFIGS` に並べたテンプレートに、
+パッケージに入れた ROM の sha1 とファイル名、パッケージの版を書き込み、
+パッケージの `openmsx/` に置く。`release.py` はそれを単体の資産としても添える。
+ROM の版が出るたびに sha1 が変わるので、定義は ROM を組むこのリポジトリで
+毎回書き出す。
+
+テンプレートの差し込み口は `@SHA1@`・`@FILENAME@`・`@VERSION@` の3つ。
+`package.py` は、3つのどれかが欠けたとき、知らない `@…@` が残ったとき、
+書き込んだ結果が XML として読めないときにパッケージ化を拒否する。
+
+`tools/openmsx/HRA_Y8960_MSSX.xml` は openMSX の
+`share/extensions/HRA_Y8960.xml`（上流の `f5d087499`）の写しで、違うのは
+`<info>` と `<rom>` だけである。**openMSX 側の `HRA_Y8960.xml` が変わったら、
+こちらも合わせる。** 写しなので、openMSX 側が変わっても何も止まらない。
+`ROM` の id は openMSX 側と同じ `Y8960` にしてある。音源とデバッガブルの名前の
+頭になるので、変えると openMSX 側の設定や試験の名前とずれる。
+
+この定義は mappertype `Y8960Cartridge` を使うので、それを持つ openMSX でしか
+読めない。持たない openMSX で読ませると `Unknown mappertype: Y8960Cartridge`
+で拡張が読めない。
+
+ROM を増やすときは、テンプレートを `tools/openmsx/` に置いて
+`OPENMSX_CONFIGS` に1行足す。3番目の値は対象の ROM のパッケージ内の置き場所で、
+`artifacts` に無い ROM を指すと `package.py` が止まる。
 
 ## 図
 

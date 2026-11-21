@@ -7,8 +7,9 @@ Usage:
                             [--draft] [--no-build] [--dry-run]
 
 Runs build.py, packages, tags this repository and uploads the package with
-the GitHub CLI (`gh auth login` first). The zip and the loose ROM images are
-both attached: the zip carries the documents, the loose files save a click.
+the GitHub CLI (`gh auth login` first). The zip and the loose ROM images and
+openMSX configs are all attached: the zip carries the documents, the loose
+files save a click.
 
 The release describes one state of the six sources, so it refuses to run
 unless this repository is clean and every submodule sits exactly on its
@@ -181,6 +182,8 @@ def main():
     for entry in manifest.REPOS:
         for _, dst_rel, _ in entry["artifacts"]:
             assets.append(os.path.join(out_dir, dst_rel))
+    for _, dst_rel, _ in manifest.OPENMSX_CONFIGS:
+        assets.append(os.path.join(out_dir, dst_rel))
 
     existing = packager.git(["tag", "--list", args.tag], manifest.REPO_ROOT)
     if not existing:

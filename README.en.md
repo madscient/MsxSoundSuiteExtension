@@ -17,11 +17,22 @@ Get the ROM images from [Releases](../../releases).
 | `standalone/sfg.rom` | 16KB | Standalone cartridge used together with an SFG-01/05 |
 | `standalone/midi.rom` | 16KB | Standalone cartridge that drives a MIDI interface |
 | `standalone/makoto.rom` | 16KB | Standalone cartridge for Makoto (YM2608) and Misato (YMF288) |
+| `openmsx/HRA_Y8960_MSSX.xml` | 1KB | openMSX extension. The Y8960 cartridge with `y8960bas.rom` in it |
 
 `y8960bas.rom` shares page 1 (`4000H`-`7FFFH`) among the five BASIC extensions.
 At power-on, MSX-MUSIC BASIC Extension V2 is active. `CALL MINIT` / `CALL MUSIC` / `CALL AUDIO` / `CALL OPM` / `CALL MIDI` switch between them.
 
 `standalone/makoto.rom` is for the Makoto and Misato cartridges and is not included in `y8960bas.rom`.
+
+### Using it in openMSX
+
+`openmsx/HRA_Y8960_MSSX.xml` is an extension that inserts the Y8960 cartridge, with `y8960bas.rom` in it, into openMSX. It needs an openMSX that supports the Y8960 cartridge (openMSX 22.0 does not).
+
+1. Put `HRA_Y8960_MSSX.xml` in `extensions` under your openMSX user directory (`share`)
+2. Put `y8960bas.rom` in the same `extensions`, or in `systemroms` under the user directory
+3. Insert the extension `HRA_Y8960_MSSX`: `-ext HRA_Y8960_MSSX` on the command line, or `ext HRA_Y8960_MSSX` in the console
+
+The location of the user directory is in the openMSX [Setup Guide](https://openmsx.org/manual/setup.html#romlocation). The extension carries the SHA1 of the `y8960bas.rom` of the same release. A ROM in `systemroms` is looked up by that SHA1, so it is found even under another file name.
 
 ### About the source code
 
