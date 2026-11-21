@@ -182,7 +182,8 @@ setx OPENMSX_DIR "<openmsx.exe のあるフォルダ>"
 （blueMSX+）に両方が入ったので、blueMSX で確かめるときも分けない。
 
 - 要るのは、Y8960（mappertype `Y8960Cartridge`）と Makoto の両方を持つ版。
-  openMSX は `master` に両方あり、正式リリースの 22.0 には無い。blueMSX+ は
+  openMSX は `master` に両方ある。正式リリースの 22.0 は、Makoto を持つが
+  Y8960 を持たない。blueMSX+ は
   `develop` 枝に両方あり、`main` 枝とリリース（v3.2.0 pre-alpha まで）には無い。
   `OPENMSX_DIR` には、両方を持つ版を組んで置く
 - 上流の Y8960 の拡張 `HRA_Y8960.xml` は、ROM 1つに mappertype `Y8960Cartridge`

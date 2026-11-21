@@ -25,8 +25,9 @@ master より先に公開側へ届く）。
 
 - **確認済み** ―― 上流の openMSX の `master`（`ab07a757f`、2026-11-20）に、`Y8960Cartridge.cc` と
   `MSXMakoto.cc`、`HRA_Y8960.xml` と `Makoto.xml` がある（`git ls-tree`）。正式リリースの最新は
-  22.0（2026-10-28）で、Y8960 を含まない（同日の openMSX_Y8960 のセッションからの答えと
-  `gh release list`）
+  22.0（`RELEASE_22_0` = `13007fee0`、2026-10-28）で、Makoto（`Makoto.xml`、`MSXMakoto.cc`・`.hh`）を
+  含み、Y8960 を含まない（`git ls-tree`）。最初は verification.md に「22.0 には両方無い」と読める文を
+  書き、6本にも同じ文を送った。MakotoBasicExtension のセッションの指摘で直し、6本に訂正を送った
 - **確認済み** ―― 上流の blueMSX+（Hesoten/blueMSX-plus）は、`develop` 枝（`ced47d9c`、
   2026-11-21）に `romMapperMakoto.c` と Y8960 のファイル 30 本がある。`main` 枝（`18d70916`、
   2026-08-18）と、最新のリリース v3.2.0 pre-alpha（`55ca0a3f`、2026-11-12）には、どちらの名前の
@@ -76,6 +77,12 @@ master より先に公開側へ届く）。
   足した。見出しは兄弟がアンカーで指しうるので変えていない）。
   「兄弟全員にまたがる作業は Y8960BasicExtension を起点にする」の扱いは、Y8960BasicExtension の側から
   持ち主に返した
+- MakotoBasicExtension（依頼 1、同日の SendMessage）：`c85ffb6`（未 push）。返す材料の置き場所を
+  `CLAUDE.md` で `doc/plan.md` の「兄弟へ返すもの」（もとは「フォーク元へ返すもの」。改名の前に、兄弟の
+  文書にこの見出しへのリンクが無いことを確かめた）に決めた。消えた MsxMusicBasicExtension の
+  `doc/prompt-issues.md` を指していた参照を除いた。依頼 2 は途中：`MAKOTO_OPENMSX_DIR` を読むのを
+  やめて `OPENMSX_DIR` だけにした（未コミット。回帰を回してからコミットする、と持ち主が決めた）。
+  持ち主のユーザー環境変数に `MAKOTO_OPENMSX_DIR` が残っている。消すかは持ち主が決める
 - openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
   openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
   依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
