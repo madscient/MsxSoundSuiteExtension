@@ -41,10 +41,20 @@ master より先に公開側へ届く）。
 持ち、渡し方は verification.md を指すようにした。`tools/doc/README.md` の2か所が渡し方を
 `prompt-*.md` に決め打ちしていたので、verification.md を指すようにした。
 
-**集めなかったもの**：SFGBasicExtension の `CLAUDE.md` にある書き方の決まり（訂正と新しい材料を
-同じ節に入れない、相手が読む節に「こちら」「あちら」を書かない、兄弟が拾う節は AI が書いて AI が
-読むものとして書く）と、兄弟全員に配る作業は Y8960BasicExtension を起点にすること。持ち主の指示が
-2つの方法と決め方だったので、範囲の外とした。入れるかは持ち主に聞く。
+**書き方の決まりも集めた**（持ち主の指示、同日、言葉どおり：「SFGの書き方の決まりも入れて」）。
+SFGBasicExtension の `CLAUDE.md`（`106fd3b`、origin/master と同じ）から3つ：訂正と新しい材料を
+同じ節に入れない、相手が読む節に「こちら」「あちら」を書かない、兄弟が読むものは AI が書いて AI が
+読むものとして書く。理由の文は写し、事故の例（ISSUE-8、`29a29ab`）は写していない。
+
+**集めなかったもの**
+
+- **外部のコミュニティへ出す文章は人間が書き、AI は投稿文を用意しない**（SFGBasicExtension の
+  同じ段落にある）。兄弟とのやりとりではないので、この節の範囲の外とした。また、openMSX_Y8960 の
+  `doc/fork/y8960/implementation-plan.md` の (38)・(42) には、上流の PR #2288 への返事を AI が
+  下書きし、持ち主の了承（「ok」）を得て AI が投稿した記録がある。決まりと運用が合っていない。
+  どちらに揃えるかは持ち主が決める
+- **兄弟全員に配る作業は Y8960BasicExtension を起点にする**（SFGBasicExtension と
+  MidiPlayBasicExtension）。持ち主の指示の範囲の外とした
 
 **残り**：兄弟の `CLAUDE.md` はまだ直していない（持ち主の指示が「まずはここの文書」）。
 SFGBasicExtension と MidiPlayBasicExtension は自分の側の手順を、Y8960BasicExtension は
