@@ -113,8 +113,18 @@ master より先に公開側へ届く）。
   消した。消す前に、6本と openMSX_Y8960・blueMSX-plus_makoto の作業ツリーと設定で、コードとして読む所が
   無いことを見た（MakotoBasicExtension の文書2件と、このリポジトリの `vendor/` の古いスナップショットだけ）
 - Makoto のリズム ROM（sha1 `50b6c3e2…`）は、旧い `openMSX_Makoto` の `share/systemroms` にだけあり、
-  新しい `OPENMSX_DIR` とユーザーの share には無い（sha1 で探した）。`-ext Makoto` の試験はこのままでは
-  ROM が見つからない。置き場所は持ち主に聞く
+  新しい `OPENMSX_DIR` とユーザーの share には無かった（sha1 で探した）。持ち主が MakotoBasicExtension の
+  セッションに指示し、その側がユーザーの `Documents\openMSX\share\systemroms\ym2608_rhythm.rom` に写した。
+  こちらでも sha1 が `50b6c3e2…` であることを見た
+- 持ち主の答え（言葉どおり「2 ok」「3 ok」「4 消す」）：
+  - verification.md の「持ち主」を「人間（6リポジトリを持つ人）」に替えた（15 か所）。兄弟の文書では
+    「持ち主」が文書やリポジトリを持つ側の意味で使われていて、ぶつかるため。このリポジトリの
+    `plan.md` の「持ち主」は替えていない（このリポジトリの中だけの語で、兄弟は読まない）
+  - SFGBasicExtension の「兄弟へ渡した事実が覆ったら、相手が要らないと言っても訂正を出す」を、
+    「兄弟が読むものの書き方」に入れた。事故の例（ISSUE-8）は写していない
+  - `Y8960_OPENMSX_DIR` をユーザー環境変数から消した。消す前に、6本の作業ツリー（`git grep`）と設定で、
+    コードとして読む所が無いことを見た（Y8960BasicExtension の「こちらでは読まない」の文と経緯の記録、
+    このリポジトリの記録だけ）
 - 回帰の順番：持ち主の指示（言葉どおり「openMSXの配置が終わったら、各兄弟に順番に回帰開始の指示を
   出して。Y8960BEは最後。」）。MsxMusicBasicExtension → MsxAudioBasicExtensionLite → SFGBasicExtension
   → MidiPlayBasicExtension → MakotoBasicExtension → Y8960BasicExtension の順に、前が終わってから次に
