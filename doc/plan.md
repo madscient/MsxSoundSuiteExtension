@@ -87,6 +87,11 @@ master より先に公開側へ届く）。
   openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
   依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
   6本には、入れ替えが終わるまで openMSX の試験を待つよう伝えた
+- 回帰の順番：持ち主の指示（言葉どおり「openMSXの配置が終わったら、各兄弟に順番に回帰開始の指示を
+  出して。Y8960BEは最後。」）。MsxMusicBasicExtension → MsxAudioBasicExtensionLite → SFGBasicExtension
+  → MidiPlayBasicExtension → MakotoBasicExtension → Y8960BasicExtension の順に、前が終わってから次に
+  開始の合図を送る。順番は ID の順で、ID を持たない Makoto をその後に置いた（こちらの判断）。
+  「順番に」を、前の回帰が終わるのを待つ意味に取った（こちらの読み）
 
 ## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
 
