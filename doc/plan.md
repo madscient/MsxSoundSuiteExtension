@@ -49,7 +49,7 @@ master より先に公開側へ届く）。
   見出し「出入口」は、MsxAudioBasicExtensionLite と SFGBasicExtension がアンカーで指しているので
   残した。verification.md への指摘：返す材料の置き場所を決めるのは「`CLAUDE.md` か `README.md`」で
   ないと msse-doc-rule.md と合わない（直した）。「兄弟がアンカーで指している見出しは改名しない」が
-  無い（持ち主に聞く）
+  無い（持ち主に聞いて、入れた。言葉どおり「1は入れて」）
 
 ## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
 
