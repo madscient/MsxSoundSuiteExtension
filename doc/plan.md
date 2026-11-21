@@ -43,6 +43,14 @@ master より先に公開側へ届く）。
 別々に依頼した。直す箇所の一覧は渡していない（渡すと、受け取った側がその一覧に引きずられて漏らす）。
 結果はこの節に足す。
 
+- MsxMusicBasicExtension（依頼 1、同日の SendMessage）：`1c3bf14`（未 push）。`CLAUDE.md` が無いので
+  `README.md` から verification.md を指し、返す材料の置き場所を書いた。`doc/issues.md` の「出入口」の
+  「フォーク先も ISSUE を起こしてよい」が「兄弟の作業ツリーに書かない」と食い違っていたので直した。
+  見出し「出入口」は、MsxAudioBasicExtensionLite と SFGBasicExtension がアンカーで指しているので
+  残した。verification.md への指摘：返す材料の置き場所を決めるのは「`CLAUDE.md` か `README.md`」で
+  ないと msse-doc-rule.md と合わない（直した）。「兄弟がアンカーで指している見出しは改名しない」が
+  無い（持ち主に聞く）
+
 ## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
 
 持ち主の指示（言葉どおり）：「ここのverificationに集めよう。兄弟間の依頼は、従来の「自分の
