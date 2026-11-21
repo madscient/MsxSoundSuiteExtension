@@ -63,6 +63,14 @@ master より先に公開側へ届く）。
   `panpot.tcl`・`ssgs6.tcl` のコメントの「openMSX に SSGS は無い」を、このハーネスの構成に無い、と
   直した。試験は openMSX の入れ替えの後に回す。こちらからは、上流の版に `Y8960 SSG 0 regs`・
   `Y8960 SSG 1 regs` があったことを材料として返した
+- Y8960BasicExtension（依頼 1、同日の SendMessage）：`8e8aac9`（未 push）。`CLAUDE.md` の
+  `prompt-*.md` だけを書いた段落を、verification.md への参照と置き場所2つ（返す材料は `doc/todo.md` の
+  末尾の節「兄弟へ返すもの」、SendMessage で決まったことは `doc/plan.md`）に替えた。verification.md
+  への指摘：SendMessage で受け取ったことの置き場所も各リポジトリの `CLAUDE.md` が決める形でないと、
+  文書を分けているリポジトリで一つに決まらない（直した）。兄弟の ROM に原因がある統合版の欠陥を
+  Y8960BasicExtension が直したとき、その直しがどう兄弟の ROM に入るかが書いていない（持ち主に聞く）。
+  「兄弟全員にまたがる作業は Y8960BasicExtension を起点にする」の扱いは、Y8960BasicExtension の側から
+  持ち主に返した
 - openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
   openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
   依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
