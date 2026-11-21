@@ -50,6 +50,18 @@ master より先に公開側へ届く）。
   残した。verification.md への指摘：返す材料の置き場所を決めるのは「`CLAUDE.md` か `README.md`」で
   ないと msse-doc-rule.md と合わない（直した）。「兄弟がアンカーで指している見出しは改名しない」が
   無い（持ち主に聞いて、入れた。言葉どおり「1は入れて」）
+- MsxAudioBasicExtensionLite（依頼 1、同日の SendMessage）：`0ce35e8`（未 push）。`CLAUDE.md` に節を
+  足し、verification.md を指す一文と、返す材料の置き場所（`doc/plan.md` の「進行中の作業」、宛先の
+  リポジトリ名を頭に置く）を書いた。`doc/plan.md` の「MsxMusicBasicExtension の issues.md へ起こす」を、
+  材料を自分の側に書いて拾ってもらう形に直した。`doc/plan-tick-source.md` の「こちら」「あちら」を
+  リポジトリ名に替えた。verification.md への指摘：フォーク元へ上げる不具合の材料が、二つの置き場所の
+  どちらに入るか読み取れない。MsxMusicBasicExtension（`1c3bf14` の「出入口」）も
+  MsxAudioBasicExtensionLite も作業計画の側に置く形なので、verification.md にそう書いた。もう一つの
+  指摘（MsxMusicBasicExtension の「出入口」の食い違い）は、`1c3bf14` で同じ向きに直っていた
+- openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
+  openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
+  依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
+  6本には、入れ替えが終わるまで openMSX の試験を待つよう伝えた
 
 ## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
 
