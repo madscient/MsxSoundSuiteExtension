@@ -87,6 +87,34 @@ master より先に公開側へ届く）。
   openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
   依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
   6本には、入れ替えが終わるまで openMSX の試験を待つよう伝えた
+- MsxMusicBasicExtension（依頼 2）：`78cf168`（未 push）。`--y8960` がフォーク用の
+  `Y8960_OPENMSX_DIR` とフォークの share を使っていたのをやめ、`OPENMSX_DIR` の `HRA_Y8960.xml` を使う形に
+  した（上流の形でなければ openMSX を起こす前に止まる）。フォークの名前を引いていた試験3本を、上流の
+  ソースを読んで決めた名前に引き直した（走らせる前）
+- MidiPlayBasicExtension（依頼 1）：`c36ffed`（未 push）。指摘：(1) verification.md の「持ち主」（人間）が、
+  兄弟の文書の「持ち主」（文書やリポジトリを持つ側）とぶつかり、「持ち主に拾わせる」が二通りに読める。
+  拾うのは相手のセッションで、持ち主が決めるのは時機なので、文を直した。語をどうするかは持ち主に
+  聞く。(2)「こちら」「あちら」に「そちら」が無い（足した）。(3)「訂正と新しい材料を同じ節に入れない」の
+  粒度（見出しの下、とした。理由の「片方が要らないと判断されたときに両方が落ちる」は見出しの単位で
+  拾い、消すことから）
+- SFGBasicExtension（依頼 1）：`9d8e002`（未 push）。`CLAUDE.md` の写しを消して verification.md を指し、
+  置き場所の表と「外部のコミュニティ」「Y8960BasicExtension 起点」の段落を残した。材料：SFG の
+  「兄弟へ渡した事実が覆ったら、相手が要らないと言っても訂正は出す」に当たる文が verification.md に
+  無い（共通にするかは持ち主に聞く）。もう一つの材料：上流の `50516e3a1`（2026-09-21）で PSG の
+  `mirrored_registers` の既定が false になり、機種定義からこの要素が消えた（SFG が上流の履歴で
+  確かめた。こちらでは確かめていない）。丸めを切る派生を作っている MsxMusicBasicExtension と
+  MsxAudioBasicExtensionLite に回した
+- openMSX の配置の結果（openMSX_Y8960 のセッションの知らせ）：版の文字列 `22.0-unknown`、exe の sha1
+  `66be8b377129021dcc3586250580bb6a831a3e88`、元は openMSX_Y8960 の `main` の `5618c6d6a`（コードは上流の
+  `ab07a757f` と同じ）。配布 zip の中身で上書き 88 本・追加 30 本、配置先にしか無い 52 本は残した。
+  入れ替え前の全体は退避した（消す時期はその側が持ち主に聞いている）。`-testconfig` で `HRA_Y8960` は 0、
+  存在しない拡張は 1。版が commit を名乗らないのは、その側の決まりで sha1 と commit を記録する形にした
+- `MAKOTO_OPENMSX_DIR`：持ち主の判断（言葉どおり「MAKOTO_OPENMSX_DIR は消す」）で、ユーザー環境変数から
+  消した。消す前に、6本と openMSX_Y8960・blueMSX-plus_makoto の作業ツリーと設定で、コードとして読む所が
+  無いことを見た（MakotoBasicExtension の文書2件と、このリポジトリの `vendor/` の古いスナップショットだけ）
+- Makoto のリズム ROM（sha1 `50b6c3e2…`）は、旧い `openMSX_Makoto` の `share/systemroms` にだけあり、
+  新しい `OPENMSX_DIR` とユーザーの share には無い（sha1 で探した）。`-ext Makoto` の試験はこのままでは
+  ROM が見つからない。置き場所は持ち主に聞く
 - 回帰の順番：持ち主の指示（言葉どおり「openMSXの配置が終わったら、各兄弟に順番に回帰開始の指示を
   出して。Y8960BEは最後。」）。MsxMusicBasicExtension → MsxAudioBasicExtensionLite → SFGBasicExtension
   → MidiPlayBasicExtension → MakotoBasicExtension → Y8960BasicExtension の順に、前が終わってから次に
