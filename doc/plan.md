@@ -17,147 +17,103 @@ master より先に公開側へ届く）。
 持ち主の指示（言葉どおり）：「openMSXもblueMSXも上流にMakotoとY8960がマージされたので、以後の
 試験ではフォークとオリジナルを分ける必要が無いことも文書とテストに反映」。
 
-`verification.md` の「openMSX の場所」に小節「フォークとオリジナルを分けない」を足した。試験は
-`OPENMSX_DIR` の1本で6リポジトリとも回す。このリポジトリには openMSX を走らせる試験が無いので、
-試験の側は6本の各リポジトリが直す（SendMessage で依頼した。下記）。
+`verification.md` の「openMSX の場所」に小節「フォークとオリジナルを分けない」を足した。このリポジトリ
+には openMSX を走らせる試験が無いので、試験の側は6本がそれぞれ直した（持ち主の指示で、SendMessage で
+依頼した。直す箇所の一覧は渡していない。渡すと、受け取った側がその一覧に引きずられて漏らす）。
 
-**確度**
+**記録の範囲**（持ち主の判断、言葉どおり「B'」）：兄弟とのやりとりは、持ち主の決定、このリポジトリが
+根拠に使う事実、このリポジトリの文書を直したきっかけだけを書く。兄弟が自分のリポジトリで何を直したかは、
+それぞれのコミットと記録にあるので書かない。前提：この文書が公開されていて、非公開の兄弟の文書名や
+ISSUE 番号を増やしたくないこと。
+
+**上流について**
 
 - **確認済み** ―― 上流の openMSX の `master`（`ab07a757f`、2026-11-20）に、`Y8960Cartridge.cc` と
   `MSXMakoto.cc`、`HRA_Y8960.xml` と `Makoto.xml` がある（`git ls-tree`）。正式リリースの最新は
-  22.0（`RELEASE_22_0` = `13007fee0`、2026-10-28）で、Makoto（`Makoto.xml`、`MSXMakoto.cc`・`.hh`）を
-  含み、Y8960 を含まない（`git ls-tree`）。最初は verification.md に「22.0 には両方無い」と読める文を
-  書き、6本にも同じ文を送った。MakotoBasicExtension のセッションの指摘で直し、6本に訂正を送った
-- **確認済み** ―― 上流の blueMSX+（Hesoten/blueMSX-plus）は、`develop` 枝（`ced47d9c`、
-  2026-11-21）に `romMapperMakoto.c` と Y8960 のファイル 30 本がある。`main` 枝（`18d70916`、
-  2026-08-18）と、最新のリリース v3.2.0 pre-alpha（`55ca0a3f`、2026-11-12）には、どちらの名前の
-  ファイルも無い（`git ls-tree` の名前の検索）
+  22.0（`RELEASE_22_0` = `13007fee0`、2026-10-28）で、Makoto を含み、Y8960 を含まない（`git ls-tree`）。
+  最初は verification.md に「22.0 には両方無い」と読める文を書き、6本にも同じ文を送った。
+  MakotoBasicExtension のセッションの指摘で直し、6本に訂正を送った
+- **確認済み** ―― 上流の blueMSX+（Hesoten/blueMSX-plus）は、`develop` 枝（`ced47d9c`、2026-11-21）に
+  `romMapperMakoto.c` と Y8960 のファイル 30 本がある。`main` 枝（`18d70916`、2026-08-18）と、最新の
+  リリース v3.2.0 pre-alpha（`55ca0a3f`、2026-11-12）には、どちらの名前のファイルも無い
 - **確認済み** ―― フォークの旧い形と上流の形で、デバイスの名前が違う。旧い形の `HRA_Y8960.xml` の
   `Y8960 SSGS` に対し、上流の版で `Y8960 SSG 0 regs`・`Y8960 SSG 1 regs` のデバッガブルを見た
-  （上の「openMSX の拡張定義」の節の試験で）
-- **確認済み** ―― 持ち主の `OPENMSX_DIR` は 2026-11-04 のフォークのビルドを指していて、上流の形の
-  拡張を読めない（同じ節の試験で `Unknown mappertype: Y8960Cartridge`）。上流の形で回すには、
-  `OPENMSX_DIR` を両方を持つ版に替える必要がある。どのビルドを置くかは持ち主が決める（未決）
+  （下の「openMSX の拡張定義」の節の試験で）
 
-**このあと**（持ち主の指示、言葉どおり：「回帰が全部終わったら次は0.5.7のリリース作業をするけど
-セッションは改める。他のクロコには、コミット・pushして作業終了を通知しておいて。僕は出かけるので、
-ここも兄弟の回帰とリリース前の確認が済んでいたらpushまでして終わっていい。」）
+**OPENMSX_DIR の入れ替え**（持ち主の指示、言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）：
+openMSX_Y8960 のセッションが、`OPENMSX_DIR` のフォルダの中身を、退避してから上流の版に入れ替えた。
+別のフォルダに置いて `setx` で向け直さなかったのは、動いているセッションに届かないため。置いた exe は、
+版の文字列 `22.0-unknown`、sha1 `66be8b377129021dcc3586250580bb6a831a3e88`、元は openMSX_Y8960 の
+`main` の `5618c6d6a`（コードは上流の `ab07a757f` と同じ）。版が commit を名乗らないのは、その側の
+決まり（持ち主の判断）で、sha1 と commit を記録する形にした。退避は回帰の後に消された（その側の知らせ）。
 
-- 6本には、回帰を報告したらコミットして push し、作業を終えるよう伝えた。openMSX_Y8960 のセッションには、
-  6本の結果をまとめて送ったら退避を消して終えるよう伝えた
-- リリース前の確認として、このセッションで次を見る：Y8960BasicExtension がピンを置くべきと返す commit が
-  リモートにあること。その commit の `vendor/` の4本のピンと、このリポジトリのピンとの差。その commit
-  から組んだ `y8960bas.rom` の sha1 が、Y8960BasicExtension の回帰に使ったものと同じかどうか。
-  `d77dce7` と `5975dce` を出してよいかの Y8960BasicExtension の見立て。ピンを進めるのは次のセッションの
-  リリース作業で、ここではコミットしない
+**環境変数とリズム ROM**：持ち主の判断で、`MAKOTO_OPENMSX_DIR` と `Y8960_OPENMSX_DIR` をユーザー環境
+変数から消した（言葉どおり「MAKOTO_OPENMSX_DIR は消す」「4 消す」）。消す前に、6本と関わりのある作業
+ツリーと設定で、コードとして読む所が無いことを見た。Makoto のリズム ROM（sha1 `50b6c3e2…`）は旧い
+置き場所にしか無かったので、持ち主の指示で MakotoBasicExtension のセッションがユーザー側の
+`systemroms` に写した（こちらでも sha1 を見た）。
 
-**push が止まった**：MsxMusicBasicExtension は、SendMessage で引いた持ち主の言葉（「コミット・pushして」）
-では、そのセッションの許可の判定を通らず、push しなかった（その側の知らせ）。持ち主は各セッションで
-許可を出すと言った（言葉どおり「pushの許可は僕が巡回しないとだめかもしれんね。各セッションで許可を
-出しておく。」）。verification.md の SendMessage の項に、許可の要る操作は人間が相手の窓で直接許可する、
-と足した。
+**回帰**（持ち主の指示、言葉どおり「openMSXの配置が終わったら、各兄弟に順番に回帰開始の指示を出して。
+Y8960BEは最後。」）：MsxMusicBasicExtension → MsxAudioBasicExtensionLite → SFGBasicExtension →
+MidiPlayBasicExtension → MakotoBasicExtension → Y8960BasicExtension の順に、前が終わってから次を始めた
+（順番の付け方と「前が終わるのを待つ」はこちらの読み）。6本とも落ちは 0 で、どれも走らせた exe の sha1 が
+上の値であることを確かめている（各セッションの報告。こちらでは走らせていない）。MakotoBasicExtension は
+旧い Makoto 入りのビルドと出力を行ごとに突き合わせ、判定の無い表示と ±1 jiffy の違いを見つけた（落ちでは
+ない）。exe の入れ替えが原因の落ち方は無く、そう openMSX_Y8960 のセッションに伝えた。
 
-**記録の範囲**（持ち主の判断、言葉どおり「B'」）：兄弟とのやりとりは、持ち主の決定、このリポジトリが
-根拠に使う事実、このリポジトリの文書を直したきっかけだけを書く。兄弟が自分のリポジトリで何を
-直したかは、それぞれのコミットと記録にあるので書かない。下の兄弟ごとの記録は、回帰が終わったら
-この範囲に縮める。前提：この文書が公開されていて、非公開の兄弟の文書名や ISSUE 番号を増やしたく
-ないこと。
+**push**：SendMessage で引いた持ち主の言葉では、相手のセッションの許可の判定を通らず、push できなかった。
+持ち主が各窓で直接許可し、6本とも push した（言葉どおり「pushの許可は僕が巡回しないとだめかもしれんね。
+各セッションで許可を出しておく。」）。verification.md の SendMessage の項に、許可の要る操作は人間が相手の
+窓で直接許可する、と足した。
 
-**兄弟への依頼**（同日、持ち主の指示で SendMessage で直接）：6本のセッションに、「兄弟の
-リポジトリとのやりとり」の節に合わせた文書の修正と、この小節に合わせた文書と試験の修正を、
-別々に依頼した。直す箇所の一覧は渡していない（渡すと、受け取った側がその一覧に引きずられて漏らす）。
-結果はこの節に足す。
+**verification.md を直したきっかけ**（兄弟のセッションの指摘。持ち主の判断を要したものは言葉を添える）
 
-- MsxMusicBasicExtension（依頼 1、同日の SendMessage）：`1c3bf14`（未 push）。`CLAUDE.md` が無いので
-  `README.md` から verification.md を指し、返す材料の置き場所を書いた。`doc/issues.md` の「出入口」の
-  「フォーク先も ISSUE を起こしてよい」が「兄弟の作業ツリーに書かない」と食い違っていたので直した。
-  見出し「出入口」は、MsxAudioBasicExtensionLite と SFGBasicExtension がアンカーで指しているので
-  残した。verification.md への指摘：返す材料の置き場所を決めるのは「`CLAUDE.md` か `README.md`」で
-  ないと msse-doc-rule.md と合わない（直した）。「兄弟がアンカーで指している見出しは改名しない」が
-  無い（持ち主に聞いて、入れた。言葉どおり「1は入れて」）
-- MsxAudioBasicExtensionLite（依頼 1、同日の SendMessage）：`0ce35e8`（未 push）。`CLAUDE.md` に節を
-  足し、verification.md を指す一文と、返す材料の置き場所（`doc/plan.md` の「進行中の作業」、宛先の
-  リポジトリ名を頭に置く）を書いた。`doc/plan.md` の「MsxMusicBasicExtension の issues.md へ起こす」を、
-  材料を自分の側に書いて拾ってもらう形に直した。`doc/plan-tick-source.md` の「こちら」「あちら」を
-  リポジトリ名に替えた。verification.md への指摘：フォーク元へ上げる不具合の材料が、二つの置き場所の
-  どちらに入るか読み取れない。MsxMusicBasicExtension（`1c3bf14` の「出入口」）も
-  MsxAudioBasicExtensionLite も作業計画の側に置く形なので、verification.md にそう書いた。もう一つの
-  指摘（MsxMusicBasicExtension の「出入口」の食い違い）は、`1c3bf14` で同じ向きに直っていた
-- MsxAudioBasicExtensionLite（依頼 2、同日の SendMessage）：`44e5a52`（未 push）。ハーネスはもともと
-  `OPENMSX_DIR` の1本だけを使い、Y8960 の拡張を挿さず、フォークの名前を引く試験も無かった。
-  `panpot.tcl`・`ssgs6.tcl` のコメントの「openMSX に SSGS は無い」を、このハーネスの構成に無い、と
-  直した。試験は openMSX の入れ替えの後に回す。こちらからは、上流の版に `Y8960 SSG 0 regs`・
-  `Y8960 SSG 1 regs` があったことを材料として返した
-- Y8960BasicExtension（依頼 1、同日の SendMessage）：`8e8aac9`（未 push）。`CLAUDE.md` の
-  `prompt-*.md` だけを書いた段落を、verification.md への参照と置き場所2つ（返す材料は `doc/todo.md` の
-  末尾の節「兄弟へ返すもの」、SendMessage で決まったことは `doc/plan.md`）に替えた。verification.md
-  への指摘：SendMessage で受け取ったことの置き場所も各リポジトリの `CLAUDE.md` が決める形でないと、
-  文書を分けているリポジトリで一つに決まらない（直した）。兄弟の ROM に原因がある統合版の欠陥を
-  Y8960BasicExtension が直したとき、その直しがどう兄弟の ROM に入るかが書いていない（持ち主に聞いた。
-  言葉どおり「Aただし、兄弟への連絡方法はその都度僕が指示する。」。A は、Y8960BasicExtension が直し方を
-  渡し、兄弟が自分のリポジトリでコミットし、Y8960BasicExtension が `vendor/` を進めて統合版で確かめる
-  案。もう一つの案、Y8960BasicExtension が `vendor/<兄弟>` で直接コミットして push する形は、11-01 に
-  PR の手順を外した向きと逆なので推さなかった。verification.md の「統合版に固有の欠陥」の節に段落を
-  足した。見出しは兄弟がアンカーで指しうるので変えていない）。
-  「兄弟全員にまたがる作業は Y8960BasicExtension を起点にする」の扱いは、Y8960BasicExtension の側から
-  持ち主に返した
-- MakotoBasicExtension（依頼 1、同日の SendMessage）：`c85ffb6`（未 push）。返す材料の置き場所を
-  `CLAUDE.md` で `doc/plan.md` の「兄弟へ返すもの」（もとは「フォーク元へ返すもの」。改名の前に、兄弟の
-  文書にこの見出しへのリンクが無いことを確かめた）に決めた。消えた MsxMusicBasicExtension の
-  `doc/prompt-issues.md` を指していた参照を除いた。依頼 2 は途中：`MAKOTO_OPENMSX_DIR` を読むのを
-  やめて `OPENMSX_DIR` だけにした（未コミット。回帰を回してからコミットする、と持ち主が決めた）。
-  持ち主のユーザー環境変数に `MAKOTO_OPENMSX_DIR` が残っている。消すかは持ち主が決める
-- openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
-  openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
-  依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
-  6本には、入れ替えが終わるまで openMSX の試験を待つよう伝えた
-- MsxMusicBasicExtension（依頼 2）：`78cf168`（未 push）。`--y8960` がフォーク用の
-  `Y8960_OPENMSX_DIR` とフォークの share を使っていたのをやめ、`OPENMSX_DIR` の `HRA_Y8960.xml` を使う形に
-  した（上流の形でなければ openMSX を起こす前に止まる）。フォークの名前を引いていた試験3本を、上流の
-  ソースを読んで決めた名前に引き直した（走らせる前）
-- MidiPlayBasicExtension（依頼 1）：`c36ffed`（未 push）。指摘：(1) verification.md の「持ち主」（人間）が、
-  兄弟の文書の「持ち主」（文書やリポジトリを持つ側）とぶつかり、「持ち主に拾わせる」が二通りに読める。
-  拾うのは相手のセッションで、持ち主が決めるのは時機なので、文を直した。語をどうするかは持ち主に
-  聞く。(2)「こちら」「あちら」に「そちら」が無い（足した）。(3)「訂正と新しい材料を同じ節に入れない」の
-  粒度（見出しの下、とした。理由の「片方が要らないと判断されたときに両方が落ちる」は見出しの単位で
-  拾い、消すことから）
-- SFGBasicExtension（依頼 1）：`9d8e002`（未 push）。`CLAUDE.md` の写しを消して verification.md を指し、
-  置き場所の表と「外部のコミュニティ」「Y8960BasicExtension 起点」の段落を残した。材料：SFG の
-  「兄弟へ渡した事実が覆ったら、相手が要らないと言っても訂正は出す」に当たる文が verification.md に
-  無い（共通にするかは持ち主に聞く）。もう一つの材料：上流の `50516e3a1`（2026-09-21）で PSG の
-  `mirrored_registers` の既定が false になり、機種定義からこの要素が消えた（SFG が上流の履歴で
-  確かめた。こちらでは確かめていない）。丸めを切る派生を作っている MsxMusicBasicExtension と
-  MsxAudioBasicExtensionLite に回した
-- Y8960BasicExtension（依頼 2、未コミット。回帰の後にコミットする）：`vendor/openMSX_Y8960` をやめ、
-  `OPENMSX_DIR` の exe と `HRA_Y8960.xml` を使う形にした（上流の形でなければ起動前に止まる。5通りで
-  確かめた）。版の照合はやめ、結果の頭に `openmsx_info version` を出す（持ち主の選択）。デバッガブルの
-  読みを上流の名前に直した（ソースを読んで決めた。走らせる前）
-- openMSX の配置の結果（openMSX_Y8960 のセッションの知らせ）：版の文字列 `22.0-unknown`、exe の sha1
-  `66be8b377129021dcc3586250580bb6a831a3e88`、元は openMSX_Y8960 の `main` の `5618c6d6a`（コードは上流の
-  `ab07a757f` と同じ）。配布 zip の中身で上書き 88 本・追加 30 本、配置先にしか無い 52 本は残した。
-  入れ替え前の全体は退避した（消す時期はその側が持ち主に聞いている）。`-testconfig` で `HRA_Y8960` は 0、
-  存在しない拡張は 1。版が commit を名乗らないのは、その側の決まりで sha1 と commit を記録する形にした
-- `MAKOTO_OPENMSX_DIR`：持ち主の判断（言葉どおり「MAKOTO_OPENMSX_DIR は消す」）で、ユーザー環境変数から
-  消した。消す前に、6本と openMSX_Y8960・blueMSX-plus_makoto の作業ツリーと設定で、コードとして読む所が
-  無いことを見た（MakotoBasicExtension の文書2件と、このリポジトリの `vendor/` の古いスナップショットだけ）
-- Makoto のリズム ROM（sha1 `50b6c3e2…`）は、旧い `openMSX_Makoto` の `share/systemroms` にだけあり、
-  新しい `OPENMSX_DIR` とユーザーの share には無かった（sha1 で探した）。持ち主が MakotoBasicExtension の
-  セッションに指示し、その側がユーザーの `Documents\openMSX\share\systemroms\ym2608_rhythm.rom` に写した。
-  こちらでも sha1 が `50b6c3e2…` であることを見た
-- 持ち主の答え（言葉どおり「2 ok」「3 ok」「4 消す」）：
-  - verification.md の「持ち主」を「人間（6リポジトリを持つ人）」に替えた（15 か所）。兄弟の文書では
-    「持ち主」が文書やリポジトリを持つ側の意味で使われていて、ぶつかるため。このリポジトリの
-    `plan.md` の「持ち主」は替えていない（このリポジトリの中だけの語で、兄弟は読まない）
-  - SFGBasicExtension の「兄弟へ渡した事実が覆ったら、相手が要らないと言っても訂正を出す」を、
-    「兄弟が読むものの書き方」に入れた。事故の例（ISSUE-8）は写していない
-  - `Y8960_OPENMSX_DIR` をユーザー環境変数から消した。消す前に、6本の作業ツリー（`git grep`）と設定で、
-    コードとして読む所が無いことを見た（Y8960BasicExtension の「こちらでは読まない」の文と経緯の記録、
-    このリポジトリの記録だけ）
-- 回帰の順番：持ち主の指示（言葉どおり「openMSXの配置が終わったら、各兄弟に順番に回帰開始の指示を
-  出して。Y8960BEは最後。」）。MsxMusicBasicExtension → MsxAudioBasicExtensionLite → SFGBasicExtension
-  → MidiPlayBasicExtension → MakotoBasicExtension → Y8960BasicExtension の順に、前が終わってから次に
-  開始の合図を送る。順番は ID の順で、ID を持たない Makoto をその後に置いた（こちらの判断）。
-  「順番に」を、前の回帰が終わるのを待つ意味に取った（こちらの読み）
+- 返す材料の置き場所を決めるのは、各リポジトリの `CLAUDE.md` か `README.md`（`CLAUDE.md` を持たない
+  兄弟がある）。SendMessage で受け取ったことの置き場所も同じ形にした（文書を分けている兄弟がある）
+- フォーク元へ上げる不具合の材料は、作業計画の側に入る（二つの置き場所のどちらか読み取れなかった）
+- 拾うのは相手のセッションで、人間が決めるのは時機（「持ち主に拾わせる」がそう読めなかった）。語は
+  「持ち主」から「人間」に替えた（兄弟の文書では「持ち主」が文書やリポジトリを持つ側の意味で使われて
+  いる。「2 ok」）。このリポジトリの `plan.md` の「持ち主」は替えていない
+- 「こちら」「あちら」に「そちら」を足し、「同じ節」を「同じ見出しの下」にした
+- 兄弟がアンカーで指している見出しは改名しない（「1は入れて」）
+- 兄弟へ渡した事実が覆ったら、相手が要らないと言っても訂正を出す（SFGBasicExtension の決まり。「3 ok」）
+- 原因が兄弟の ROM にある統合版の欠陥は、Y8960BasicExtension が直し方を渡し、兄弟が自分のリポジトリで
+  コミットし、Y8960BasicExtension が `vendor/` を進めて確かめる（「Aただし、兄弟への連絡方法はその都度
+  僕が指示する。」）。Y8960BasicExtension が `vendor/<兄弟>` で直接コミットする案は、11-01 に PR の手順を
+  外した向きと逆なので推さなかった。見出しは兄弟がアンカーで指しうるので変えていない
+
+**リリース前の確認**（v0.5.7 のため。持ち主の指示：「ここも兄弟の回帰とリリース前の確認が済んでいたら
+pushまでして終わっていい。」）
+
+- **確認済み** ―― Y8960BasicExtension がピンに挙げた `0982c03` は origin/master と一致する（fetch）。
+  `c641ccf`（v0.5.6）からの `src/` の変更は、`d77dce7` の `work.inc`・`hook.asm` と、`opllex.asm` の
+  コメント1行だけ（`git diff --stat`）
+- **確認済み** ―― `0982c03` の `vendor/` のピンは、MsxMusicBasicExtension と MsxAudioBasicExtensionLite が
+  このリポジトリと同じで、SFGBasicExtension（`af97a24`、こちらは `106fd3b`）と MidiPlayBasicExtension
+  （`20e6804`、こちらは `563622e`）が違う。違いの `src/` はコメントだけ（差分を読んだ）
+- **確認済み** ―― このリポジトリのピンのまま Y8960BasicExtension だけを `0982c03` にして組んだ
+  `y8960bas.rom`（sha1 `4bf25ee769dc279484461e92aa718e284aa15695`）と、Y8960BasicExtension の回帰に使った
+  もの（`0be597ac7ec7be793c17daa1eec756845482d2d7`、sha1 をこちらでも取った）の差は 6 バイトで、
+  SFG（OPM）と MIDI のバンクの版の文字列の日付 `2026 10 31` → `2026 11 04` だけ（`cmp -l` と文字列の
+  読み出し）。v0.5.6 の時と同じ形。組んだ後、`vendor/Y8960BasicExtension` を `c641ccf` に戻して組み直した
+  （`y8960bas.rom` の sha1 が v0.5.6 の `f8cea4f2…` に戻ったのを見た）。ピンはコミットしていない
+- **確認済み** ―― ほかの兄弟5本は、このリポジトリのピンから各 origin/master までに `src/` の変更が無い
+  （`git diff --stat -- src` が空）。今日の変更は文書と試験だけ
+- Y8960BasicExtension の見立て：`d77dce7` と `5975dce` はリリースしてよい。分解能 0 で止まる穴は v0.5.6
+  からあり、`d77dce7` の退行ではない（`hook.asm` の差分を読んだその側の見立て。分解能 0 を新旧で走らせ
+  比べてはいない）。持ち主は、全回帰の完了で確認は済むと見ている（言葉どおり「Y8960BEの確認の件は、
+  全回帰の完了で解決すると思ってる」）
+
+**v0.5.7 のリリース作業への引き継ぎ**（持ち主の指示で、次のセッションで行う）
+
+- Y8960BasicExtension のピンを `0982c03` へ進める。`d77dce7`（分解能 1・2 で tick が周期を超え続けると
+  止まる穴）と、`5975dce` のリファレンスの追記（日英）が入る
+- MsxAudioBasicExtensionLite の公開文書 `basic-reference.md`（日英）の、PSG の丸めの注記が直った
+  （`cd6e209`、push 済み。持ち主の返事どおり版を添える形）。ピンを進めて `sync_docs.py` を回すと
+  `docs/msx-audio/` に入る
+- ほかの兄弟のピンを進めるかは、リリースの時に決める（どれも ROM の中身は変わらない）
+- openMSX の拡張定義（`HRA_Y8960_MSSX.xml`）を添える最初のリリースになる。出したら、下の「openMSX の
+  拡張定義をリリースに加える」の節に版を書く（openMSX_Y8960 のセッションが待っている）
 
 ## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
 
@@ -191,7 +147,7 @@ master より先に公開側へ届く）。
 **書き方の決まりも集めた**（持ち主の指示、同日、言葉どおり：「SFGの書き方の決まりも入れて」）。
 SFGBasicExtension の `CLAUDE.md`（`106fd3b`、origin/master と同じ）から3つ：訂正と新しい材料を
 同じ節に入れない、相手が読む節に「こちら」「あちら」を書かない、兄弟が読むものは AI が書いて AI が
-読むものとして書く。理由の文は写し、事故の例（ISSUE-8、`29a29ab`）は写していない。
+読むものとして書く。理由の文は写し、事故の例は写していない。
 
 **集めなかったもの**
 
@@ -203,9 +159,10 @@ SFGBasicExtension の `CLAUDE.md`（`106fd3b`、origin/master と同じ）から
 - **兄弟全員に配る作業は Y8960BasicExtension を起点にする**（SFGBasicExtension と
   MidiPlayBasicExtension）。持ち主の指示の範囲の外とした
 
-**残り**：兄弟の `CLAUDE.md` はまだ直していない（持ち主の指示が「まずはここの文書」）。
-SFGBasicExtension と MidiPlayBasicExtension は自分の側の手順を、Y8960BasicExtension は
-`prompt-*.md` だけを書いている。直し方と、どちらの方法で伝えるかは持ち主が決める。
+**兄弟の側**：持ち主の指示（言葉どおり「各兄弟のセッションを全部起こしたので、文書の修正を各兄弟の
+クロコに直接指示してみて」）で、6本に SendMessage で依頼した。6本とも同日に、自分の文書の写しを
+verification.md への参照に替え、返す材料の置き場所だけを残して push した（各セッションの報告）。
+そのとき出た verification.md への指摘は、上の「試験でフォークとオリジナルを分けない」の節にまとめた。
 
 ## openMSX の拡張定義をリリースに加える（2026-11-21）
 
