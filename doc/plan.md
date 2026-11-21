@@ -58,6 +58,11 @@ master より先に公開側へ届く）。
   どちらに入るか読み取れない。MsxMusicBasicExtension（`1c3bf14` の「出入口」）も
   MsxAudioBasicExtensionLite も作業計画の側に置く形なので、verification.md にそう書いた。もう一つの
   指摘（MsxMusicBasicExtension の「出入口」の食い違い）は、`1c3bf14` で同じ向きに直っていた
+- MsxAudioBasicExtensionLite（依頼 2、同日の SendMessage）：`44e5a52`（未 push）。ハーネスはもともと
+  `OPENMSX_DIR` の1本だけを使い、Y8960 の拡張を挿さず、フォークの名前を引く試験も無かった。
+  `panpot.tcl`・`ssgs6.tcl` のコメントの「openMSX に SSGS は無い」を、このハーネスの構成に無い、と
+  直した。試験は openMSX の入れ替えの後に回す。こちらからは、上流の版に `Y8960 SSG 0 regs`・
+  `Y8960 SSG 1 regs` があったことを材料として返した
 - openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
   openMSX_Y8960 のセッションに、OPENMSX_DIR のフォルダを退避してから中身を上流の版に入れ替えるよう
   依頼した。別のフォルダに置いて `setx` で向け直さないのは、動いているセッションに届かないため。
