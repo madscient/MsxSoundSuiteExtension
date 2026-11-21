@@ -68,7 +68,12 @@ master より先に公開側へ届く）。
   末尾の節「兄弟へ返すもの」、SendMessage で決まったことは `doc/plan.md`）に替えた。verification.md
   への指摘：SendMessage で受け取ったことの置き場所も各リポジトリの `CLAUDE.md` が決める形でないと、
   文書を分けているリポジトリで一つに決まらない（直した）。兄弟の ROM に原因がある統合版の欠陥を
-  Y8960BasicExtension が直したとき、その直しがどう兄弟の ROM に入るかが書いていない（持ち主に聞く）。
+  Y8960BasicExtension が直したとき、その直しがどう兄弟の ROM に入るかが書いていない（持ち主に聞いた。
+  言葉どおり「Aただし、兄弟への連絡方法はその都度僕が指示する。」。A は、Y8960BasicExtension が直し方を
+  渡し、兄弟が自分のリポジトリでコミットし、Y8960BasicExtension が `vendor/` を進めて統合版で確かめる
+  案。もう一つの案、Y8960BasicExtension が `vendor/<兄弟>` で直接コミットして push する形は、11-01 に
+  PR の手順を外した向きと逆なので推さなかった。verification.md の「統合版に固有の欠陥」の節に段落を
+  足した。見出しは兄弟がアンカーで指しうるので変えていない）。
   「兄弟全員にまたがる作業は Y8960BasicExtension を起点にする」の扱いは、Y8960BasicExtension の側から
   持ち主に返した
 - openMSX の配置：持ち主の指示（言葉どおり「2はopenMSXのクロコを起こしたので直接指示して」）で、
