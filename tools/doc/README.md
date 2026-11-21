@@ -49,7 +49,7 @@
    兄弟の訳は `python ../MsxSoundSuiteExtension/tools/doc/corpus.py terms <作業>/corpus <語>...`
    で引く。**訳者へ配る前に足す語も、兄弟の訳を引いてから入れる。**訳者は訳語集を兄弟の
    対訳より優先するので、先に足した語が兄弟とずれていると、そのずれが全訳者に広がる。
-   **訳し終えたら、足した語を MsxSoundSuiteExtension への依頼文に表で並べる。**ここの
+   **訳し終えたら、足した語を MsxSoundSuiteExtension への依頼に表で並べる。**ここの
    `glossary.md` に入れるのは MsxSoundSuiteExtension のセッションが行う
 5. **原文を切る**：`sed -n '<最初>,<最後>p' doc/<名前>.md > <作業>/ja/<部分>.md`。
    節の切れ目で切り、表やコードの途中で切らない
@@ -63,8 +63,8 @@
 9. **照合**：`python ../MsxSoundSuiteExtension/tools/doc/check.py doc/<名前>.md doc/en/<名前>.md --headmap <作業>/headmap.tsv`。
    **先に `--selftest` を回し、全部 caught なのを見てから本物の結果を信じる**
 10. `python tools/doc/translation.py --mark <名前>.md ...`
-11. 公開は MsxSoundSuiteExtension の `tools/manifest.py` に載せてもらう。依頼は
-    `doc/prompt-*.md` に書いて渡す（[`msse-doc-rule.md`](../../doc/msse-doc-rule.md)）
+11. 公開は MsxSoundSuiteExtension の `tools/manifest.py` に載せてもらう。依頼の渡し方は
+    [`verification.md`](../../doc/verification.md#兄弟のリポジトリとのやりとり) に従う
 
 ## 照合が見ないもの
 

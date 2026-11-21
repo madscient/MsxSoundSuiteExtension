@@ -12,6 +12,44 @@ master より先に公開側へ届く）。
 [`naming.md`](naming.md)、検証は [`verification.md`](verification.md)）。公開文書の
 英語版を作る道具は [`tools/doc/`](../tools/doc/README.md)。
 
+## 兄弟のリポジトリとのやりとりを verification.md に集める（2026-11-21）
+
+持ち主の指示（言葉どおり）：「ここのverificationに集めよう。兄弟間の依頼は、従来の「自分の
+リポジトリに依頼文を置く」のほかに、今回のように直接エージェント同時でSendMessageで行う方法を
+書いて、状況によって僕が決める」「まずはここの文書を修正」。
+
+**決定（持ち主の判断）**：依頼や材料を渡す方法は、依頼文を自分のリポジトリに置くか、SendMessage
+で直接話すかの2つ。どちらを使うかは持ち主がその都度決め、指示が無ければ AI が持ち主に聞く。
+前提：拾う時機を持ち主が指示する形である限り、また SendMessage が同じマシンで同時に動いている
+セッションどうしでしか届かない限り成立する。
+
+**集める前の状態**（**確認済み**、6本と openMSX_Y8960 の `CLAUDE.md` と、このリポジトリの
+`doc/` を検索して読んだ）：
+
+- このリポジトリには、`msse-doc-rule.md` の「依頼は `prompt-*.md` に書いて渡す」の1行と、
+  `verification.md` の「欠陥でない依頼は `prompt-*.md`」しか無かった
+- 「兄弟へ返すものは自分の plan に書いて持ち主に拾わせる」「PR を使わない」「兄弟の作業ツリーに
+  書かない」は、SFGBasicExtension（2026-10-28 の判断）と MidiPlayBasicExtension（2026-10-31 の
+  判断）の `CLAUDE.md` にそれぞれ書いてあるだけだった。SFGBasicExtension の `CLAUDE.md` は
+  「取り決めの正は verification.md」と書いていたが、verification.md にその節は無かった
+- SendMessage で直接話す形は、どのリポジトリにも書いていなかった
+
+**集めたもの**：上の3つと、受け取る側が持ち主の一言を合図に相手の記録を読みに行くこと
+（MidiPlayBasicExtension から）。SendMessage の側は、同日の openMSX_Y8960 のセッションとの
+やりとりで使った形と、送受信を持ち主への報告に会話の形で写すこと（持ち主が 2026-11-19 に
+決めたもの。このリポジトリの外の記録）。`msse-doc-rule.md` は `prompt-*.md` の文書の役割だけを
+持ち、渡し方は verification.md を指すようにした。`tools/doc/README.md` の2か所が渡し方を
+`prompt-*.md` に決め打ちしていたので、verification.md を指すようにした。
+
+**集めなかったもの**：SFGBasicExtension の `CLAUDE.md` にある書き方の決まり（訂正と新しい材料を
+同じ節に入れない、相手が読む節に「こちら」「あちら」を書かない、兄弟が拾う節は AI が書いて AI が
+読むものとして書く）と、兄弟全員に配る作業は Y8960BasicExtension を起点にすること。持ち主の指示が
+2つの方法と決め方だったので、範囲の外とした。入れるかは持ち主に聞く。
+
+**残り**：兄弟の `CLAUDE.md` はまだ直していない（持ち主の指示が「まずはここの文書」）。
+SFGBasicExtension と MidiPlayBasicExtension は自分の側の手順を、Y8960BasicExtension は
+`prompt-*.md` だけを書いている。直し方と、どちらの方法で伝えるかは持ち主が決める。
+
 ## openMSX の拡張定義をリリースに加える（2026-11-21）
 
 持ち主の指示（言葉どおり）：「リリース対象として、openMSX向けのROM定義ファイル（sha1入り）を
