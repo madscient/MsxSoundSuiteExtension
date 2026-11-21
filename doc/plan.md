@@ -88,6 +88,9 @@ openMSX がリリースされたら、その版の名前に書き換える。
 - **確認済み** ―― `package.py` の拒否。差し込み口を1つずつ消した3通り、知らない差し込み口、
   閉じタグの誤り、出荷しない ROM の指定、の6通りで止まり、壊していないテンプレートは通る
   （`write_openmsx_configs` に壊した写しを渡した）
+- **確認済み** ―― `release.py v0.0.0-dryrun --notes-file tools/release-notes.md --no-build --dry-run`
+  が終了コード 0 で、`gh release create` の資産は zip、ROM 6本、`openmsx/HRA_Y8960_MSSX.xml` の
+  8点。**未検証** ―― 実際のアップロード。資産の名前がファイル名だけになることは見ていない
 - **未検証** ―― 古い ROM を読んだときの sha1 の不一致の警告。標準エラーにも出力ファイルにも
   出なかった。警告を出すことは `Rom.cc` の読解だけで、どこに出るかは見ていない
 - **未検証** ―― 試験に使ったビルドがどの commit から組まれたか。`Y8960Cartridge` を受け付け、
