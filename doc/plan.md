@@ -104,6 +104,10 @@ master より先に公開側へ届く）。
   `mirrored_registers` の既定が false になり、機種定義からこの要素が消えた（SFG が上流の履歴で
   確かめた。こちらでは確かめていない）。丸めを切る派生を作っている MsxMusicBasicExtension と
   MsxAudioBasicExtensionLite に回した
+- Y8960BasicExtension（依頼 2、未コミット。回帰の後にコミットする）：`vendor/openMSX_Y8960` をやめ、
+  `OPENMSX_DIR` の exe と `HRA_Y8960.xml` を使う形にした（上流の形でなければ起動前に止まる。5通りで
+  確かめた）。版の照合はやめ、結果の頭に `openmsx_info version` を出す（持ち主の選択）。デバッガブルの
+  読みを上流の名前に直した（ソースを読んで決めた。走らせる前）
 - openMSX の配置の結果（openMSX_Y8960 のセッションの知らせ）：版の文字列 `22.0-unknown`、exe の sha1
   `66be8b377129021dcc3586250580bb6a831a3e88`、元は openMSX_Y8960 の `main` の `5618c6d6a`（コードは上流の
   `ab07a757f` と同じ）。配布 zip の中身で上書き 88 本・追加 30 本、配置先にしか無い 52 本は残した。
