@@ -75,6 +75,8 @@ Rhythm mode is not chosen by an argument. It is decided by the channels the sequ
 
 **The speed of a song does not depend on the resolution.** `T` decides the tempo; the resolution decides "how often the playback engine is woken up." The same song plays for the same length at any resolution.
 
+**A song that one interrupt cannot keep up with falls behind.** It happens with songs where many channels start sounding at once, and more readily on a Z80 than on an R800. At resolutions 1 and 2, time is still left for BASIC and the MSX computer meanwhile, so the machine does not stop. At resolution 0, the machine can stop if this goes on.
+
 Two things change: **the load as seen from a BASIC program**, and **the fineness of time**.
 
 | Resolution | Period | Interrupts | Time granularity |

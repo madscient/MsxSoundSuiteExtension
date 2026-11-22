@@ -884,7 +884,7 @@ On the PSG side, SSGS responds to the same I/O ports as the internal PSG, and se
 
 Conversely, what the PSG channels play reaches both chips. **In the Y8960 cartridge build, the PSG parts sound from both the internal PSG and SSGS, and only the SSGS side is panned.** `mabel.rom` does not enable SSGS, so even on a Y8960 cartridge the PSG parts sound only from the internal PSG, and `I` has no effect.
 
-> **On emulators, the internal PSG does respond to these numbers** (openMSX on machines other than turbo R, and blueMSX on all machines). `28H`-`2AH` turn into volume registers 8-10, so on those emulators, using `I` while a note is sounding throws off the volume of that note until the next note.
+> **On some emulators, the internal PSG does respond to these numbers** (openMSX before 22.0 on machines other than turbo R, and blueMSX on all machines). `28H`-`2AH` turn into volume registers 8-10, so on those emulators, using `I` while a note is sounding throws off the volume of that note until the next note.
 > In the Y8960 cartridge build, writes to the SSGS second set (`10H`-`1DH`) also turn into internal PSG registers 0-13, so the pitch and volume of the PSG parts are thrown off. This does not happen on real hardware.
 
 ### `@n` on PSG channels
